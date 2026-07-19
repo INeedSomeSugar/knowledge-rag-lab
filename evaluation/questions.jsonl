@@ -1,0 +1,6 @@
+{"question":"正式员工一周最多能远程办公几天？", "relevant_sources":["employee_handbook.md"]}
+{"question":"差旅结束后多久要提交报销材料？", "relevant_sources":["employee_handbook.md"]}
+{"question":"P0 工单要求几分钟内响应？", "relevant_sources":["product_manual.md"]}
+{"question":"谁可以关闭待验证工单？", "relevant_sources":["product_manual.md"]}
+{"question":"发现数据泄露后可以删除日志吗？", "relevant_sources":["security_guide.md"]}
+{"question":"误点钓鱼链接后应该怎么处理？", "relevant_sources":["security_guide.md"]}
