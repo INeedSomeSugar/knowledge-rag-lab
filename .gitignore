@@ -6,3 +6,5 @@ __pycache__/
 .env
 data/index/
 work/
+evaluation/reports/latest.json
+evaluation/reports/latest.md

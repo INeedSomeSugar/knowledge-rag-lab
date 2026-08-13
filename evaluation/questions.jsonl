@@ -1,6 +1,6 @@
-{"question":"正式员工一周最多能远程办公几天？", "relevant_sources":["employee_handbook.md"]}
-{"question":"差旅结束后多久要提交报销材料？", "relevant_sources":["employee_handbook.md"]}
-{"question":"P0 工单要求几分钟内响应？", "relevant_sources":["product_manual.md"]}
-{"question":"谁可以关闭待验证工单？", "relevant_sources":["product_manual.md"]}
-{"question":"发现数据泄露后可以删除日志吗？", "relevant_sources":["security_guide.md"]}
-{"question":"误点钓鱼链接后应该怎么处理？", "relevant_sources":["security_guide.md"]}
+{"id":"employee-remote-001","category":"fact","question":"正式员工一周最多能远程办公几天？","relevant_sources":["employee_handbook.md"],"reference_answer":"正式员工每周最多远程办公两天。","should_answer":true}
+{"id":"employee-expense-001","category":"time_constraint","question":"差旅结束后多久要提交报销材料？","relevant_sources":["employee_handbook.md"],"reference_answer":"应在行程结束后的十个工作日内提交。","should_answer":true}
+{"id":"ticket-p0-001","category":"time_constraint","question":"P0 工单要求几分钟内响应？","relevant_sources":["product_manual.md"],"reference_answer":"值班人员应在五分钟内响应。","should_answer":true}
+{"id":"ticket-close-001","category":"permission","question":"谁可以关闭待验证工单？","relevant_sources":["product_manual.md"],"reference_answer":"只有提交人或服务台管理员可以关闭。","should_answer":true}
+{"id":"security-leak-001","category":"prohibition","question":"发现数据泄露后可以删除日志吗？","relevant_sources":["security_guide.md"],"reference_answer":"不可以，不得自行删除现场文件或日志。","should_answer":true}
+{"id":"security-phishing-001","category":"procedure","question":"误点钓鱼链接后应该怎么处理？","relevant_sources":["security_guide.md"],"reference_answer":"应立即断开网络并联系安全值班人员，不要继续输入账号信息。","should_answer":true}

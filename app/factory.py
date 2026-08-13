@@ -2,22 +2,19 @@ from __future__ import annotations
 
 from app.chunking import TextChunker
 from app.config import Settings
-from app.embeddings import HashingEmbedding, OpenAICompatibleEmbedding
-from app.generation import ExtractiveGenerator, OpenAICompatibleGenerator
+from app.embeddings import EmbeddingModel, HashingEmbedding, OpenAICompatibleEmbedding
+from app.generation import AnswerGenerator, ExtractiveGenerator, OpenAICompatibleGenerator
 from app.retrieval import BM25Retriever, DenseRetriever, HybridRetriever
 from app.service import RAGService
 from app.storage import JsonChunkRepository
 
 
-def create_service(settings: Settings | None = None) -> RAGService:
-    settings = settings or Settings()
-    settings.validate()
-
+def create_embedding_model(settings: Settings) -> EmbeddingModel:
     if settings.embedding_provider == "hashing":
-        embedding = HashingEmbedding()
-    elif settings.embedding_provider in {"openai_compatible", "ollama"}:
+        return HashingEmbedding()
+    if settings.embedding_provider in {"openai_compatible", "ollama"}:
         is_ollama = settings.embedding_provider == "ollama"
-        embedding = OpenAICompatibleEmbedding(
+        return OpenAICompatibleEmbedding(
             model=settings.embedding_model,
             api_key="ollama" if is_ollama else settings.embedding_api_key,
             base_url=(
@@ -26,14 +23,15 @@ def create_service(settings: Settings | None = None) -> RAGService:
                 else settings.embedding_base_url
             ),
         )
-    else:
-        raise ValueError(f"不支持的 EMBEDDING_PROVIDER：{settings.embedding_provider}")
+    raise ValueError(f"不支持的 EMBEDDING_PROVIDER：{settings.embedding_provider}")
 
+
+def create_answer_generator(settings: Settings) -> AnswerGenerator:
     if settings.llm_provider == "extractive":
-        generator = ExtractiveGenerator()
-    elif settings.llm_provider in {"openai_compatible", "ollama"}:
+        return ExtractiveGenerator()
+    if settings.llm_provider in {"openai_compatible", "ollama"}:
         is_ollama = settings.llm_provider == "ollama"
-        generator = OpenAICompatibleGenerator(
+        return OpenAICompatibleGenerator(
             model=settings.llm_model,
             api_key="ollama" if is_ollama else settings.llm_api_key,
             base_url=(
@@ -43,8 +41,14 @@ def create_service(settings: Settings | None = None) -> RAGService:
             ),
             enable_thinking=settings.llm_enable_thinking,
         )
-    else:
-        raise ValueError(f"不支持的 LLM_PROVIDER：{settings.llm_provider}")
+    raise ValueError(f"不支持的 LLM_PROVIDER：{settings.llm_provider}")
+
+
+def create_service(settings: Settings | None = None) -> RAGService:
+    settings = settings or Settings()
+    settings.validate()
+    embedding = create_embedding_model(settings)
+    generator = create_answer_generator(settings)
 
     dense = DenseRetriever(embedding)
     retriever = HybridRetriever(dense, BM25Retriever())

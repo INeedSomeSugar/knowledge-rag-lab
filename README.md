@@ -1,5 +1,7 @@
 # Knowledge RAG Lab：文档知识库问答与检索评测平台
 
+> 开发者或 Codex 接手项目前，请先阅读 [`PROJECT_CONTEXT.md`](PROJECT_CONTEXT.md)；仓库级工作约定见 [`AGENTS.md`](AGENTS.md)。这两个文件记录真实状态、关键决策、迭代历史和下一步，避免跨设备或新任务时丢失上下文。
+
 这是一个面向实习求职和技术面试展示的 RAG 项目。用户可以上传 Markdown、TXT 或 PDF 文档，系统完成文本解析、中文分块、稠密检索与 BM25 混合召回，再基于检索证据生成带引用的回答，并使用 Recall@K、MRR 对检索效果进行评测。
 
 项目刻意不把核心流程全部交给 LangChain 等框架，以便清楚展示 RAG 每个环节的实现和问题定位方法。
@@ -82,6 +84,19 @@ python -m uvicorn app.main:app --reload
 ```powershell
 python -m scripts.evaluate
 pytest
+```
+
+评测命令会在 `evaluation/reports/` 生成 JSON 明细和 Markdown 汇总，并同时比较 BM25、Dense 与 RRF 混合检索。也可以显式指定实验参数：
+
+```powershell
+python -m scripts.evaluate `
+  --documents sample_data `
+  --questions evaluation/questions.jsonl `
+  --strategies bm25 dense hybrid `
+  --top-k 1 3 5 `
+  --chunk-size 500 `
+  --chunk-overlap 80 `
+  --report-name hashing-baseline
 ```
 
 ## 两种运行模式
@@ -178,10 +193,14 @@ POST /api/v1/chat
 
 ## 评测方法
 
-`evaluation/questions.jsonl` 中每行包含一个问题及其相关文档来源。当前实现计算：
+`evaluation/questions.jsonl` 中每行包含稳定 ID、问题类型、问题、相关文档、参考答案和是否应当回答。详细格式见 `evaluation/README.md`。当前实现计算：
 
+- `Hit@K`：前 K 个结果是否至少命中一个相关来源；
 - `Recall@K`：前 K 个检索结果覆盖了多少相关来源；
-- `MRR`：第一个相关来源出现名次的倒数均值。
+- `MRR@K`：第一个相关来源出现名次的倒数均值；
+- `nDCG@K`：相关来源在排序靠前位置出现的质量，来自同一来源的重复分块不会重复得分。
+
+评测脚本会自动给小数据集和无法区分策略的结果添加警告。仓库自带的 3 份文档、6 个问题只用于冒烟测试，不能作为简历效果数据。
 
 正式写进简历前，建议把评测集扩充至 50—100 个问题，并对比至少三组实验：
 
@@ -195,7 +214,7 @@ POST /api/v1/chat
 
 ## 推荐迭代路线
 
-第一阶段（当前版本）：跑通摄取、分块、检索、引用和评测。
+第一阶段（当前版本）：跑通摄取、分块、检索和引用，并建立可重复的多策略检索评测。
 
 第二阶段：接入真实中文 Embedding 与大模型，扩充数据和评测集，记录基线指标。
 
