@@ -33,12 +33,8 @@ def _optional_bool_env(name: str) -> bool | None:
 class Settings:
     embedding_provider: str = os.getenv("EMBEDDING_PROVIDER", "hashing")
     embedding_model: str = os.getenv("EMBEDDING_MODEL", "BAAI/bge-m3")
-    embedding_api_key: str = os.getenv(
-        "EMBEDDING_API_KEY", os.getenv("DASHSCOPE_API_KEY", "")
-    )
-    embedding_base_url: str = os.getenv(
-        "EMBEDDING_BASE_URL", os.getenv("DASHSCOPE_BASE_URL", "")
-    )
+    embedding_api_key: str = os.getenv("EMBEDDING_API_KEY", os.getenv("DASHSCOPE_API_KEY", ""))
+    embedding_base_url: str = os.getenv("EMBEDDING_BASE_URL", os.getenv("DASHSCOPE_BASE_URL", ""))
     llm_provider: str = os.getenv("LLM_PROVIDER", "extractive")
     llm_model: str = os.getenv("LLM_MODEL", "Qwen/Qwen3-8B")
     llm_enable_thinking: bool | None = _optional_bool_env("LLM_ENABLE_THINKING")
@@ -46,7 +42,10 @@ class Settings:
     llm_base_url: str = os.getenv("LLM_BASE_URL", os.getenv("DASHSCOPE_BASE_URL", ""))
     chunk_size: int = _int_env("CHUNK_SIZE", 500)
     chunk_overlap: int = _int_env("CHUNK_OVERLAP", 80)
+    chunking_strategy: str = os.getenv("CHUNKING_STRATEGY", "window")
+    embedding_cache_revision: str = os.getenv("EMBEDDING_CACHE_REVISION", "1")
     retrieval_top_k: int = _int_env("RETRIEVAL_TOP_K", 5)
+    retrieval_strategy: str = os.getenv("RETRIEVAL_STRATEGY", "hybrid")
     data_dir: Path = Path(os.getenv("DATA_DIR", "data/index"))
 
     def validate(self) -> None:
@@ -56,3 +55,7 @@ class Settings:
             raise ValueError("CHUNK_OVERLAP 必须大于等于 0 且小于 CHUNK_SIZE")
         if self.retrieval_top_k < 1:
             raise ValueError("RETRIEVAL_TOP_K 必须大于 0")
+        if self.chunking_strategy not in {"window", "sections"}:
+            raise ValueError("CHUNKING_STRATEGY 必须为 window 或 sections")
+        if self.retrieval_strategy not in {"bm25", "dense", "hybrid"}:
+            raise ValueError("RETRIEVAL_STRATEGY 必须为 bm25、dense 或 hybrid")

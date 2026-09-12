@@ -27,6 +27,7 @@ def test_ingest_search_answer_and_persistence(tmp_path: Path) -> None:
 
     assert result["chunk_count"] == 1
     assert hits[0].chunk.source == "制度.md"
+    assert hits[0].chunk.metadata["title"] == "制度"
     assert answer["citations"][0]["source"] == "制度.md"
     assert build_service(tmp_path).list_documents()[0]["document_id"] == result["document_id"]
 

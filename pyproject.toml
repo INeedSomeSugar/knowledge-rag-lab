@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "knowledge-rag-lab"
-version = "0.1.0"
-description = "面向面试展示的文档知识库问答与检索评测平台"
+version = "0.4.0"
+description = "版本感知的开发者技术支持、证据核验与检索评测"
 requires-python = ">=3.11"
 dependencies = [
   "fastapi>=0.116,<1",
@@ -20,6 +20,7 @@ dependencies = [
 dev = [
   "httpx>=0.28,<1",
   "pytest>=8.4,<10",
+  "ruff>=0.12,<1",
 ]
 
 [tool.setuptools.packages.find]
@@ -28,3 +29,13 @@ include = ["app*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+
+[tool.setuptools.package-data]
+app = ["static/*.html"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]

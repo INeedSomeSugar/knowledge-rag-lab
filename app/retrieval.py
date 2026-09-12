@@ -6,6 +6,11 @@ from collections import Counter, defaultdict
 from app.domain import Chunk, SearchHit
 from app.embeddings import EmbeddingModel
 from app.tokenization import tokenize
+from app.vector_cache import validate_vectors
+
+
+def matches_filters(chunk: Chunk, filters: dict[str, str] | None) -> bool:
+    return not filters or all(chunk.metadata.get(key) == value for key, value in filters.items())
 
 
 class DenseRetriever:
@@ -17,14 +22,18 @@ class DenseRetriever:
     def index(self, chunks: list[Chunk]) -> None:
         self.chunks = list(chunks)
         self.vectors = self.embedding_model.embed_documents([chunk.text for chunk in chunks])
+        validate_vectors(self.vectors, len(chunks))
 
-    def search(self, query: str, top_k: int) -> list[SearchHit]:
+    def search(
+        self, query: str, top_k: int, *, filters: dict[str, str] | None = None
+    ) -> list[SearchHit]:
         if not self.chunks:
             return []
         query_vector = self.embedding_model.embed_query(query)
         scored = [
             (self._cosine(query_vector, vector), chunk)
             for chunk, vector in zip(self.chunks, self.vectors, strict=True)
+            if matches_filters(chunk, filters)
         ]
         scored.sort(key=lambda item: item[0], reverse=True)
         return [
@@ -62,13 +71,17 @@ class BM25Retriever:
             sum(len(tokens) for tokens in tokenized) / len(tokenized) if tokenized else 0.0
         )
 
-    def search(self, query: str, top_k: int) -> list[SearchHit]:
+    def search(
+        self, query: str, top_k: int, *, filters: dict[str, str] | None = None
+    ) -> list[SearchHit]:
         query_terms = tokenize(query)
         if not self.chunks or not query_terms:
             return []
         scored: list[tuple[float, Chunk]] = []
         total = len(self.chunks)
         for chunk, frequencies in zip(self.chunks, self.term_frequencies, strict=True):
+            if not matches_filters(chunk, filters):
+                continue
             length = sum(frequencies.values())
             score = 0.0
             for term in query_terms:
@@ -107,15 +120,18 @@ class HybridRetriever:
         self.rrf_k = rrf_k
         self.dense_weight = dense_weight
         self.sparse_weight = sparse_weight
+        self.revision = ""
 
     def index(self, chunks: list[Chunk]) -> None:
         self.dense.index(chunks)
         self.sparse.index(chunks)
 
-    def search(self, query: str, top_k: int) -> list[SearchHit]:
-        candidate_k = max(top_k * 3, 10)
-        dense_hits = self.dense.search(query, candidate_k)
-        sparse_hits = self.sparse.search(query, candidate_k)
+    def search(
+        self, query: str, top_k: int, *, filters: dict[str, str] | None = None
+    ) -> list[SearchHit]:
+        candidate_k = max(top_k, 50)
+        dense_hits = self.dense.search(query, candidate_k, filters=filters)
+        sparse_hits = self.sparse.search(query, candidate_k, filters=filters)
         scores: defaultdict[str, float] = defaultdict(float)
         hits: dict[str, SearchHit] = {}
 

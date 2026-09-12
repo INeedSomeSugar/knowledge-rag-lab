@@ -12,8 +12,9 @@ from app.chunking import TextChunker
 from app.config import Settings
 from app.domain import Chunk, SearchHit
 from app.evaluation import EvaluationCase, evaluate_strategies, load_evaluation_cases
-from app.factory import create_embedding_model
-from app.loaders import SUPPORTED_SUFFIXES, load_bytes
+from app.evaluation import evaluate_answer_behavior
+from app.corpus import read_documents
+from app.factory import create_cached_embedding
 from app.retrieval import BM25Retriever, DenseRetriever, HybridRetriever
 
 
@@ -26,21 +27,12 @@ def load_corpus(directory: Path, chunker: TextChunker) -> tuple[list[Chunk], lis
 
     chunks: list[Chunk] = []
     sources: list[str] = []
-    paths = sorted(
-        path
-        for path in directory.rglob("*")
-        if path.is_file() and path.suffix.lower() in SUPPORTED_SUFFIXES
-    )
-    if not paths:
-        raise ValueError(f"文档目录中没有支持的文件：{directory}")
-
-    for path in paths:
-        source = path.relative_to(directory).as_posix()
-        text = load_bytes(path.name, path.read_bytes()).strip()
-        if not text:
-            continue
+    for source, text, metadata in read_documents(directory):
         document_id = hashlib.sha1(f"{source}\0{text}".encode("utf-8")).hexdigest()[:16]
-        chunks.extend(chunker.split(document_id, source, text))
+        document_chunks = chunker.split(document_id, source, text)
+        for chunk in document_chunks:
+            chunk.metadata.update(metadata)
+        chunks.extend(document_chunks)
         sources.append(source)
     if not chunks:
         raise ValueError("所有文档解析后均为空")
@@ -58,7 +50,7 @@ def build_searchers(
 
     needs_dense = bool({"dense", "hybrid"}.intersection(selected))
     needs_sparse = bool({"bm25", "hybrid"}.intersection(selected))
-    dense = DenseRetriever(create_embedding_model(settings)) if needs_dense else None
+    dense = DenseRetriever(create_cached_embedding(settings)) if needs_dense else None
     sparse = BM25Retriever() if needs_sparse else None
     if dense is not None:
         dense.index(chunks)
@@ -75,22 +67,13 @@ def build_searchers(
     return searchers
 
 
-def validate_relevant_sources(
-    cases: list[EvaluationCase], document_sources: list[str]
-) -> None:
+def validate_relevant_sources(cases: list[EvaluationCase], document_sources: list[str]) -> None:
     available = set(document_sources)
     missing = sorted(
-        {
-            source
-            for case in cases
-            for source in case.relevant_sources
-            if source not in available
-        }
+        {source for case in cases for source in case.relevant_sources if source not in available}
     )
     if missing:
-        raise ValueError(
-            "评测标注引用了文档目录中不存在的来源：" + ", ".join(missing)
-        )
+        raise ValueError("评测标注引用了文档目录中不存在的来源：" + ", ".join(missing))
 
 
 def _build_warnings(
@@ -141,9 +124,7 @@ def build_report(
     chunk_size: int,
     chunk_overlap: int,
 ) -> dict[str, object]:
-    answerable_count = sum(
-        1 for case in cases if case.should_answer and case.relevant_sources
-    )
+    answerable_count = sum(1 for case in cases if case.should_answer and case.relevant_sources)
     categories = Counter(case.category for case in cases)
     warnings = _build_warnings(
         document_count=len(document_sources),
@@ -151,17 +132,26 @@ def build_report(
         case_count=len(cases),
         results=results,
     )
+    if any(case.review_status != "human_verified" for case in cases):
+        warnings.append("包含未经人工核验的问题：结果仅为开发诊断，不可作为正式效果或简历数字。")
+    if any(not case.evidence for case in cases if case.should_answer):
+        warnings.append("部分可回答问题未标注证据范围；文档级命中不代表找到答案。")
     return {
-        "schema_version": "1.0",
+        "schema_version": "2.0",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "configuration": {
             "embedding_provider": settings.embedding_provider,
-            "embedding_model": settings.embedding_model,
+            "embedding_model": "hashing-384"
+            if settings.embedding_provider == "hashing"
+            else settings.embedding_model,
             "chunk_size": chunk_size,
             "chunk_overlap": chunk_overlap,
+            "chunking_strategy": settings.chunking_strategy,
+            "rrf_candidate_k": 50,
             "top_ks": sorted(set(top_ks)),
             "documents_dir": documents_dir.as_posix(),
             "questions_path": questions_path.as_posix(),
+            "embedding_cache_revision": settings.embedding_cache_revision,
         },
         "dataset": {
             "document_count": len(document_sources),
@@ -170,9 +160,32 @@ def build_report(
             "answerable_case_count": answerable_count,
             "unanswerable_case_count": len(cases) - answerable_count,
             "categories": dict(sorted(categories.items())),
+            "human_verified_count": sum(case.review_status == "human_verified" for case in cases),
+            "evidence_annotated_count": sum(bool(case.evidence) for case in cases),
         },
         "warnings": warnings,
         "results": results,
+        "provenance": {
+            "code_sha256": code_fingerprint(),
+            "questions_sha256": hashlib.sha256(questions_path.read_bytes()).hexdigest(),
+            "corpus_sha256": hashlib.sha256(
+                json.dumps(
+                    [
+                        (source, hashlib.sha256(text.encode()).hexdigest(), metadata)
+                        for source, text, metadata in read_documents(documents_dir)
+                    ],
+                    sort_keys=True,
+                    ensure_ascii=False,
+                ).encode()
+            ).hexdigest(),
+            "chunks_sha256": hashlib.sha256(
+                json.dumps(
+                    [chunk.to_dict() for chunk in chunks], sort_keys=True, ensure_ascii=False
+                ).encode()
+            ).hexdigest(),
+            "selected_case_ids": [case.case_id for case in cases],
+            "splits": sorted({case.split for case in cases}),
+        },
     }
 
 
@@ -193,27 +206,38 @@ def render_markdown(report: dict[str, object]) -> str:
         "",
         "## 指标汇总",
         "",
-        "| 策略 | K | Hit@K | Recall@K | MRR@K | nDCG@K |",
-        "|---|---:|---:|---:|---:|---:|",
+        "| 策略 | K | Hit@K | Recall@K | MRR@K | nDCG@K | 证据 Recall@K |",
+        "|---|---:|---:|---:|---:|---:|---:|",
     ]
     for strategy, strategy_results in results.items():
         assert isinstance(strategy_results, dict)
-        for top_k, metrics in sorted(
-            strategy_results.items(), key=lambda item: int(item[0])
-        ):
+        for top_k, metrics in sorted(strategy_results.items(), key=lambda item: int(item[0])):
             assert isinstance(metrics, dict)
             lines.append(
                 f"| {strategy} | {top_k} | "
                 f"{metrics[f'hit_rate@{top_k}']:.4f} | "
                 f"{metrics[f'recall@{top_k}']:.4f} | "
                 f"{metrics[f'mrr@{top_k}']:.4f} | "
-                f"{metrics[f'ndcg@{top_k}']:.4f} |"
+                f"{metrics[f'ndcg@{top_k}']:.4f} | "
+                + (
+                    f"{metrics[f'evidence_recall@{top_k}']:.4f}"
+                    if metrics.get(f"evidence_recall@{top_k}") is not None
+                    else "未标注"
+                )
+                + " |"
             )
 
     warnings = report.get("warnings", [])
     if isinstance(warnings, list) and warnings:
         lines.extend(["", "## 使用限制", ""])
         lines.extend(f"- {warning}" for warning in warnings)
+    answers = report.get("answers")
+    if isinstance(answers, dict):
+        lines.extend(["", "## 回答行为（不代表答案正确率）", ""])
+        for key, value in answers.items():
+            if key not in {"details", "note"}:
+                lines.append(f"- {key}: {value}")
+        lines.append(str(answers["note"]))
     lines.append("")
     return "\n".join(lines)
 
@@ -224,9 +248,7 @@ def write_report(
     output_dir.mkdir(parents=True, exist_ok=True)
     json_path = output_dir / f"{report_name}.json"
     markdown_path = output_dir / f"{report_name}.md"
-    json_path.write_text(
-        json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
+    json_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     markdown_path.write_text(render_markdown(report), encoding="utf-8")
     return json_path, markdown_path
 
@@ -234,9 +256,7 @@ def write_report(
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="比较 BM25、Dense 与 RRF 混合检索")
     parser.add_argument("--documents", type=Path, default=Path("sample_data"))
-    parser.add_argument(
-        "--questions", type=Path, default=Path("evaluation/questions.jsonl")
-    )
+    parser.add_argument("--questions", type=Path, default=Path("evaluation/questions.jsonl"))
     parser.add_argument("--top-k", type=int, nargs="+", default=[1, 3, 5])
     parser.add_argument(
         "--strategies",
@@ -248,20 +268,48 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--chunk-overlap", type=int)
     parser.add_argument("--output-dir", type=Path, default=Path("evaluation/reports"))
     parser.add_argument("--report-name", default="latest")
+    parser.add_argument("--chunking-strategy", choices=["window", "sections"])
+    parser.add_argument(
+        "--answers", action="store_true", help="同时运行回答状态评测；真实模型会产生 API 请求"
+    )
+    parser.add_argument("--split", choices=["development", "test"])
+    parser.add_argument("--require-reviewed", action="store_true")
+    parser.add_argument("--demo", action="store_true", help="强制零密钥模式，不调用模型 API")
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
     settings = Settings()
+    if args.demo:
+        from dataclasses import replace
+
+        settings = replace(
+            settings,
+            embedding_provider="hashing",
+            llm_provider="extractive",
+            retrieval_strategy="bm25",
+            data_dir=Path("data/demo-index"),
+        )
+    if args.chunking_strategy:
+        from dataclasses import replace
+
+        settings = replace(settings, chunking_strategy=args.chunking_strategy)
     settings.validate()
     chunk_size = args.chunk_size if args.chunk_size is not None else settings.chunk_size
-    chunk_overlap = (
-        args.chunk_overlap if args.chunk_overlap is not None else settings.chunk_overlap
-    )
-    chunker = TextChunker(chunk_size, chunk_overlap)
+    chunk_overlap = args.chunk_overlap if args.chunk_overlap is not None else settings.chunk_overlap
+    chunker = TextChunker(chunk_size, chunk_overlap, strategy=settings.chunking_strategy)
     chunks, sources = load_corpus(args.documents, chunker)
     cases = load_evaluation_cases(args.questions)
+    if not args.split and len({case.split for case in cases}) > 1:
+        raise ValueError("问题文件包含多个划分，请显式选择 --split development 或 test")
+    if args.split:
+        cases = [case for case in cases if case.split == args.split]
+    if not cases:
+        raise ValueError("所选划分没有问题")
+    if args.require_reviewed and any(case.review_status != "human_verified" for case in cases):
+        raise ValueError("正式评测要求全部问题已经人工核验")
+    validate_evidence(cases, args.documents)
     validate_relevant_sources(cases, sources)
     searchers = build_searchers(chunks, settings, args.strategies)
     results = evaluate_strategies(cases, searchers, args.top_k)
@@ -277,10 +325,58 @@ def main() -> None:
         chunk_size=chunk_size,
         chunk_overlap=chunk_overlap,
     )
+    if args.answers:
+        from app.factory import create_answer_generator
+        from app.service import RAGService
+        from app.storage import JsonChunkRepository
+        from tempfile import TemporaryDirectory
+
+        with TemporaryDirectory() as directory:
+            repository = JsonChunkRepository(Path(directory))
+            repository.save(chunks)
+            retriever = HybridRetriever(
+                DenseRetriever(create_cached_embedding(settings)), BM25Retriever()
+            )
+            service = RAGService(
+                chunker=chunker,
+                retriever=retriever,
+                generator=create_answer_generator(settings),
+                repository=repository,
+                retrieval_strategy=settings.retrieval_strategy,
+            )
+            report["answers"] = evaluate_answer_behavior(cases, service.answer, max(args.top_k))
+            report["configuration"]["llm_provider"] = settings.llm_provider
+            report["configuration"]["llm_model"] = settings.llm_model
+            report["configuration"]["answer_retrieval_strategy"] = settings.retrieval_strategy
     json_path, markdown_path = write_report(report, args.output_dir, args.report_name)
     print(render_markdown(report))
     print(f"JSON 报告：{json_path}")
     print(f"Markdown 报告：{markdown_path}")
+
+
+def validate_evidence(cases: list[EvaluationCase], directory: Path) -> None:
+    texts = {source: TextChunker._normalize(text) for source, text, _ in read_documents(directory)}
+    for case in cases:
+        for anchor in case.evidence:
+            text = texts.get(str(anchor["source"]), "")
+            if text[int(anchor["start_char"]) : int(anchor["end_char"])] != anchor["quote"]:
+                raise ValueError(f"证据与原文不匹配：{case.case_id}")
+
+
+def code_fingerprint() -> str:
+    root = Path(__file__).resolve().parent.parent
+    paths = sorted(
+        [
+            *root.joinpath("app").rglob("*.py"),
+            *root.joinpath("scripts").glob("*.py"),
+            root / "pyproject.toml",
+        ]
+    )
+    value = [
+        (path.relative_to(root).as_posix(), hashlib.sha256(path.read_bytes()).hexdigest())
+        for path in paths
+    ]
+    return hashlib.sha256(json.dumps(value, sort_keys=True).encode()).hexdigest()
 
 
 if __name__ == "__main__":

@@ -1,14 +1,14 @@
 # Knowledge RAG Lab 项目上下文与迭代档案
 
-> 这是给开发者和 Codex 使用的长期交接文件。最后更新：2026-08-13；当前阶段：`v0.2-evaluation`。
+> 这是给开发者和 Codex 使用的长期交接文件。最后更新：2026-09-12；当前阶段：`v0.4-developer-support`。
 
 ## 1. 项目定位
 
-Knowledge RAG Lab 是一个面向实习求职和技术面试展示的企业文档 RAG 项目。目标不是只做一个聊天页面，而是展示一条可以解释、评测、定位错误并逐步工程化的完整链路：
+Knowledge RAG Lab 是面向 AI 应用开发实习的版本感知开发者技术支持助手，首个知识域为 FastAPI 官方中文文档。场景比较和实施范围见 `docs/IMPLEMENTATION_PLAN.md`。目标不是只做一个聊天页面，而是展示一条可以解释、评测、定位错误并逐步工程化的完整链路：
 
 ```text
-文档解析 -> 结构化分块 -> Dense / BM25 召回 -> RRF 融合
-        -> Top-K 证据 -> 受证据约束的回答 -> 引用 -> 离线评测
+固定版本文档 -> 保留代码缩进并分块 -> 产品/版本过滤 -> BM25 / Dense / RRF
+             -> 相邻章节证据 -> 结论与逐字引用 -> 引用和支持关系检查 -> 回答/拒答与离线评测
 ```
 
 目标岗位主要是：
@@ -21,11 +21,27 @@ Knowledge RAG Lab 是一个面向实习求职和技术面试展示的企业文�
 
 ## 2. 当前真实状态
 
+源码仓库：<https://github.com/INeedSomeSugar/knowledge-rag-lab>，默认分支 `main`。发布范围包含代码、官方 FastAPI 文档快照、候选问题和原始开发报告；`.env`、虚拟环境、运行索引及未用于本场景的培养管理 PDF 保留在本地。
+
 ### 已实现
+
+v0.4 新增：
+
+- FastAPI 17 个主题、两个历史版本共 34 个官方文档文件，固定 commit、MIT 许可证和 SHA-256；代码引用来自同一提交；
+- 章节分块与代码缩进保留、精确字符范围、产品/版本检索过滤、缺少版本澄清、未知版本拒答；
+- 同章节相邻片段补充，上下文预算 16000 字符；
+- 结构化结论和逐字引用检查，真实模型适配器另执行一轮支持关系检查；这属于模型辅助核验，尚未实测，不能代替人工审核；
+- 同来源同版本内替换、内容寻址的 SQLite 向量缓存、构建失败回滚和不可变索引快照；
+- 文档级和证据范围级检索评测、回答行为评测、代码/数据指纹及开发测试分组约束；
+- 55 个有原文锚点的待复核候选问题及人工复核表，47 个开发问题、8 个保留测试问题；
+- 本地演示页面、版本与证据展示、召回与阶段耗时记录。
+
+原有基础功能继续保留：
 
 - TXT、Markdown、PDF 文档导入；
 - UTF-8 与 GB18030 文本兼容；
 - 中文标点感知的重叠字符分块；
+- 文档标题、Markdown 最近章节和 PDF 物理页码元数据；
 - 开发用 Hashing Embedding；
 - OpenAI 兼容 Embedding 接口和 Ollama 适配；
 - BM25 稀疏检索；
@@ -42,74 +58,79 @@ Knowledge RAG Lab 是一个面向实习求职和技术面试展示的企业文�
 
 ### 已验证
 
-2026-08-13 使用仓库内 `.venv` 验证：
+2026-09-12 在本机重建 `.venv` 后验证，Python 3.12.14；旧环境保留于 `work/venv-before-20260912`：
 
 ```text
-pytest: 12 passed
+pytest: 39 passed, 2 个第三方弃用警告
+ruff check app scripts tests: All checks passed
+pip check: No broken requirements found
+冒烟评测运行成功（Hashing / BM25 / Hybrid）
+真实语料导入：34 文件、735 分块（sections，500 字符，重叠 80）
+重复导入：735 个缓存命中，新增文档向量计算 0
 ```
 
-另有 1 条来自 FastAPI / Starlette TestClient 依赖的弃用警告，不影响当前测试通过；升级依赖时需要重新检查。
+这里的真实语料指官方文档来源，不表示真实 Embedding 或 LLM 已运行。
 
-当前冒烟基线见：
+GitHub 上传前复核：39 项测试及 Ruff 通过；Git 索引中 85 个源码与数据文件和本地原始字节一致。`.gitattributes` 固定源码为 LF，语料、问题和报告保留原始字节，防止换行转换破坏已有 SHA-256。官方文档和原始报告保留原始空白，不做格式重写。
 
-- `evaluation/reports/latest.json`
-- `evaluation/reports/latest.md`
+浏览器已验证：页面显示导入文档数量，未指定版本时澄清，指定版本后展示同版本检索片段、引用原文和请求耗时。默认 demo 使用 BM25 和抽取式展示，状态为 `evidence_only`。
 
-当前数据只有 3 份文档、3 个分块、6 个问题。BM25、Hashing Dense 和 RRF Hybrid 的 Hit、Recall、MRR、nDCG 都为 1.0，原因是候选空间和问题过于简单。该结果只能证明评测程序能运行，不能证明某种策略更好，也不能写入简历。
+验证报告：
+
+- `evaluation/reports/latest.json` / `.md`：原有 3 份文档、6 题冒烟结果；当前 sections 模式生成 12 个分块，不能作为效果证据；
+- `evaluation/reports/support-development-hashing.json` / `.md`：47 题待复核开发诊断；
+- `evaluation/reports/support-matrix-hashing.json`：window/sections × 300/500/800 的 6 组实验索引；每组包含 BM25/Dense/Hybrid 和 K=1/3/5/10；
+- `evaluation/reports/model-connectivity.json`：当前 `missing_credentials`，没有执行真实模型请求。
+
+开发诊断中，文档命中与证据覆盖存在明显差距；Hashing Hybrid 没有稳定优于 BM25，章节分块也没有在证据 Recall@5 上普遍优于字符窗口。不得选择性包装为提升。具体数字以脚本报告为准；所有候选都未经人工复核，8 题测试集未用于调参。
 
 ### 尚未验证
 
-- Ollama 真实 Embedding 和 LLM 的端到端结果；
-- 真实中文 Embedding 相比 BM25 或 Hashing 的提升；
-- Cross-Encoder 重排效果；
-- 无答案拒答准确率；
-- 50 题以上正式评测集；
-- 大规模索引性能；
-- Qdrant、前端和 Docker 部署。
+- 百炼或其他真实 Embedding / LLM 的可用性、回答质量和模型支持关系检查；用户已选择兼容 API，并表示将在本地配置密钥；
+- 人工确认的正式评测集、人工答案正确性与引用支持度、独立测试集结果；
+- Cross-Encoder 重排收益、等上下文预算比较和拒答校准；
+- 线上用户、生产数据、多租户鉴权、多进程写入一致性及部署压测；
+- Ollama、OCR、Qdrant、Docker 等扩展。
 
-截至 2026-08-13 的最后一次检查，Ollama 未运行。该状态可能随机器环境变化，使用前应重新检查：
-
-```powershell
-.\.venv\Scripts\python.exe -m scripts.check_ollama
-```
+当前 `.env` 为未提交的本地配置；密钥及兼容 Base URL 尚未填好。兼容接口要求显式地址，避免将其他供应商密钥错误发给 SDK 默认端点。检查命令为 `python -m scripts.check_models`，只输出安全状态。
 
 ## 3. 仓库结构
 
 ```text
 app/
-  chunking.py       文本清洗、重叠分块、字符位置
-  config.py         环境变量配置
-  domain.py         Chunk、SearchHit 数据结构
-  embeddings.py     Hashing 与兼容接口 Embedding
-  evaluation.py     评测数据解析、Hit/Recall/MRR/nDCG
-  factory.py        组件和 RAGService 组装
-  generation.py     证据提示词、抽取式和真实模型生成
-  loaders.py        TXT/Markdown/PDF 解析
-  main.py           FastAPI 接口
-  retrieval.py      Dense、BM25、RRF Hybrid
-  service.py        摄取、检索、回答业务编排
-  storage.py        JSON 分块仓库
-  tokenization.py   轻量中英文分词
-
+  answers.py        结构化答案与逐字引用检查
+  chunking.py       窗口/章节分块、代码缩进和精确范围
+  context.py        同文档同章节相邻证据补充
+  corpus.py         带哈希校验的清单读取
+  embeddings.py     Hashing 与兼容 API
+  vector_cache.py   SQLite 文本向量缓存
+  retrieval.py      BM25 / Dense / RRF 与过滤
+  generation.py     抽取展示、模型生成及支持关系检查
+  service.py        文档替换、索引快照、澄清和问答编排
+  evaluation.py     文档/证据检索和回答行为指标
+  main.py           API 和本地页面
+  static/index.html 演示页面
 scripts/
-  ingest_samples.py 导入冒烟文档
-  evaluate.py       多策略实验和报告生成
-  check_ollama.py   检查本地模型服务
-
-sample_data/        3 份冒烟文档，不是正式数据集
+  fetch_support_corpus.py       下载固定版本语料与代码引用
+  build_support_candidates.py   构建未复核候选，检查原文锚点
+  export_support_review.py      导出人工复核表
+  ingest_support.py / serve.py  导入与启动，支持 --demo
+  check_models.py              少量真实模型连接与输出检查
+  evaluate.py                  评测与原始报告
+  run_support_experiments.py    仅开发集的分块实验矩阵
 evaluation/
-  corpus/           待放入正式、可公开的评测文档
-  questions.jsonl   6 个冒烟问题
-  README.md         标注规范
-  reports/          自动生成的评测报告
-tests/              分块、服务、API、评测和脚本测试
+  support_corpus/               两个版本官方文档及许可证
+  questions.support.candidate.jsonl
+  SUPPORT_DATA_CARD.md / SUPPORT_REVIEW.md
+  corpus/培养管理/              用户原有 PDF，保留但未混入技术支持语料
+  reports/                     脚本生成的报告
 ```
 
 ## 4. 关键设计决策
 
 ### 4.1 评测优先
 
-项目先建立可信评测，再接入重排、向量数据库和前端。没有可靠数据集时继续堆功能，无法证明改动有效。
+先建立来源可追溯、问题经人工审核的评测，再根据失败案例引入重排或向量数据库。当前页面用于审阅请求证据，不替代真实效果验证。
 
 ### 4.2 保持核心链路透明
 
@@ -134,105 +155,101 @@ Dense 相似度和 BM25 分数不在同一量纲，当前通过排名倒数进�
 .\.venv\Scripts\python.exe -m scripts.evaluate
 ```
 
-当前指标：
+当前检索指标同时保留文档与证据两个层次：
 
 - Hit@K；
 - Recall@K；
 - MRR@K；
 - nDCG@K。
 
-同一来源的多个重复分块在 nDCG 中只记一次相关性，避免重复片段虚增排序得分。
+同一来源的多个重复分块在文档 nDCG 中只记一次相关性。证据 Recall 以命中分块的字符范围并集是否完整覆盖标注证据为准；命中同一文件的其他段落不会记为证据命中。回答状态评测包含澄清、拒答、错误和 evidence_only，答案正确率未人工测量时为 null。
 
 ## 5. 环境与运行
 
-### 新机器初始化
+新机器运行 `python -m venv .venv`，再用 `.venv\Scripts\python.exe -m pip install -e ".[dev]"` 安装。可选的 Windows/Python 3.12 依赖版本快照为 `requirements-dev.lock`。不要复制虚拟环境。
 
-不要复制 `.venv`。复制代码后，在项目根目录执行：
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
-```
-
-### 零密钥冒烟运行
+零密钥演示：
 
 ```powershell
-.\.venv\Scripts\python.exe -m scripts.ingest_samples
-.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload
+.\.venv\Scripts\python.exe -m scripts.ingest_support --demo
+.\.venv\Scripts\python.exe -m scripts.serve --demo
 ```
 
-访问 `http://127.0.0.1:8000/docs`。
+打开 `http://127.0.0.1:8000`，通过 `/docs` 查看接口。本轮临时预览使用端口 8765。
 
-### 运行测试和评测
-
-```powershell
-.\.venv\Scripts\python.exe -m pytest
-.\.venv\Scripts\python.exe -m scripts.evaluate --report-name latest
-```
-
-### 推荐的本地真实模型
-
-```powershell
-ollama pull qwen3:8b
-ollama pull qwen3-embedding:0.6b
-Copy-Item .env.ollama.example .env
-```
-
-密钥禁止写入代码、README、测试、评测报告或聊天记录。
+真实模型：用户在 `.env` 中填写百炼密钥、兼容 Base URL 和可用模型名，依次执行 `scripts.check_models`、`scripts.ingest_support`、`scripts.serve`，不传 `--demo`。生成与支持关系检查会产生两次模型请求。
 
 ## 6. 正式评测数据要求
 
-当前下一步需要用户提供或确认一组可公开展示、无隐私和无商业机密的同领域文档，放入 `evaluation/corpus/`。
+数据与人工审核流程详见 `evaluation/SUPPORT_DATA_CARD.md`。现有 55 题只是候选：47 题可回答、4 题应澄清、4 题不可回答；按主题保留 47/8 的开发/测试划分。实际开发评测覆盖 41 个可回答、3 个澄清及3 个不可回答问题。
 
-建议最低规模：
-
-- 10～20 份文档；
-- 20 个以上分块，理想情况下 50～200 个分块；
-- 50～80 个经过人工核对的问题；
-- 包含事实、时间限制、权限、流程、禁止项、同义改写、困难负样本和知识库外问题。
-
-正式问题文件建议命名为 `evaluation/questions.full.jsonl`。格式见 `evaluation/README.md`。可以由模型生成候选问题，但每个参考答案和相关来源必须经过人工核对。
+人工复核须检查来源版本、原文范围、参考答案完整性及不可回答边界。确认后另存 `questions.support.reviewed.jsonl`，真实记录 `human_verified`、`reviewed_by` 和 `reviewed_at`。正式运行使用 `--require-reviewed`；测试集须在配置冻结后使用。不要为了达到数量门槛复制同义题或版本重复题，也不要把脚本验证原文存在当作人工审核。
 
 ## 7. 已知限制
 
-- `JsonChunkRepository` 只适合小数据量；
-- 启动、导入和删除文档会重建全部内存索引并重新计算向量；
-- 没有增量向量持久化；
-- Dense 检索没有相关性阈值，可能对知识库外问题返回无关片段；
-- 没有 Cross-Encoder 重排；
-- 没有引用支持度自动校验；
-- PDF 当前只做文本抽取，不支持扫描件 OCR；
-- 没有流式输出、前端、鉴权、任务队列、Docker 和 CI；
-- 当前目录在 2026-08-13 未检测到 Git 仓库，准备公开展示前应初始化版本管理并保留清晰提交记录。
+- 单进程原型：服务内写操作串行，查询使用不可变快照；多个服务进程或 CLI 与服务并发写同一 JSON 索引不受支持。
+- JSON 文档存储只适合小规模；BM25 仍全量重建，Dense 仍线性扫描。缓存避免重复计算文档向量，不等于整个索引已实现局部更新。
+- CLI 导入后需重启现有服务；旧文档使用新分块策略时也需重新导入。
+- 向量缓存没有自动清理孤立向量；删除后的分块不再参与检索。模型别名升级需要调整 `EMBEDDING_CACHE_REVISION`。
+- 保留了代码缩进，但较长代码仍可能跨窗口，不保证任意返回片段可直接执行；复杂 Markdown/PDF 版式与扫描件 OCR 未实现。
+- 文档标签是固定快照版本，中文译文可能滞后，不等于当前运行行为的验证。
+- 没有自动版本识别或跨版本差异推断，用户通过结构化字段选择版本。
+- 引用结构检查不证明语义支持；第二轮模型检查也可能误判，当前没有真实模型实验或人工准确率。
+- 零密钥模式可以返回相关性有限的证据片段，不能当作已具备可靠的无答案检测。
+- 当前候选问题未经人工核验，偏向单条证据；困难负例、多证据综合和真实用户问题不足。
+- 未完成重排、流式输出、鉴权、多租户、队列、Docker、CI 和部署压测。
 
-## 8. 推荐迭代顺序
+## 8. 下一步计划
 
-### P0：正式数据和真实基线
-
-1. 放入 10～20 份同领域文档；
-2. 构建并人工核对 50～80 题；
-3. 运行 BM25 / Dense / Hybrid 对比；
-4. 运行分块 300 / 500 / 800 和 Top-K 1 / 3 / 5 / 10 消融；
-5. 保存真实 JSON 与 Markdown 报告。
-
-### P1：检索质量
-
-1. 增加标题、章节和 PDF 页码元数据；
-2. 加入 Cross-Encoder 重排；
-3. 加入无答案阈值和拒答评测；
-4. 增加引用编号与证据支持度检查。
-
-### P2：工程化
-
-1. Qdrant 持久化向量；
-2. SQLite 保存文档和摄取任务状态；
-3. 增量导入、内容哈希去重和一致删除；
-4. Vue 3 演示页面；
-5. Docker Compose、CI、结构化日志和性能测试。
-
-暂缓 GraphRAG、多智能体、模型微调、微服务和 Kubernetes，除非前述阶段已完成并有明确需求。
+1. 用户配置百炼密钥和地址后，运行连接检查并保存报告；成功后导入并运行真实模型开发基线。
+2. 人工复核候选问题，扩充困难近邻、代码语义和多条证据问题；保持分组划分边界。
+3. 根据真实失败案例决定是否加入重排，并在固定候选数量与上下文预算下比较；不能从 Hashing 实验推出真实模型收益。
+4. 人工核验回答与引用，分析误拒答及无依据回答；冻结配置后再运行测试集。
+5. 只有确有规模需求时，再处理向量数据库、多进程一致性、鉴权和部署压测。
 
 ## 9. 迭代记录
+
+### 2026-09-12：GitHub 发布准备
+
+目标仓库为既有公开仓库 `INeedSomeSugar/knowledge-rag-lab` 的 `main` 分支。本次提交包含 v0.3 与 v0.4 已完成改动，并补充跨平台换行规则；保留官方语料许可证及未改写的原始报告。上传前检查了敏感文件排除、文件字节一致性、39 项测试和 Ruff。真实模型与人工评测仍按下述下一步推进。
+
+### 2026-09-12：v0.4 开发者技术支持与证据评测
+
+目标：依据 AI 应用实习岗位方向，选择可公开复现的垂直场景，落实版本约束、证据检查和可靠更新。
+
+完成：固定 FastAPI 官方文档及代码引用；新增章节分块、代码缩进保护、版本过滤和澄清；实现相邻上下文、结构化引用与模型核验接口；修复同源更新遗留旧内容，增加向量缓存与索引失败回滚；新增证据级和回答行为评测、候选复核流程及本地页面。
+
+验证：39 项测试通过，ruff 和依赖检查通过；34 文件/735 分块导入成功；重复导入新增向量计算为 0；原有冒烟及6组开发矩阵完成，原始报告保留；浏览器验证版本澄清和引用展示。
+
+决策：选开发者技术支持，保留原有培养管理资料；默认零密钥页面使用 BM25，真实模式策略可选；不把 Hashing Hybrid 和章节分块包装为有效提升。真实模型未调用，连接检查为 missing_credentials。
+
+限制与下一步：55 题全部未人工复核；用户需要在本地配置模型凭据，随后完成真实开发基线和人工核验，最后再使用保留测试集。
+
+### 2026-08-18：v0.3 引用元数据
+
+目标：在不依赖外部模型的前提下提升证据可追溯性，并为后续元数据过滤和重排保留结构化信息。
+
+完成：
+
+- 所有新分块记录文档标题；Markdown 分块记录最近章节及标题层级；
+- PDF 解析保留物理分页，分块不跨页并记录从 1 开始的页码；
+- 生成模型上下文显示来源、章节和页码，检索与问答 API 通过 `metadata` 返回相同信息；
+- 补充 Markdown、单页/多页 PDF、生成上下文和持久化链路测试；
+- FastAPI 展示版本更新为 `0.3.0`。
+
+验证：
+
+```text
+pytest: 17 passed, 1 个第三方弃用警告
+冒烟评测成功生成 latest.json 和 latest.md
+Ollama 检查失败：本机服务当前未运行
+```
+
+决策与原因：采用 PDF 分页符贯穿解析和分块，避免仅靠字符位置反推页码；PDF 分块禁止跨物理页，使每条引用只有一个明确页码。
+
+已知限制：元数据只对重新分块的文档生效；当前章节解析仅支持 Markdown ATX 标题；本轮没有真实模型或正式语料效果结论。
+
+下一步：优先补充公开同领域正式语料与人工核对问题；若数据仍未就绪，再实现无答案阈值和拒答评测，不提前引入重型架构。
 
 ### 2026-07-19：v0.1 原型快照
 
@@ -271,13 +288,12 @@ Copy-Item .env.ollama.example .env
 
 ## 10. 下一次 Codex 接手清单
 
-1. 阅读本文件、`AGENTS.md`、`README.md` 和 `evaluation/README.md`；
-2. 检查用户是否已经把正式文档放入 `evaluation/corpus/`；
-3. 检查 Ollama 或兼容 API 是否真实可用，不要根据 `.env` 推断服务正常；
-4. 运行全量测试；
-5. 查看 `evaluation/reports/latest.md`，但不要把冒烟数字当成成果；
-6. 按 P0 顺序继续，不要提前扩展到低优先级架构；
-7. 完成后更新本文件的当前状态和迭代记录。
+1. 阅读本文件、AGENTS.md、README.md、evaluation/README.md 与 SUPPORT_DATA_CARD.md。
+2. 检查工作区改动，不覆盖用户原有文档或未提交代码；不要打印 `.env` 或密钥。
+3. 当前验证快照为 39 passed；运行 pytest 与 ruff check。
+4. 检查真实模型凭据及连接状态；没有成功请求和报告时，不声称已经验证模型效果。
+5. 优先推进人工复核及真实模型开发评测，不运行未冻结的测试集，不手改报告指标。
+6. 完成后更新当前状态、验证快照、迭代记录、限制和下一步。
 
 ## 11. 后续日志模板
 

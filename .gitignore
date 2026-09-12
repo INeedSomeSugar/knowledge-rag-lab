@@ -5,6 +5,7 @@ __pycache__/
 .pytest_cache/
 .env
 data/index/
+data/demo-index/
 work/
 evaluation/reports/latest.json
 evaluation/reports/latest.md

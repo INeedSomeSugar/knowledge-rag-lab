@@ -35,6 +35,8 @@ class SearchHit:
             "document_id": self.chunk.document_id,
             "source": self.chunk.source,
             "text": self.chunk.text,
+            "start_char": self.chunk.start_char,
+            "end_char": self.chunk.end_char,
             "score": round(self.score, 6),
             "dense_rank": self.dense_rank,
             "sparse_rank": self.sparse_rank,

@@ -22,7 +22,9 @@ def test_build_comparison_report(tmp_path: Path) -> None:
         '"relevant_sources":["guide.md"],"should_answer":true}',
         encoding="utf-8",
     )
-    settings = Settings(embedding_provider="hashing", llm_provider="extractive")
+    settings = Settings(
+        embedding_provider="hashing", llm_provider="extractive", data_dir=tmp_path / "index"
+    )
     chunker = TextChunker(chunk_size=120, overlap=20)
     chunks, sources = load_corpus(documents_dir, chunker)
     cases = load_evaluation_cases(questions_path)
@@ -52,8 +54,7 @@ def test_build_comparison_report(tmp_path: Path) -> None:
 def test_rejects_unknown_relevant_source(tmp_path: Path) -> None:
     questions_path = tmp_path / "questions.jsonl"
     questions_path.write_text(
-        '{"id":"q-1","question":"问题",'
-        '"relevant_sources":["missing.md"],"should_answer":true}',
+        '{"id":"q-1","question":"问题","relevant_sources":["missing.md"],"should_answer":true}',
         encoding="utf-8",
     )
     cases = load_evaluation_cases(questions_path)

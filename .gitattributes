@@ -1,0 +1,9 @@
+# Keep source fingerprints stable across Windows and Unix checkouts.
+* text=auto eol=lf
+
+# These artifacts have byte-level SHA-256 references; preserve their exact bytes.
+/evaluation/support_corpus/** -text
+/evaluation/questions*.jsonl -text
+/evaluation/reports/** -text
+
+*.pdf binary

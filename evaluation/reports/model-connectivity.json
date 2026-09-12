@@ -1,0 +1,9 @@
+{
+  "checked_at": "2026-09-12T06:21:00.378643+00:00",
+  "embedding_provider": "openai_compatible",
+  "embedding_model": "text-embedding-v4",
+  "llm_provider": "openai_compatible",
+  "llm_model": "qwen-plus",
+  "scope": "connectivity and output contract only; not an effectiveness benchmark",
+  "status": "missing_credentials"
+}

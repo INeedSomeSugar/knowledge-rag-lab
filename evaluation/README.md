@@ -1,5 +1,15 @@
 # 评测集说明
 
+v0.4 新场景为 FastAPI 开发者技术支持。语料、候选审核状态、证据范围和开发/测试划分见 [SUPPORT_DATA_CARD.md](SUPPORT_DATA_CARD.md)，人工复核入口为 [SUPPORT_REVIEW.md](SUPPORT_REVIEW.md)。`questions.support.candidate.jsonl` 的 55 题全部待人工复核；不能作为正式 benchmark 或简历效果依据。
+
+运行开发诊断：
+
+```powershell
+.\.venv\Scripts\python.exe -m scripts.evaluate --demo --documents evaluation/support_corpus --questions evaluation/questions.support.candidate.jsonl --split development --chunking-strategy sections --answers --report-name support-development-hashing
+```
+
+真实模型评测移除 `--demo`。正式问题需另存已复核文件并加上 `--require-reviewed`；只在冻结配置后使用测试划分。已有多划分文件必须显式传入 `--split`。下文保留原有冒烟格式，仍可向后兼容。
+
 `questions.jsonl` 每行表示一个评测问题。当前仓库中的 6 个问题只用于验证评测程序能否运行，不可作为简历效果数据。
 
 ## 字段

@@ -49,7 +49,7 @@ class OpenAICompatibleEmbedding:
             from openai import OpenAI
         except ImportError as exc:
             raise RuntimeError("请先安装项目依赖：pip install -e .") from exc
-        kwargs: dict[str, str] = {"api_key": api_key}
+        kwargs: dict[str, object] = {"api_key": api_key, "timeout": 45.0, "max_retries": 1}
         if base_url:
             kwargs["base_url"] = base_url
         self.client = OpenAI(**kwargs)
@@ -64,7 +64,10 @@ class OpenAICompatibleEmbedding:
         for start in range(0, len(texts), self.batch_size):
             batch = texts[start : start + self.batch_size]
             response = self.client.embeddings.create(model=self.model, input=batch)
-            vectors.extend(item.embedding for item in response.data)
+            ordered = sorted(response.data, key=lambda item: item.index)
+            if [item.index for item in ordered] != list(range(len(batch))):
+                raise ValueError("Embedding 返回索引与输入不一致")
+            vectors.extend(item.embedding for item in ordered)
         self.dimension = len(vectors[0])
         return vectors
 

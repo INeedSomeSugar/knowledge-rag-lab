@@ -37,3 +37,7 @@ class JsonChunkRepository:
             encoding="utf-8",
         )
         temporary.replace(self.path)
+
+    def save(self, chunks: list[Chunk]) -> None:
+        """Publish a complete snapshot. RAGService serializes all writers."""
+        self._save(chunks)
