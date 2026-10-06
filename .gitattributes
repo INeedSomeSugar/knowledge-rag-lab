@@ -3,6 +3,7 @@
 
 # These artifacts have byte-level SHA-256 references; preserve their exact bytes.
 /evaluation/support_corpus/** -text
+/evaluation/version_corpus/** -text
 /evaluation/questions*.jsonl -text
 /evaluation/reports/** -text
 

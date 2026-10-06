@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "knowledge-rag-lab"
-version = "0.8.0"
+version = "0.9.0"
 description = "版本感知的开发者技术支持、证据核验与检索评测"
 requires-python = ">=3.11"
 dependencies = [
@@ -17,6 +17,11 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+version-lab = [
+  "starlette==0.48.0",
+  "pydantic==2.11.9",
+  "anyio==4.10.0",
+]
 dev = [
   "httpx>=0.28,<1",
   "pytest>=8.4,<10",
@@ -39,3 +44,6 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F"]
+
+[tool.version-lab]
+versions = ["0.117.1", "0.118.0"]

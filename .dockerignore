@@ -11,5 +11,9 @@
 !evaluation/
 !evaluation/support_corpus/
 !evaluation/support_corpus/**
+!evaluation/version_corpus/
+!evaluation/version_corpus/**
+!evaluation/reports/
+!evaluation/reports/version-behavior-v09.json
 **/__pycache__/
 **/*.pyc

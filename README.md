@@ -42,6 +42,12 @@ flowchart LR
     V --> O[回答或拒答及请求记录]
 ```
 
+## 版本故障实验室
+
+v0.9 新增 [复现与面试演示](docs/VERSION_LAB.md)：对照 FastAPI 0.117.1 与 0.118.0 官方固定文档，在两套隔离环境实跑流式/后台任务的四种资源管理案例。打开启动后的 `/versions`，查看原文范围、提交来源、实际失败与事件顺序。
+
+本轮 **119 项测试通过**；八个固定版本/案例组合均符合预期。原始报告见 [JSON](evaluation/reports/version-behavior-v09.json) 和 [脚本派生摘要](evaluation/reports/version-behavior-v09.md)。这是实际框架与模拟资源的行为实验，不是数据库验证或 RAG 回答准确率。原有 55 题仍待人工复核，真实模型尚未评测。
+
 ## 立即运行零密钥演示
 
 Windows / PowerShell，Python 3.11+。新机器必须重建虚拟环境：

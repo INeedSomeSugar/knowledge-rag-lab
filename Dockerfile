@@ -10,6 +10,8 @@ COPY pyproject.toml README.md ./
 COPY app/ ./app/
 COPY scripts/ ./scripts/
 COPY evaluation/support_corpus/ ./evaluation/support_corpus/
+COPY evaluation/version_corpus/ ./evaluation/version_corpus/
+COPY evaluation/reports/version-behavior-v09.json ./evaluation/reports/version-behavior-v09.json
 
 RUN python -m pip install --no-cache-dir . \
     && groupadd --gid 10001 rag \

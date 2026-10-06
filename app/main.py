@@ -25,7 +25,7 @@ service = create_service(settings)
 
 app = FastAPI(
     title="Knowledge RAG Lab · 开发者技术支持",
-    version="0.8.0",
+    version="0.9.0",
     description="版本约束检索、证据引用核验与可复现评测",
 )
 app.add_middleware(
@@ -98,6 +98,13 @@ class ChatRequest(BaseModel):
     version: str | None = Field(default=None, min_length=1, max_length=80)
 
 
+class VersionComparisonRequest(BaseModel):
+    topic: str = Field(default="advanced/advanced-dependencies.md", max_length=150)
+    before: str = Field(default="0.117.1", min_length=1, max_length=30)
+    after: str = Field(default="0.118.0", min_length=1, max_length=30)
+    section: str | None = Field(default=None, min_length=1, max_length=200)
+
+
 def request_filters(request: SearchRequest | ChatRequest | TextDocumentRequest) -> dict[str, str]:
     return {key: value for key in ("product", "version") if (value := getattr(request, key))}
 
@@ -105,6 +112,43 @@ def request_filters(request: SearchRequest | ChatRequest | TextDocumentRequest) 
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
 def home() -> str:
     return (Path(__file__).parent / "static" / "index.html").read_text(encoding="utf-8")
+
+
+@app.get("/versions", response_class=HTMLResponse, include_in_schema=False)
+def version_lab() -> str:
+    return (Path(__file__).parent / "static" / "versions.html").read_text(encoding="utf-8")
+
+
+def load_version_catalog():
+    from app.version_comparison import VersionEvidenceCatalog
+
+    try:
+        return VersionEvidenceCatalog()
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=503, detail="版本实验语料未安装，请运行下载脚本。") from exc
+    except (ValueError, KeyError) as exc:
+        raise HTTPException(status_code=503, detail="版本实验语料校验失败。") from exc
+
+
+@app.get("/api/v1/versions/catalog")
+def version_catalog() -> dict:
+    return load_version_catalog().catalog()
+
+
+@app.post("/api/v1/versions/compare")
+def compare_versions(request: VersionComparisonRequest) -> dict:
+    catalog = load_version_catalog()
+    try:
+        return catalog.compare(request.topic, request.before, request.after, request.section)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.get("/api/v1/versions/behavior")
+def version_behavior() -> dict:
+    from app.version_comparison import behavior_record
+
+    return behavior_record()
 
 
 @app.get("/api/v1/catalog")

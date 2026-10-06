@@ -1,0 +1,114 @@
+{
+  "schema_version": "1.0",
+  "scenario": "version-behavior-lab",
+  "upstream": "fastapi/fastapi",
+  "revisions": {
+    "0.117.1": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+    "0.118.0": "333f1ba737be6507fc707278f6b69cf1f81efdc1"
+  },
+  "license_file": "LICENSE.fastapi.txt",
+  "transformations": [
+    "Expand code directives from the same commit as fenced Python",
+    "Honor inclusive 1-based ln[start:end] ranges; omit display highlighting"
+  ],
+  "documents": [
+    {
+      "source": "fastapi/0.117.1/advanced/advanced-dependencies.md",
+      "sha256": "325bfe8bad1b055d1e077fcbf1aa9a47047bd84d4f40517b238d3496c1c6f66d",
+      "upstream_sha256": "5db94fd0f5806ce47caee60f64ea177a9db09915044395ce9d7990b5a6a3093c",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "en",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {
+        "docs_src/dependencies/tutorial011_an_py39.py": "70725400f6bdeef3bd6d73fc1dd34d9edc015a74ffdf6d29c8238aaa09d165f2"
+      },
+      "upstream_path": "docs/en/docs/advanced/advanced-dependencies.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/en/docs/advanced/advanced-dependencies.md",
+      "license": "MIT"
+    },
+    {
+      "source": "fastapi/0.117.1/tutorial/dependencies/dependencies-with-yield.md",
+      "sha256": "096c238765a860c0800492de2325e4f12f969ad821a43ea321cb1c1655557c4f",
+      "upstream_sha256": "0c1d34751600044e3e1ee70916b84f1986f25680b11a41de2c87aaaca557f40a",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "en",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {
+        "docs_src/dependencies/tutorial007.py": "f73b07eb2d9caa2225227e8d57fc348f3912a1640ff9dcf3d9f68b3eae8f6508",
+        "docs_src/dependencies/tutorial008_an_py39.py": "439bdc0dd6bdaa08a4d428f41fcfc45d350fc96cd29d451a60c3f7f80b7c365d",
+        "docs_src/dependencies/tutorial008b_an_py39.py": "a401e288a548d12ac72b307f54dc792413896b70db731dec49d65fb08fc6369d",
+        "docs_src/dependencies/tutorial008c_an_py39.py": "6e0ea198f11f19c2812d040d7757e486497f771ec5d0fa9ce03551c879298fe8",
+        "docs_src/dependencies/tutorial008d_an_py39.py": "3b49b4fb2321efaf78def86ca4c11ff6c8aff4690fdaf66953bec49adc90c294",
+        "docs_src/dependencies/tutorial010.py": "ff0c310d621034082022bfee2a5cafa552dc5528422aaa30be109ed4dd40c676"
+      },
+      "upstream_path": "docs/en/docs/tutorial/dependencies/dependencies-with-yield.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/en/docs/tutorial/dependencies/dependencies-with-yield.md",
+      "license": "MIT"
+    },
+    {
+      "source": "fastapi/0.117.1/release-notes.md",
+      "sha256": "1e0743b91ca12a5fdd0e2e00661705eb58e77a1ea8dfd32e4b3b67bedf6ec906",
+      "upstream_sha256": "1e0743b91ca12a5fdd0e2e00661705eb58e77a1ea8dfd32e4b3b67bedf6ec906",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "en",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {},
+      "upstream_path": "docs/en/docs/release-notes.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/en/docs/release-notes.md",
+      "license": "MIT"
+    },
+    {
+      "source": "fastapi/0.118.0/advanced/advanced-dependencies.md",
+      "sha256": "6d4e603891ef56cf49dcaecbf4ddc5b19352d90a64ca0258772add0de64e8a6c",
+      "upstream_sha256": "a8ab3477e1c70d7bc49f6145bb39a41c4a2afb763599dfadb9741d531ee4a069",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "en",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {
+        "docs_src/dependencies/tutorial011_an_py39.py": "70725400f6bdeef3bd6d73fc1dd34d9edc015a74ffdf6d29c8238aaa09d165f2",
+        "docs_src/dependencies/tutorial013_an_py310.py": "8d98a9b2edea3f06d5749e6c8b1eaa7afb7844c1570ab7001352770dc1c84eb2",
+        "docs_src/dependencies/tutorial014_an_py310.py": "d78a92ba4458f8cab7c0ef1837c6d883c0952f67f26b765dec5dc112e166befa"
+      },
+      "upstream_path": "docs/en/docs/advanced/advanced-dependencies.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/en/docs/advanced/advanced-dependencies.md",
+      "license": "MIT"
+    },
+    {
+      "source": "fastapi/0.118.0/tutorial/dependencies/dependencies-with-yield.md",
+      "sha256": "296158b0a6b47202585e7582351e50252af3e2eacf96ff8d04565134d69a25a7",
+      "upstream_sha256": "1c0b4b4bf45f09fb4fba8eb32a3427c57d16cfb89b152b59b93b83da77431c1f",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "en",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {
+        "docs_src/dependencies/tutorial007.py": "f73b07eb2d9caa2225227e8d57fc348f3912a1640ff9dcf3d9f68b3eae8f6508",
+        "docs_src/dependencies/tutorial008_an_py39.py": "439bdc0dd6bdaa08a4d428f41fcfc45d350fc96cd29d451a60c3f7f80b7c365d",
+        "docs_src/dependencies/tutorial008b_an_py39.py": "a401e288a548d12ac72b307f54dc792413896b70db731dec49d65fb08fc6369d",
+        "docs_src/dependencies/tutorial008c_an_py39.py": "6e0ea198f11f19c2812d040d7757e486497f771ec5d0fa9ce03551c879298fe8",
+        "docs_src/dependencies/tutorial008d_an_py39.py": "3b49b4fb2321efaf78def86ca4c11ff6c8aff4690fdaf66953bec49adc90c294",
+        "docs_src/dependencies/tutorial010.py": "ff0c310d621034082022bfee2a5cafa552dc5528422aaa30be109ed4dd40c676"
+      },
+      "upstream_path": "docs/en/docs/tutorial/dependencies/dependencies-with-yield.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/en/docs/tutorial/dependencies/dependencies-with-yield.md",
+      "license": "MIT"
+    },
+    {
+      "source": "fastapi/0.118.0/release-notes.md",
+      "sha256": "8cfbe304037fd8b2f06750d853d3908d795253831c238b1df3e5430c65f8d8d3",
+      "upstream_sha256": "8cfbe304037fd8b2f06750d853d3908d795253831c238b1df3e5430c65f8d8d3",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "en",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {},
+      "upstream_path": "docs/en/docs/release-notes.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/en/docs/release-notes.md",
+      "license": "MIT"
+    }
+  ]
+}

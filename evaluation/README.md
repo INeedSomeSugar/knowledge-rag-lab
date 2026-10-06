@@ -58,3 +58,9 @@ python -m scripts.evaluate `
   --questions evaluation/questions.full.jsonl `
   --report-name real-embedding-baseline
 ```
+
+## v0.9 固定版本行为实验
+
+新增 `version_corpus/` 的 6 份官方英文快照（0.117.1 / 0.118.0），与原有中文候选评测分开保存。`scripts.run_version_lab` 在独立环境中实跑四种流式/后台资源生命周期案例；`reports/version-behavior-v09.json` 保留实际响应、异常、事件和依赖版本，Markdown 由脚本派生并绑定 JSON 哈希。
+
+这是固定模拟资源的行为验证，不是新增正式评测题、数据库测试或 RAG 正确率；原有题目、划分、人工审核状态及保留测试集均未改变。操作见 `docs/VERSION_LAB.md`。
