@@ -312,6 +312,8 @@ def evaluate_answer_behavior(
                 "expected_status": case.expected_status,
                 "reference_answer": case.reference_answer,
                 "review_status": case.review_status,
+                "gold_evidence": list(case.evidence),
+                "filters": case.filters,
                 "response": response,
                 "context_evidence_recall": (
                     sum(evidence_covered(anchor, context_hits) for anchor in case.evidence)

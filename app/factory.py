@@ -60,6 +60,7 @@ def create_answer_generator(settings: Settings) -> AnswerGenerator:
                 else settings.llm_base_url
             ),
             enable_thinking=settings.llm_enable_thinking,
+            verify_support=settings.llm_verify_support,
         )
     raise ValueError(f"不支持的 LLM_PROVIDER：{settings.llm_provider}")
 
@@ -88,4 +89,6 @@ def create_service(settings: Settings | None = None) -> RAGService:
         generator=generator,
         repository=JsonChunkRepository(settings.data_dir),
         retrieval_strategy=settings.retrieval_strategy,
+        context_char_budget=settings.context_char_budget,
+        context_policy=settings.context_policy,
     )

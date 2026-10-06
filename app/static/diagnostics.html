@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; img-src data:; base-uri 'none'; form-action 'none'">
+<title>证据检索诊断 · Knowledge RAG Lab</title>
+<style>
+:root{font-family:Inter,"Segoe UI","Microsoft YaHei",sans-serif;color:#182e3c;background:#f3f5f4;line-height:1.55;font-size:14px;--line:#dbe3e2;--muted:#5b6d78;--teal:#006c62;--amber:#885208}
+*{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button,select{cursor:pointer}button{border:1px solid var(--line);background:white;color:inherit;border-radius:7px;padding:7px 11px}button:hover{border-color:var(--teal)}button[aria-pressed=true]{background:var(--teal);color:white;border-color:var(--teal)}:focus-visible{outline:3px solid #24a99a;outline-offset:3px}h1,h2,h3,p{margin:0}h1{font-size:28px;letter-spacing:-.7px}h2{font-size:20px}h3{font-size:15px}small,.muted{color:var(--muted)}header{padding:24px 32px 20px;background:#132e3b;color:white;border-bottom:4px solid #39b5a1}header p{color:#c4d9de;margin-top:7px;max-width:1000px}.brand{font-size:11px;letter-spacing:2px;color:#86d9c9;margin-bottom:6px}.topline{display:flex;justify-content:space-between;align-items:center;gap:16px}.pill{display:inline-block;border-radius:5px;background:#e4f2ee;color:#006052;font-size:12px;padding:3px 7px}.pill.warn{background:#fff0d3;color:#885208}.pill.neutral{background:#edf1f4;color:#546b79}.scope{padding:12px 32px;background:#fff8e9;border-bottom:1px solid #e9dfc8;color:#735017}.summary{padding:18px 32px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.metric{background:#fff;border:1px solid var(--line);border-radius:10px;padding:13px 18px}.metric strong{display:block;font-size:27px;line-height:1.3;margin-top:4px}.workspace{display:grid;grid-template-columns:310px minmax(0,1fr);gap:20px;padding:0 32px 32px;align-items:start}.sidebar{background:white;border:1px solid var(--line);border-radius:10px;position:sticky;top:16px;overflow:hidden}.filters{padding:16px;display:grid;gap:10px;border-bottom:1px solid var(--line)}label{display:grid;gap:4px;font-size:12px;color:var(--muted)}input,select{width:100%;min-width:0;padding:8px 10px;border:1px solid #cbd7d6;border-radius:6px;background:white;color:#182e3c}.cases{max-height:66vh;overflow:auto;padding:6px}.case{display:block;text-align:left;border:0;border-radius:6px;width:100%;padding:11px 12px;margin-bottom:3px}.case[aria-current=true]{background:#e5f4ef;box-shadow:inset 3px 0 var(--teal)}.case small{display:block;font-size:11px;margin-bottom:4px}.case p{font-size:13px;line-height:1.65}.case .pill{margin-top:6px}.detail{min-width:0;display:grid;gap:16px}.panel{background:white;border:1px solid var(--line);border-radius:10px;padding:20px}.row{display:flex;flex-wrap:wrap;gap:9px;align-items:center}.between{justify-content:space-between}.caption{font-size:12px;color:var(--muted);margin-top:8px;overflow-wrap:anywhere}.question{margin:10px 0;line-height:1.6}.compare{width:100%;border-collapse:collapse;margin-top:13px;font-variant-numeric:tabular-nums}.compare th,.compare td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);font-size:13px}.compare th{color:var(--muted);font-weight:500}.compare tr.selected{background:#f0f8f5}.table-wrap{overflow-x:auto}.section-title{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:13px}.anchor{border:1px solid var(--line);border-radius:8px;padding:15px;margin-top:14px}.stages{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));margin:14px 0;gap:6px}.stage{padding:7px 6px;border-radius:5px;background:#f0f3f5;font-size:11px}.stage strong{display:block;font-size:15px}.stage.ok{background:#e5f4ef;color:#075f50}.stage.miss{background:#fff2dc;color:#885208}.quotes{display:grid;grid-template-columns:1fr 1fr;gap:13px}.quote{font-family:inherit;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere;background:#f8faf9;padding:12px;border-radius:6px;margin:7px 0;line-height:1.8}.covered{background:#cdeee1;color:#134b3f}.missing{background:#ffe4b8;color:#784300;text-decoration:underline;text-decoration-color:#c98a34;text-underline-offset:3px}.legend{display:flex;gap:12px;margin-top:10px;font-size:12px}.legend span{padding:2px 7px;border-radius:4px}.source{font-family:ui-monospace,Consolas,monospace;font-size:12px;overflow-wrap:anywhere}.notes{color:#7d5318;background:#fffaee;padding:9px 11px;border-radius:5px;margin-top:12px;font-size:12px}.chunk-list details{border:1px solid var(--line);border-radius:6px;margin-top:8px;padding:9px 12px}.chunk-list summary{cursor:pointer;font-size:12px;overflow-wrap:anywhere}.chunk-list pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:310px;overflow:auto;line-height:1.8;font-size:12px;background:#f7f9f8;padding:12px;border-radius:5px}.chunk-list .pill{margin-left:7px}.empty{padding:28px;color:var(--muted)}.foot{font-size:12px;color:var(--muted)}.foot li{margin:6px 0}.foot code{overflow-wrap:anywhere}#count{font-size:12px;color:var(--muted)}.scroll{scroll-margin-top:16px}button:disabled{opacity:.4;cursor:default}.sr{position:absolute;left:-10000px}
+@media(max-width:1000px){.workspace{grid-template-columns:255px minmax(0,1fr);padding:0 18px 24px;gap:14px}.summary{padding:16px 18px}.stages{grid-template-columns:repeat(3,1fr)}.quotes{grid-template-columns:1fr}.panel{padding:15px}header,.scope{padding-left:18px;padding-right:18px}}
+@media(max-width:720px){.workspace{display:block}.sidebar{position:static;margin-bottom:16px}.cases{max-height:240px}.summary{grid-template-columns:1fr 1fr;gap:8px}.topline{align-items:start}h1{font-size:24px}.metric{padding:10px 13px}.detail{margin-top:16px}}
+@media print{.sidebar,.filters,button{display:none}.workspace{display:block;padding:0}.summary{padding:10px 0}.panel{break-inside:avoid}.chunk-list pre{max-height:none}.scope{padding:10px}}
+</style>
+</head>
+<body>
+<header><div class="brand">KNOWLEDGE RAG LAB / DEVELOPMENT WORKBENCH</div><div class="topline"><h1>证据检索诊断</h1><span class="pill">开发集 · 只读报告</span></div><p>从文档命中走到证据定位：比较三种检索策略，检查排序、分块边界与上下文预算。</p></header>
+<div class="scope" id="scope"></div>
+<div class="summary" id="metrics"></div>
+<div class="workspace">
+  <aside class="sidebar" aria-label="问题筛选">
+    <div class="filters">
+      <h3>开发问题</h3>
+      <label>搜索问题或编号<input id="query" type="search" placeholder="例如 CORS、依赖、support…"></label>
+      <label>版本<select id="version"><option value="">全部版本</option></select></label>
+      <label>诊断现象（按当前策略）<select id="issue"><option value="all">全部问题</option><option value="doc_miss">文档命中但证据不完整</option><option value="recovered">相邻分块补回证据</option><option value="multi">证据需要多个分块</option><option value="skipped">跳过检索诊断</option></select></label>
+      <div id="count" role="status" aria-live="polite"></div>
+    </div><nav class="cases" id="cases" aria-label="选择问题"></nav>
+  </aside>
+  <main class="detail" id="detail"></main>
+</div>
+<script id="report-data" type="application/json">__DIAGNOSTIC_DATA__</script>
+<script>
+"use strict";
+const report = JSON.parse(document.getElementById("report-data").textContent);
+const d = report.diagnostics, config = report.configuration, labels = report.outcome_labels;
+const strategies = Object.keys(d.strategies);
+let strategy = strategies[0], current = null;
+const $ = id => document.getElementById(id);
+const el = (tag, text, cls) => { const x = document.createElement(tag); if(text !== undefined) x.textContent = text; if(cls) x.className=cls; return x; };
+const pill = (text, kind="neutral") => el("span",text,"pill " + kind);
+const pct = value => (value * 100).toFixed(0) + "%";
+const span = chunk => `[${chunk.start_char}, ${chunk.end_char})`;
+const getChunk = ref => d.chunks[ref.chunk_id];
+const inContext = (selected,id) => selected.context.some(r=>r.chunk_id===id || (getChunk(r).metadata.context_chunk_ids || []).includes(id));
+const reviewed = report.dataset.human_verified_count;
+$("scope").textContent = `仅为开发诊断 · ${reviewed}/${d.case_count} 题标记人工审核 · ${config.embedding_provider} / ${config.embedding_model}。上下文策略：${config.context_policy || "neighbors"}。范围覆盖不等于答案正确性；未经人工核验的候选与 Hashing 结果不可作为简历效果数字。`;
+const metricValues = [["开发问题",d.case_count],["参与证据诊断",d.case_status_counts.diagnosed || 0],["文档 / 分块",`${report.dataset.document_count} / ${report.dataset.chunk_count}`],["Top-K / 字符预算",`${config.top_ks[0]} / ${config.context_char_budget.toLocaleString()}`]];
+for(const [title,value] of metricValues){ const box=el("div",undefined,"metric");box.append(el("small",title),el("strong",String(value)));$("metrics").append(box); }
+for(const version of [...new Set(d.cases.map(c=>c.filters.version).filter(Boolean))].sort()){const o=el("option",version);o.value=version;$("version").append(o);}
+for(const [key,label] of Object.entries(labels)){const o=el("option",label);o.value=key;$("issue").append(o);}
+function filtered(){const q=$("query").value.trim().toLowerCase(),v=$("version").value,issue=$("issue").value;return d.cases.filter(c=>{
+  if(q && !(c.question+" "+c.id).toLowerCase().includes(q))return false;
+  if(v && c.filters.version!==v)return false;
+  const s=c.strategies[strategy];
+  if(issue==="all")return true;
+  if(issue==="skipped")return !s;
+  if(!s)return false;
+  if(issue==="doc_miss")return s.document_hit_evidence_incomplete;
+  if(issue==="recovered")return s.anchors.some(a=>a.recovered_by_neighbors);
+  if(issue==="multi")return s.anchors.some(a=>a.requires_multiple_chunks);
+  return s.anchors.some(a=>a.outcome===issue);
+});}
+function update(){const cases=filtered();if(!cases.some(c=>c.id===current))current=cases[0]?.id || null;
+  $("count").textContent=`${cases.length} / ${d.case_count} 题 · ${strategy.toUpperCase()}`;$("cases").replaceChildren();
+  for(const c of cases){const b=el("button",undefined,"case");b.setAttribute("aria-current",String(c.id===current));b.append(el("small",`${c.id} · ${c.filters.version || "未指定版本"}`),el("p",c.question));const s=c.strategies[strategy];b.append(pill(!s?"跳过诊断":s.context_evidence_recall===1?"上下文完整覆盖":"上下文证据不完整",!s?"neutral":s.context_evidence_recall===1?"":"warn"));b.onclick=()=>{current=c.id;update();};$("cases").append(b);}
+  render(cases.find(c=>c.id===current),cases);
+}
+function chunkList(refs,c,selected,extra){const list=el("div",undefined,"chunk-list");const seen=new Set();for(const ref of refs){const chunk=getChunk(ref);if(seen.has(chunk.id))continue;seen.add(chunk.id);const box=el("details"),summary=el("summary");const poolRef=selected.pool.find(r=>r.chunk_id===chunk.id);const rank=selected.pool.findIndex(r=>r.chunk_id===chunk.id)+1;
+  summary.append(el("span",`${chunk.metadata.context_chunk_ids?"合并片段":rank?"#"+rank:"池外"} · ${chunk.source} · ${span(chunk)}`,"source"));
+  if(selected.retrieved.some(r=>r.chunk_id===chunk.id))summary.append(pill("Top-K"));
+  if(inContext(selected,chunk.id))summary.append(pill("上下文",""));
+  if(selected.budget_dropped_chunk_ids.includes(chunk.id))summary.append(pill("预算未纳入","warn"));
+  if(!Object.entries(c.filters).every(([k,v])=>chunk.metadata[k]===v))summary.append(pill("过滤排除","warn"));
+  if(chunk.metadata.context_chunk_ids)summary.append(pill("组成分块 " + chunk.metadata.context_chunk_ids.length));
+  box.append(summary,el("div",`${chunk.id} · ${chunk.metadata.section || "无章节"} · ${chunk.metadata.product || ""} ${chunk.metadata.version || ""}${poolRef?" · 池内分数 "+poolRef.score.toFixed(6):""}`,"caption"));
+  if(chunk.metadata.context_chunk_ids)box.append(el("p","原始分块：" + chunk.metadata.context_chunk_ids.map(id=>{const i=selected.pool.findIndex(r=>r.chunk_id===id);return id+"（"+(i>=0?"池内 #"+(i+1):"相邻补充")+"）";}).join(" · "),"caption"));
+  const pre=el("pre");const chars=Array.from(chunk.text);let pos=0;const intervals=c.evidence.filter(a=>a.source===chunk.source).map(a=>[Math.max(0,a.start_char-chunk.start_char),Math.min(chars.length,a.end_char-chunk.start_char)]).filter(([l,r])=>l<r).sort((a,b)=>a[0]-b[0]);
+  for(const [left,right] of intervals){if(right<=pos)continue;if(left>pos)pre.append(document.createTextNode(chars.slice(pos,left).join("")));pre.append(el("mark",chars.slice(Math.max(pos,left),right).join(""),"covered"));pos=right;}pre.append(document.createTextNode(chars.slice(pos).join("")));box.append(pre);list.append(box);
+}if(!refs.length)list.append(el("p",extra || "没有分块","muted"));return list;}
+function coverageQuote(anchor,coverage){const block=el("div",undefined,"quote"),chars=Array.from(anchor.quote);let cursor=anchor.start_char;
+  for(const [l,r] of coverage.intervals){if(l>cursor)block.append(el("span",chars.slice(cursor-anchor.start_char,l-anchor.start_char).join(""),"missing"));block.append(el("span",chars.slice(l-anchor.start_char,r-anchor.start_char).join(""),"covered"));cursor=r;}
+  if(cursor<anchor.end_char)block.append(el("span",chars.slice(cursor-anchor.start_char).join(""),"missing"));return block;}
+function render(c,cases){const root=$("detail");root.replaceChildren();
+  const overview=el("section",undefined,"panel");overview.append(el("h3","策略总览 · 当前报告的全部可诊断开发问题"));
+  const table=el("table",undefined,"compare"),head=el("tr");for(const t of ["选择策略","文档命中","Top-K 完整覆盖","上下文完整覆盖"]){head.append(el("th",t));}table.append(head);
+  for(const name of strategies){const s=d.strategies[name],tr=el("tr",undefined,name===strategy?"selected":""),td=el("td"),b=el("button",name.toUpperCase());b.setAttribute("aria-pressed",String(name===strategy));b.onclick=()=>{strategy=name;update();};td.append(b);tr.append(td,...[s.document_hit_case_count,s.top_k_complete_case_count,s.context_complete_case_count].map(v=>el("td",`${v} / ${s.evaluated_case_count}`)));table.append(tr);}
+  const tw=el("div",undefined,"table-wrap");tw.append(table);overview.append(tw,el("p","“完整覆盖”要求该题全部标注范围被覆盖；相邻补充分块增加了字符量，不能直接据此声称等预算提升。","caption"));root.append(overview);
+  if(!c){root.append(el("div","没有匹配的问题，可以切换策略或放宽筛选。","panel empty"));return;}
+  const top=el("section",undefined,"panel"),bar=el("div",undefined,"row between"),ids=el("div",undefined,"row");ids.append(pill(c.id),pill(c.category),pill(c.review_status==="human_verified"?"标记人工审核":"待人工审核",c.review_status==="human_verified"?"":"warn"));const paging=el("div",undefined,"row");const index=cases.indexOf(c);for(const [txt,offset] of [["上一题",-1],["下一题",1]]){const b=el("button",txt);b.disabled=!cases[index+offset];b.onclick=()=>{current=cases[index+offset].id;update();};paging.append(b);}bar.append(ids,paging);top.append(bar,el("h2",c.question,"question"),el("p",`过滤：${JSON.stringify(c.filters)} · 预期状态：${c.expected_status}`,"caption"));root.append(top);
+  const s=c.strategies[strategy];if(!s){top.append(el("p",c.status==="skipped_unanswerable"?"该题用于拒答或澄清，已跳过证据召回诊断；请通过回答行为评测检查。":"该题缺少证据范围，不计入本报告诊断分母。","notes"));appendProvenance(root);return;}
+  const stats=el("div",undefined,"row");stats.append(pill(`${strategy.toUpperCase()} · 文档${s.document_hit?"命中":"未命中"}`),pill(`Top-K 证据 ${pct(s.top_k_evidence_recall)}`),pill(`上下文证据 ${pct(s.context_evidence_recall)}`,s.context_evidence_recall===1?"":"warn"),pill(`${s.context_chars} 字符 / ${s.context.length} 块`),pill(`重复字符 ${s.duplicate_chars ?? "未记录"}`));top.append(stats);
+  const anchors=el("section",undefined,"panel");anchors.append(el("h3","标注证据与分块边界"),el("p","下面的证据来自候选标注。覆盖按字符区间并集计算；重复片段不重复计数，跨块完整覆盖也计为命中。","caption"));
+  c.evidence.forEach((anchor,i)=>{const a=s.anchors[i],card=el("article",undefined,"anchor"),title=el("div",undefined,"row between");title.append(el("h3",`证据 ${i+1}`),pill(labels[a.outcome],a.outcome==="context_covered"?"":"warn"));card.append(title,el("p",`${anchor.source} · ${span(anchor)}`,"caption source"));
+    const stages=el("div",undefined,"stages");for(const [key,label] of [["indexed","全部索引"],["eligible","版本过滤后"],["pool","候选池 50"],["top_k","Top-K"],["expanded","无预算扩展"],["context","实际上下文"]]){const v=a.coverage[key],b=el("div",label,"stage "+(v.complete?"ok":"miss"));b.append(el("strong",`${v.covered_chars}/${v.total_chars}`));stages.append(b);}card.append(stages);
+    const quotes=el("div",undefined,"quotes");for(const [stage,label] of [["top_k","Top-K 范围覆盖"],["context","实际上下文范围覆盖"]]){const box=el("div");box.append(el("small",label),coverageQuote(anchor,a.coverage[stage]));quotes.append(box);}card.append(quotes);
+    const legend=el("div",undefined,"legend");legend.append(el("span","已覆盖","covered"),el("span","未覆盖","missing"));card.append(legend);
+    const notes=[`池内首次相交排名：${a.first_overlap_rank ?? "无"}；累计完整覆盖排名：${a.first_full_coverage_rank ?? "无"}。`];if(a.requires_multiple_chunks)notes.push("该范围需要多个分块共同覆盖；这本身不代表分块有错误。");if(a.recovered_by_neighbors)notes.push("同章节相邻补充使该证据完整进入上下文。");if(a.coverage_lost_to_budget)notes.push("应用字符预算后丢失了部分已扩展证据。");card.append(el("p",notes.join(" "),"notes"));
+    const gold=el("details");gold.append(el("summary",`查看相交分块及其实际排名（${a.overlapping_chunk_ids.length} 块）`),chunkList(a.overlapping_chunk_ids.map(chunk_id=>({chunk_id})),c,s));card.append(gold);anchors.append(card);
+  });root.append(anchors);
+  for(const [key,title] of [["retrieved","初始 Top-K 分块"],["context","实际上下文分块"],["pool","诊断候选池（最终前 50 块）"]]){const p=el("section",undefined,"panel");p.append(el("h3",`${title} · ${s[key].length}`));if(key==="pool"){const fold=el("details");fold.append(el("summary","展开候选池与原文"),chunkList(s[key],c,s));p.append(fold);}else p.append(chunkList(s[key],c,s));root.append(p);}appendProvenance(root);
+}
+function appendProvenance(root){const box=el("section",undefined,"panel foot"),fold=el("details");fold.append(el("summary","复现信息与诊断边界"));const ul=el("ul");for(const warning of report.warnings)ul.append(el("li",warning));fold.append(ul,el("p",`生成时间：${report.generated_at}`),el("p",`分块：${config.chunking_strategy} / ${config.chunk_size} / overlap ${config.chunk_overlap}；RRF 输入候选各 50；${config.embedding_provider} / ${config.embedding_model}`));for(const [key,value] of Object.entries(report.provenance)){const p=el("p",key+"：");p.append(el("code",typeof value==="string"?value:JSON.stringify(value)));fold.append(p);}box.append(fold);root.append(box);}
+$("query").addEventListener("input",update);$("version").addEventListener("change",update);$("issue").addEventListener("change",update);update();
+</script>
+</body>
+</html>

@@ -17,6 +17,7 @@ class GeneratedAnswer:
     claims: list[dict[str, object]] = field(default_factory=list)
     verification: str = "not_applicable"
     reason: str = ""
+    model_trace: dict[str, object] = field(default_factory=dict)
 
 
 def normalize_quote(text: str) -> str:

@@ -137,7 +137,7 @@ def build_report(
     if any(not case.evidence for case in cases if case.should_answer):
         warnings.append("部分可回答问题未标注证据范围；文档级命中不代表找到答案。")
     return {
-        "schema_version": "2.0",
+        "schema_version": "2.1",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "configuration": {
             "embedding_provider": settings.embedding_provider,
@@ -152,6 +152,8 @@ def build_report(
             "documents_dir": documents_dir.as_posix(),
             "questions_path": questions_path.as_posix(),
             "embedding_cache_revision": settings.embedding_cache_revision,
+            "context_char_budget": settings.context_char_budget,
+            "context_policy": settings.context_policy,
         },
         "dataset": {
             "document_count": len(document_sources),
@@ -235,9 +237,27 @@ def render_markdown(report: dict[str, object]) -> str:
     if isinstance(answers, dict):
         lines.extend(["", "## 回答行为（不代表答案正确率）", ""])
         for key, value in answers.items():
-            if key not in {"details", "note"}:
+            if key not in {"details", "note", "model_calls"}:
                 lines.append(f"- {key}: {value}")
         lines.append(str(answers["note"]))
+    comparison = report.get("verification_comparison")
+    if isinstance(comparison, dict):
+        lines.extend(["", "## 同一答案的核验开关对照", "", comparison["note"], ""])
+        lines.extend(
+            [
+                "| 核验 | 回答数 | 误拒答率（行为） | 核验错误数 | 人工正确率 |",
+                "|---|---:|---:|---:|---|",
+            ]
+        )
+        for label, metrics in (("关闭", comparison["without_verification"]), ("开启", answers)):
+            answered = sum(item["response"]["status"] == "answered" for item in metrics["details"])
+            lines.append(
+                f"| {label} | {answered} | {metrics['false_refusal_rate']} | "
+                f"{metrics['model_calls']['stages']['verification']['error_count']} | 未评分 |"
+            )
+        lines.extend(["", "### 实际模型调用", "", answers["model_calls"]["note"], ""])
+        for stage, metrics in answers["model_calls"]["stages"].items():
+            lines.append(f"- {stage}: `{json.dumps(metrics, ensure_ascii=False)}`")
     lines.append("")
     return "\n".join(lines)
 
@@ -248,8 +268,11 @@ def write_report(
     output_dir.mkdir(parents=True, exist_ok=True)
     json_path = output_dir / f"{report_name}.json"
     markdown_path = output_dir / f"{report_name}.md"
-    json_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
-    markdown_path.write_text(render_markdown(report), encoding="utf-8")
+    mode = "x" if "verification_comparison" in report else "w"
+    with json_path.open(mode, encoding="utf-8") as stream:
+        stream.write(json.dumps(report, ensure_ascii=False, indent=2))
+    with markdown_path.open(mode, encoding="utf-8") as stream:
+        stream.write(render_markdown(report))
     return json_path, markdown_path
 
 
@@ -275,10 +298,21 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--split", choices=["development", "test"])
     parser.add_argument("--require-reviewed", action="store_true")
     parser.add_argument("--demo", action="store_true", help="强制零密钥模式，不调用模型 API")
+    parser.add_argument("--answer-strategy", choices=["bm25", "dense", "hybrid"])
+    parser.add_argument("--context-char-budget", type=int)
+    parser.add_argument("--context-policy", choices=["neighbors", "merged_neighbors"])
+    parser.add_argument("--verification", choices=["on", "off"], default=None)
+    parser.add_argument(
+        "--compare-verification",
+        action="store_true",
+        help="开发集配对实验：同一初始答案分别关闭/开启核验，需要 --answers 和真实模型",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
+    from dataclasses import replace
+
     args = parse_args()
     settings = Settings()
     if args.demo:
@@ -295,6 +329,26 @@ def main() -> None:
         from dataclasses import replace
 
         settings = replace(settings, chunking_strategy=args.chunking_strategy)
+    if args.answer_strategy:
+        settings = replace(settings, retrieval_strategy=args.answer_strategy)
+    if args.context_char_budget is not None:
+        settings = replace(settings, context_char_budget=args.context_char_budget)
+    if args.context_policy is not None:
+        settings = replace(settings, context_policy=args.context_policy)
+    if args.verification is not None:
+        settings = replace(settings, llm_verify_support=args.verification == "on")
+    if args.compare_verification:
+        if not args.answers or args.demo or settings.llm_provider == "extractive":
+            raise ValueError("配对核验实验需要 --answers 和真实生成模型，不能使用 --demo")
+        if args.split != "development" or args.verification is not None:
+            raise ValueError(
+                "配对核验实验仅支持显式 --split development，不能同时指定 --verification"
+            )
+        if any(
+            (args.output_dir / f"{args.report_name}.{suffix}").exists() for suffix in ("json", "md")
+        ):
+            raise ValueError("配对报告已存在，请使用新 --report-name 保留原始实验")
+        settings = replace(settings, llm_verify_support=False)
     settings.validate()
     chunk_size = args.chunk_size if args.chunk_size is not None else settings.chunk_size
     chunk_overlap = args.chunk_overlap if args.chunk_overlap is not None else settings.chunk_overlap
@@ -337,17 +391,42 @@ def main() -> None:
             retriever = HybridRetriever(
                 DenseRetriever(create_cached_embedding(settings)), BM25Retriever()
             )
+            generator = create_answer_generator(settings)
             service = RAGService(
                 chunker=chunker,
                 retriever=retriever,
-                generator=create_answer_generator(settings),
+                generator=generator,
                 repository=repository,
                 retrieval_strategy=settings.retrieval_strategy,
+                context_char_budget=settings.context_char_budget,
+                context_policy=settings.context_policy,
             )
-            report["answers"] = evaluate_answer_behavior(cases, service.answer, max(args.top_k))
+            if args.compare_verification:
+                from app.verification_evaluation import evaluate_verification_pair
+
+                report["answers"], report["verification_comparison"] = evaluate_verification_pair(
+                    cases, service, generator, max(args.top_k)
+                )
+            else:
+                from app.verification_evaluation import summarize_model_calls
+
+                report["answers"] = evaluate_answer_behavior(cases, service.answer, max(args.top_k))
+                report["answers"]["model_calls"] = summarize_model_calls(
+                    report["answers"]["details"]
+                )
             report["configuration"]["llm_provider"] = settings.llm_provider
             report["configuration"]["llm_model"] = settings.llm_model
+            report["configuration"]["llm_enable_thinking"] = settings.llm_enable_thinking
             report["configuration"]["answer_retrieval_strategy"] = settings.retrieval_strategy
+            report["configuration"]["verification_mode"] = (
+                "not_applicable"
+                if settings.llm_provider == "extractive"
+                else "paired"
+                if args.compare_verification
+                else "on"
+                if settings.llm_verify_support
+                else "off"
+            )
     json_path, markdown_path = write_report(report, args.output_dir, args.report_name)
     print(render_markdown(report))
     print(f"JSON 报告：{json_path}")

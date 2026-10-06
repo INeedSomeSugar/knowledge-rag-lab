@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 from typing import Protocol
+from copy import deepcopy
+from dataclasses import dataclass
+from time import perf_counter
 import json
 import re
 
@@ -20,6 +23,14 @@ SYSTEM_PROMPT = """你是开发者技术支持助手，依据指定版本的官�
 
 class AnswerGenerator(Protocol):
     def generate(self, question: str, hits: list[SearchHit]) -> GeneratedAnswer: ...
+
+
+@dataclass(frozen=True)
+class Completion:
+    text: str
+    prompt_tokens: int | None = None
+    completion_tokens: int | None = None
+    total_tokens: int | None = None
 
 
 def build_context(hits: list[SearchHit]) -> str:
@@ -68,6 +79,7 @@ class OpenAICompatibleGenerator:
         api_key: str,
         base_url: str = "",
         enable_thinking: bool | None = None,
+        verify_support: bool = True,
     ) -> None:
         if not api_key:
             raise ValueError("使用 openai_compatible LLM 时必须配置 API Key")
@@ -81,13 +93,37 @@ class OpenAICompatibleGenerator:
         self.client = OpenAI(**kwargs)
         self.model = model
         self.enable_thinking = enable_thinking
+        self.verify_support = verify_support
 
     def generate(self, question: str, hits: list[SearchHit]) -> GeneratedAnswer:
+        draft = self.generate_draft(question, hits)
+        if not self.verify_support:
+            return draft
+        return self.verify_answer(question, hits, draft)
+
+    def generate_draft(self, question: str, hits: list[SearchHit]) -> GeneratedAnswer:
+        trace: dict[str, object] = {"calls": [], "verification_enabled": False}
         if not hits:
-            return GeneratedAnswer("insufficient_evidence", REFUSAL, reason="no_evidence")
+            return GeneratedAnswer(
+                "insufficient_evidence", REFUSAL, reason="no_evidence", model_trace=trace
+            )
         user_prompt = f"证据：\n{build_context(hits)}\n\n问题：{question}"
-        raw = self._complete(SYSTEM_PROMPT, user_prompt)
+        try:
+            raw = self._invoke("generation", SYSTEM_PROMPT, user_prompt, trace)
+        except Exception as exc:
+            return GeneratedAnswer(
+                "error", "生成服务暂时不可用。", reason=type(exc).__name__, model_trace=trace
+            )
         result = parse_grounded_answer(raw, hits)
+        result.model_trace = trace
+        return result
+
+    def verify_answer(
+        self, question: str, hits: list[SearchHit], draft: GeneratedAnswer
+    ) -> GeneratedAnswer:
+        # Keep the exact draft and evidence for a paired comparison; no second generation.
+        result = deepcopy(draft)
+        result.model_trace["verification_enabled"] = True
         if result.status != "answered":
             return result
         # A second pass checks entailment. This is model-assisted, not human verification.
@@ -96,24 +132,80 @@ class OpenAICompatibleGenerator:
 输出 JSON：{"supported":[true,false]}，顺序和数量必须对应输入 claims。"""
         payload = {"question": question, "claims": result.claims, "evidence": build_context(hits)}
         try:
-            verdict = json.loads(
-                self._complete(verification_prompt, json.dumps(payload, ensure_ascii=False))
+            raw = self._invoke(
+                "verification",
+                verification_prompt,
+                json.dumps(payload, ensure_ascii=False),
+                result.model_trace,
             )
+        except Exception as exc:
+            return GeneratedAnswer(
+                "error",
+                "支持关系核验服务暂时不可用。",
+                reason=type(exc).__name__,
+                model_trace=result.model_trace,
+            )
+        try:
+            verdict = json.loads(raw)
+            if not isinstance(verdict, dict):
+                raise ValueError("invalid verification object")
             supported = verdict["supported"]
             if (
                 not isinstance(supported, list)
                 or len(supported) != len(result.claims)
-                or any(item is not True for item in supported)
+                or any(type(item) is not bool for item in supported)
             ):
-                raise ValueError("unsupported claim")
+                raise ValueError("invalid verification flags")
         except (ValueError, TypeError, KeyError):
+            result.model_trace["calls"][-1]["status"] = "invalid_response"
             return GeneratedAnswer(
-                "insufficient_evidence", REFUSAL, reason="support_verification_failed"
+                "error",
+                "支持关系核验返回格式不合法。",
+                reason="verification_response_invalid",
+                model_trace=result.model_trace,
+            )
+        if not all(supported):
+            return GeneratedAnswer(
+                "insufficient_evidence",
+                REFUSAL,
+                reason="support_verification_failed",
+                model_trace=result.model_trace,
             )
         result.verification = "model_checked_not_human_verified"
         return result
 
-    def _complete(self, system_prompt: str, user_prompt: str) -> str:
+    def _invoke(
+        self, stage: str, system_prompt: str, user_prompt: str, trace: dict[str, object]
+    ) -> str:
+        # Request-local data: concurrent requests never share mutable usage counters.
+        call = {
+            "stage": stage,
+            "status": "error",
+            "prompt_tokens": None,
+            "completion_tokens": None,
+            "total_tokens": None,
+        }
+        calls = trace.setdefault("calls", [])
+        calls.append(call)
+        started = perf_counter()
+        try:
+            completion = self._complete(system_prompt, user_prompt)
+            if isinstance(completion, str):  # Lightweight adapters and offline test doubles.
+                completion = Completion(completion)
+            call.update(
+                status="ok",
+                prompt_tokens=completion.prompt_tokens,
+                completion_tokens=completion.completion_tokens,
+                total_tokens=completion.total_tokens,
+            )
+            return completion.text
+        except Exception as exc:
+            call["error_type"] = type(exc).__name__
+            raise
+        finally:
+            call["elapsed_ms"] = round((perf_counter() - started) * 1000, 3)
+
+    def _complete(self, system_prompt: str, user_prompt: str) -> Completion:
         request_options: dict[str, object] = {}
         if self.enable_thinking is not None:
             request_options["extra_body"] = {"enable_thinking": self.enable_thinking}
@@ -128,4 +220,15 @@ class OpenAICompatibleGenerator:
             **request_options,
         )
         raw = response.choices[0].message.content or "{}"
-        return re.sub(r"^```(?:json)?\s*|\s*```$", "", raw.strip())
+        usage = getattr(response, "usage", None)
+
+        def token_count(name: str) -> int | None:
+            value = getattr(usage, name, None)
+            return value if type(value) is int and value >= 0 else None
+
+        return Completion(
+            re.sub(r"^```(?:json)?\s*|\s*```$", "", raw.strip()),
+            token_count("prompt_tokens"),
+            token_count("completion_tokens"),
+            token_count("total_tokens"),
+        )

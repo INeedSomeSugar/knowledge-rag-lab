@@ -2,9 +2,14 @@ from __future__ import annotations
 
 from typing import Annotated
 from pathlib import Path
+import json
+import logging
+import os
+from time import perf_counter
+import uuid
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile, Request
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from starlette.concurrency import run_in_threadpool
@@ -12,6 +17,7 @@ from starlette.concurrency import run_in_threadpool
 from app.config import Settings
 from app.factory import create_service
 from app.loaders import load_bytes
+from app.observability import request_id_context
 
 
 settings = Settings()
@@ -19,7 +25,7 @@ service = create_service(settings)
 
 app = FastAPI(
     title="Knowledge RAG Lab · 开发者技术支持",
-    version="0.4.0",
+    version="0.8.0",
     description="版本约束检索、证据引用核验与可复现评测",
 )
 app.add_middleware(
@@ -29,6 +35,46 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def log_request(request: Request, call_next):
+    request_id = uuid.uuid4().hex
+    token = request_id_context.set(request_id)
+    started = perf_counter()
+    status_code = 500
+    error_type = None
+    try:
+        response = await call_next(request)
+        status_code = response.status_code
+        response.headers["X-Request-ID"] = request_id
+        return response
+    except Exception as exc:
+        error_type = type(exc).__name__
+        return JSONResponse(
+            status_code=500,
+            content={
+                "detail": "服务内部异常，请凭请求编号查看服务日志。",
+                "request_id": request_id,
+            },
+            headers={"X-Request-ID": request_id},
+        )
+    finally:
+        route = request.scope.get("route")
+        logging.getLogger("rag.requests").info(
+            json.dumps(
+                {
+                    "event": "http_request",
+                    "request_id": request_id,
+                    "method": request.method,
+                    "route": getattr(route, "path", "unmatched"),
+                    "status_code": status_code,
+                    "error_type": error_type,
+                    "response_headers_ms": round((perf_counter() - started) * 1000, 3),
+                }
+            )
+        )
+        request_id_context.reset(token)
 
 
 class TextDocumentRequest(BaseModel):
@@ -73,8 +119,28 @@ def health() -> dict[str, object]:
         "embedding_provider": settings.embedding_provider,
         "llm_provider": settings.llm_provider,
         "retrieval_strategy": settings.retrieval_strategy,
+        "context_policy": service.context_policy,
         "document_count": len(service.list_documents()),
+        "process_id": os.getpid(),
+        "application_version": app.version,
+        "instance_id": os.getenv("RAG_INSTANCE_ID", ""),
     }
+
+
+@app.get("/ready")
+def ready() -> JSONResponse:
+    snapshot = service.retriever
+    chunks = snapshot.dense.chunks
+    return JSONResponse(
+        status_code=200 if chunks else 503,
+        content={
+            "status": "ready" if chunks else "not_ready",
+            "reason": "index_loaded" if chunks else "empty_index",
+            "chunk_count": len(chunks),
+            "index_revision": snapshot.revision,
+            "model_connectivity": "not_checked",
+        },
+    )
 
 
 @app.get("/api/v1/documents")

@@ -9,10 +9,25 @@ import uuid
 from app.chunking import TextChunker
 from app.domain import Chunk, SearchHit
 from app.answers import GeneratedAnswer, REFUSAL
-from app.context import expand_context
+from app.context import CONTEXT_POLICIES, context_usage, expand_context
 from app.generation import AnswerGenerator, ExtractiveGenerator
 from app.retrieval import BM25Retriever, DenseRetriever, HybridRetriever
 from app.storage import JsonChunkRepository
+from app.observability import request_id_context
+
+
+def answer_fields(result: GeneratedAnswer, hits: list[SearchHit]) -> dict[str, object]:
+    return {
+        "answer": result.answer,
+        "status": result.status,
+        "reason": result.reason,
+        "verification": result.verification,
+        "claims": result.claims,
+        "model_trace": result.model_trace,
+        "citations": [
+            {**hits[number - 1].to_dict(), "citation_id": number} for number in result.citation_ids
+        ],
+    }
 
 
 class RAGService:
@@ -24,6 +39,8 @@ class RAGService:
         generator: AnswerGenerator,
         repository: JsonChunkRepository,
         retrieval_strategy: str = "hybrid",
+        context_char_budget: int = 16000,
+        context_policy: str = "neighbors",
     ) -> None:
         self.chunker = chunker
         self.retriever = retriever
@@ -32,6 +49,12 @@ class RAGService:
         if retrieval_strategy not in {"bm25", "dense", "hybrid"}:
             raise ValueError("不支持的检索策略")
         self.retrieval_strategy = retrieval_strategy
+        if context_char_budget < 1:
+            raise ValueError("上下文字符预算必须大于 0")
+        self.context_char_budget = context_char_budget
+        if context_policy not in CONTEXT_POLICIES:
+            raise ValueError("不支持的上下文策略")
+        self.context_policy = context_policy
         self._write_lock = RLock()
         self.index_revision = ""
         self._rebuild_index()
@@ -115,7 +138,7 @@ class RAGService:
         snapshot = self.retriever
         scope = {key: value for key, value in (filters or {}).items() if value}
         trace: dict[str, object] = {
-            "request_id": uuid.uuid4().hex,
+            "request_id": request_id_context.get() or uuid.uuid4().hex,
             "index_revision": snapshot.revision,
             "retrieval_strategy": self.retrieval_strategy,
         }
@@ -159,7 +182,10 @@ class RAGService:
             retrieval_start = perf_counter()
             try:
                 retrieved = self._search(snapshot, question.strip(), top_k, scope)
-                hits = expand_context(retrieved, snapshot.dense.chunks)
+                hits = expand_context(
+                    retrieved, snapshot.dense.chunks, char_budget=self.context_char_budget,
+                    policy=self.context_policy,
+                )
             except Exception as exc:
                 result = GeneratedAnswer(
                     "error", "检索服务暂时不可用，请检查模型服务配置。", reason=type(exc).__name__
@@ -186,19 +212,13 @@ class RAGService:
         trace["total_ms"] = round((perf_counter() - started) * 1000, 2)
         trace["retrieved_count"] = len(retrieved)
         trace["context_count"] = len(hits)
-        trace["context_chars"] = sum(len(hit.chunk.text) for hit in hits)
+        trace.update(context_usage(hits))
+        trace["context_char_budget"] = self.context_char_budget
+        trace["context_policy"] = self.context_policy
         assert result is not None
         return {
             "question": question,
-            "answer": result.answer,
-            "status": result.status,
-            "reason": result.reason,
-            "verification": result.verification,
-            "claims": result.claims,
-            "citations": [
-                {**hits[number - 1].to_dict(), "citation_id": number}
-                for number in result.citation_ids
-            ],
+            **answer_fields(result, hits),
             "retrieval": [hit.to_dict() for hit in retrieved],
             "context": [hit.to_dict() for hit in hits],
             "trace": trace,

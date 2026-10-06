@@ -1,0 +1,15 @@
+# Only the public application and pinned public corpus enter the build context.
+**
+!Dockerfile
+!.dockerignore
+!pyproject.toml
+!README.md
+!app/
+!app/**
+!scripts/
+!scripts/**
+!evaluation/
+!evaluation/support_corpus/
+!evaluation/support_corpus/**
+**/__pycache__/
+**/*.pyc

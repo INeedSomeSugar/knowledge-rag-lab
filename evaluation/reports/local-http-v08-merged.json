@@ -1,0 +1,169 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-12T09:32:53.968203+00:00",
+  "scope": "loopback demo HTTP workload; not model quality or production capacity",
+  "configuration": {
+    "base_url": "http://127.0.0.1:59852",
+    "requests": 12,
+    "concurrency": 3,
+    "warmup_requests": 3,
+    "request_timeout_seconds": 10,
+    "connections": "new connection per request"
+  },
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "logical_cpu_count": 16
+  },
+  "server": {
+    "status": "ok",
+    "embedding_provider": "hashing",
+    "llm_provider": "extractive",
+    "retrieval_strategy": "bm25",
+    "context_policy": "merged_neighbors",
+    "document_count": 34,
+    "process_id": 14812,
+    "application_version": "0.8.0",
+    "instance_id": "0ce8677667a8475faaa54c0c48f7b7e7"
+  },
+  "readiness": {
+    "status": "ready",
+    "reason": "index_loaded",
+    "chunk_count": 735,
+    "index_revision": "bd178253b61b794a",
+    "model_connectivity": "not_checked"
+  },
+  "client_code_sha256": "a7d2bdcf0c54a5a36251defe5c7c124215938df728fe7481074d085e12a75e4d",
+  "summary": {
+    "completed_count": 12,
+    "success_count": 12,
+    "failure_count": 0,
+    "elapsed_seconds": 0.138,
+    "completed_requests_per_second": 86.954,
+    "latency_p50_ms": 35.844,
+    "latency_p95_ms": 58.523,
+    "latency_max_ms": 58.523,
+    "status_counts": {
+      "evidence_only": 4,
+      "needs_clarification": 4,
+      "insufficient_evidence": 4
+    }
+  },
+  "notes": [
+    "只有 3 类重复请求，不能当作同等数量的独立问题或效果评测集。",
+    "延迟包含连接、响应正文与解析；不含客户端任务排队时间，分位数为 nearest-rank。",
+    "客户端与服务端位于同机，共享资源；没有真实 Embedding/LLM，不推断线上容量。"
+  ],
+  "details": [
+    {
+      "index": 0,
+      "workload": "versioned_evidence",
+      "ok": true,
+      "expected_status": "evidence_only",
+      "status": "evidence_only",
+      "request_id": "128d294b0f9944e19da35a39d6fbeabb",
+      "elapsed_ms": 58.523
+    },
+    {
+      "index": 1,
+      "workload": "version_clarification",
+      "ok": true,
+      "expected_status": "needs_clarification",
+      "status": "needs_clarification",
+      "request_id": "84d9b25893c34391accfc7587657c940",
+      "elapsed_ms": 37.245
+    },
+    {
+      "index": 2,
+      "workload": "unknown_version",
+      "ok": true,
+      "expected_status": "insufficient_evidence",
+      "status": "insufficient_evidence",
+      "request_id": "84086878f826410f95c0c124e88540d6",
+      "elapsed_ms": 37.303
+    },
+    {
+      "index": 3,
+      "workload": "versioned_evidence",
+      "ok": true,
+      "expected_status": "evidence_only",
+      "status": "evidence_only",
+      "request_id": "ac644efecd2049d7a3fd145e2db9c23a",
+      "elapsed_ms": 36.478
+    },
+    {
+      "index": 4,
+      "workload": "version_clarification",
+      "ok": true,
+      "expected_status": "needs_clarification",
+      "status": "needs_clarification",
+      "request_id": "8e47172e65c74b7dae897839e3d8092b",
+      "elapsed_ms": 36.327
+    },
+    {
+      "index": 5,
+      "workload": "unknown_version",
+      "ok": true,
+      "expected_status": "insufficient_evidence",
+      "status": "insufficient_evidence",
+      "request_id": "038caada4a9b413386830d1467054ad9",
+      "elapsed_ms": 35.844
+    },
+    {
+      "index": 6,
+      "workload": "versioned_evidence",
+      "ok": true,
+      "expected_status": "evidence_only",
+      "status": "evidence_only",
+      "request_id": "cb6c4a35f56645cf97b5054950f640b1",
+      "elapsed_ms": 28.846
+    },
+    {
+      "index": 7,
+      "workload": "version_clarification",
+      "ok": true,
+      "expected_status": "needs_clarification",
+      "status": "needs_clarification",
+      "request_id": "67d3e32504554ee281c2b24925edbeb3",
+      "elapsed_ms": 40.251
+    },
+    {
+      "index": 8,
+      "workload": "unknown_version",
+      "ok": true,
+      "expected_status": "insufficient_evidence",
+      "status": "insufficient_evidence",
+      "request_id": "4bf82d3eb0fa44e085b3e591dd5b312c",
+      "elapsed_ms": 30.354
+    },
+    {
+      "index": 9,
+      "workload": "versioned_evidence",
+      "ok": true,
+      "expected_status": "evidence_only",
+      "status": "evidence_only",
+      "request_id": "d25a2d8c8dae4982997da9373eba089e",
+      "elapsed_ms": 30.721
+    },
+    {
+      "index": 10,
+      "workload": "version_clarification",
+      "ok": true,
+      "expected_status": "needs_clarification",
+      "status": "needs_clarification",
+      "request_id": "7b60e689105f4dfa9767f74d7b1414f4",
+      "elapsed_ms": 21.569
+    },
+    {
+      "index": 11,
+      "workload": "unknown_version",
+      "ok": true,
+      "expected_status": "insufficient_evidence",
+      "status": "insufficient_evidence",
+      "request_id": "4d2f41db4e0949549615ba54fd689d74",
+      "elapsed_ms": 11.999
+    }
+  ],
+  "server_log": "work/http-verification/0fe71f413ac649e0889355183513aef5/server.log",
+  "server_process_stopped": true
+}

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "knowledge-rag-lab"
-version = "0.4.0"
+version = "0.8.0"
 description = "版本感知的开发者技术支持、证据核验与检索评测"
 requires-python = ">=3.11"
 dependencies = [
