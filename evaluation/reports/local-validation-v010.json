@@ -1,0 +1,144 @@
+{
+  "validation_date": "2026-10-26",
+  "generated_at_utc": "2026-10-26T09:29:44.806240+00:00",
+  "version": "0.10.0",
+  "python": "3.12.14",
+  "full_suite": {
+    "tests": 157,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "junit_sha256": "679c0c335c0e596bcc932a26eb6db18b352eb7e3240d598241057cedb75820d8"
+  },
+  "checks": {
+    "ruff": {
+      "command": [
+        "D:\\User\\AI\\knowledge-rag-lab\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "app",
+        "scripts",
+        "tests"
+      ],
+      "exit_code": 0,
+      "output": "All checks passed!"
+    },
+    "dependencies": {
+      "command": [
+        "D:\\User\\AI\\knowledge-rag-lab\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "exit_code": 0,
+      "output": "No broken requirements found."
+    },
+    "review_javascript": {
+      "command": [
+        "node",
+        "--check",
+        "D:\\User\\AI\\knowledge-rag-lab\\work\\v010-validation\\review.js"
+      ],
+      "exit_code": 0,
+      "output": ""
+    },
+    "diagnostics_javascript": {
+      "command": [
+        "node",
+        "--check",
+        "D:\\User\\AI\\knowledge-rag-lab\\work\\v010-validation\\diagnostics.js"
+      ],
+      "exit_code": 0,
+      "output": ""
+    }
+  },
+  "source_sha256_at_validation": "f846c38e9ca6bc00542ab487b27d1335d23f97486982d1bb98cae9d4aa42d20a",
+  "dataset": {
+    "candidate_count": 55,
+    "development_count": 47,
+    "heldout_count": 8,
+    "questions_sha256": "97df2962ada7c8d41476c02d20a16fafcc739a02d41f4d6011572643d433d584",
+    "corpus_sha256": "aad40f02f11b221f3c4e2da1199b88aff1e5bd53f5aecfb8700a57fdc313ca18",
+    "original_human_verified": 0,
+    "workbench_human_verified": 0,
+    "pending_answer_reviews": 6
+  },
+  "live_http_checks": 4,
+  "browser_checks": [
+    "development question list and original evidence highlight",
+    "search and select support-025",
+    "save draft remains unreviewed",
+    "comparison strategy switch: support-025 coverage absent to complete"
+  ],
+  "secret_scan": {
+    "files_checked": 37,
+    "current_credential_matches": [],
+    "scope": "Exact current environment credential values only; not a general security audit"
+  },
+  "evidence_manifest": [
+    {
+      "path": "evaluation/reports/deepseek-bm25-development-v010.json",
+      "sha256": "270a622eed0a12cb519f4f4e3edfa00428d8ac46311f673ce4f7a05cce8f3994",
+      "bytes": 403559
+    },
+    {
+      "path": "evaluation/reports/deepseek-bm25-development-v010.md",
+      "sha256": "25aa785eb84715befa9e696e148553442ba35bd932d6acbc29583eabb9719b0b",
+      "bytes": 2806
+    },
+    {
+      "path": "evaluation/reports/deepseek-reranking-development-v010.json",
+      "sha256": "4423ccc2f50ab711fb87594cd634c75711a008dae25c6d0b22441fd5cc31ad84",
+      "bytes": 3695344
+    },
+    {
+      "path": "evaluation/reports/deepseek-reranking-development-v010.md",
+      "sha256": "246b6a5d3f299cd95d3cdc1f0d7f68cc3050ce9ca3afb9bd87c26a7dc940185d",
+      "bytes": 2964
+    },
+    {
+      "path": "evaluation/reports/deepseek-reranking-development-v010.html",
+      "sha256": "01f2414fd78c33c776895a609de74448a89e0b103f32452e262c155c71aca8ad",
+      "bytes": 2574501
+    },
+    {
+      "path": "evaluation/reports/deepseek-reranking-development-v010.trials.jsonl",
+      "sha256": "c3e5b3de7b8d408104d8a241eae3b173994e4db67474b2136df776f50c08d165",
+      "bytes": 1001505
+    },
+    {
+      "path": "evaluation/review/answers-deepseek-bm25-v010.jsonl",
+      "sha256": "23858f8ae20428179d8f570baf8f8bd3f4f43820986eb2ddd360475460ee8939",
+      "bytes": 1950
+    },
+    {
+      "path": "evaluation/review/answers-deepseek-bm25-v010.md",
+      "sha256": "cabcdc6a98e035d85ad622a9fb2729e40591ce6b8eafcc8640d72b16dd7a922d",
+      "bytes": 35577
+    },
+    {
+      "path": "evaluation/reports/live-http-v010.json",
+      "sha256": "5768648f2b30fd87b16ba7aa806132c777997b54100f80f8a2e75c6f2ab74bb6",
+      "bytes": 26760
+    },
+    {
+      "path": "docs/images/question-review-v010.png",
+      "sha256": "5eb681735bcc6f5e2ea2e231bfc17381c2552dfca0ef4e3834e4e89e10465249",
+      "bytes": 95559
+    },
+    {
+      "path": "docs/images/reranking-comparison-v010.png",
+      "sha256": "b9510368b69938bc1f0c76aec8434a9ff884743ef0f85470497b1800c48676d2",
+      "bytes": 89437
+    }
+  ],
+  "scope": {
+    "real_deepseek_development_run": true,
+    "real_semantic_embedding_run": false,
+    "human_answer_accuracy": null,
+    "heldout_evaluated": false,
+    "production_deployment": false,
+    "default_reranking_enabled": false
+  }
+}

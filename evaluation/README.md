@@ -1,5 +1,13 @@
 # 评测集说明
 
+## v0.10 当前入口
+
+运行`./start-review.ps1`打开本地47题开发复核工作台，支持逐字证据修订与导出，原始55题及划分不改写。使用见`docs/EVALUATION_V010.md`。
+
+真实DeepSeek / BM25已完成9题开发试跑；另在全部41道可回答开发候选上比较固定候选重排，最终上下文完整覆盖32→37，5题增加、0题减少。所有候选仍待人工审核，这些数字只解释开发标注范围覆盖，不是答案正确率或正式测试效果。
+
+初始答案的6条待人工评分记录位于`review/answers-deepseek-bm25-v010.jsonl`。正式评测应使用人工确认的问题文件与`--require-reviewed`；保留测试题未运行。
+
 v0.4 新场景为 FastAPI 开发者技术支持。语料、候选审核状态、证据范围和开发/测试划分见 [SUPPORT_DATA_CARD.md](SUPPORT_DATA_CARD.md)，人工复核入口为 [SUPPORT_REVIEW.md](SUPPORT_REVIEW.md)。`questions.support.candidate.jsonl` 的 55 题全部待人工复核；不能作为正式 benchmark 或简历效果依据。
 
 运行开发诊断：

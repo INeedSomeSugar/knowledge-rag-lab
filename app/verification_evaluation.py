@@ -19,7 +19,7 @@ def summarize_model_calls(details: list[dict]) -> dict[str, object]:
         for call in item["response"].get("model_trace", {}).get("calls", [])
     ]
     stages = {}
-    for stage in ("generation", "verification"):
+    for stage in dict.fromkeys(["generation", "verification", *[call["stage"] for call in calls]]):
         selected = [call for call in calls if call["stage"] == stage]
         times = sorted(call["elapsed_ms"] for call in selected)
         stages[stage] = {
@@ -38,7 +38,7 @@ def summarize_model_calls(details: list[dict]) -> dict[str, object]:
         "stages": stages,
         "monetary_cost": None,
         "note": (
-            "仅统计生成及核验 SDK 调用；SDK 内部重试次数不可见，失败调用可能仍计费。"
+            "仅统计报告中记录的模型 SDK 调用；SDK 内部重试次数不可见，失败调用可能仍计费。"
             "缺失 token 为 null，不按零计；不含 Embedding 和建库费用。"
             "P50/P95 使用 nearest-rank，只描述本次串行样本，不是部署压测。"
         ),

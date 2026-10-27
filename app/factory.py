@@ -47,6 +47,10 @@ def create_embedding_model(settings: Settings) -> EmbeddingModel:
 def create_answer_generator(settings: Settings) -> AnswerGenerator:
     if settings.llm_provider == "extractive":
         return ExtractiveGenerator()
+    if settings.llm_provider == "deepseek":
+        from app.deepseek import DeepSeekGenerator
+
+        return DeepSeekGenerator.from_env(verify_support=settings.llm_verify_support)
     if settings.llm_provider in {"openai_compatible", "ollama"}:
         is_ollama = settings.llm_provider == "ollama"
         if not is_ollama:

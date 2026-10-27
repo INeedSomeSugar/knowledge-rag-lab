@@ -31,6 +31,8 @@ class Completion:
     prompt_tokens: int | None = None
     completion_tokens: int | None = None
     total_tokens: int | None = None
+    model: str | None = None
+    finish_reason: str | None = None
 
 
 def build_context(hits: list[SearchHit]) -> str:
@@ -197,18 +199,22 @@ class OpenAICompatibleGenerator:
                 prompt_tokens=completion.prompt_tokens,
                 completion_tokens=completion.completion_tokens,
                 total_tokens=completion.total_tokens,
+                requested_model=self.model,
+                response_model=completion.model,
+                finish_reason=completion.finish_reason,
             )
+            if completion.finish_reason not in {None, "stop"}:
+                raise ValueError("incomplete_model_response")
             return completion.text
         except Exception as exc:
+            call["status"] = "error"
             call["error_type"] = type(exc).__name__
             raise
         finally:
             call["elapsed_ms"] = round((perf_counter() - started) * 1000, 3)
 
     def _complete(self, system_prompt: str, user_prompt: str) -> Completion:
-        request_options: dict[str, object] = {}
-        if self.enable_thinking is not None:
-            request_options["extra_body"] = {"enable_thinking": self.enable_thinking}
+        request_options = self._request_options()
         response = self.client.chat.completions.create(
             model=self.model,
             temperature=0.1,
@@ -231,4 +237,12 @@ class OpenAICompatibleGenerator:
             token_count("prompt_tokens"),
             token_count("completion_tokens"),
             token_count("total_tokens"),
+            getattr(response, "model", None),
+            getattr(response.choices[0], "finish_reason", None),
         )
+
+    def _request_options(self) -> dict[str, object]:
+        request_options: dict[str, object] = {}
+        if self.enable_thinking is not None:
+            request_options["extra_body"] = {"enable_thinking": self.enable_thinking}
+        return request_options

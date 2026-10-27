@@ -15,7 +15,7 @@
 </style>
 </head>
 <body>
-<header><div class="brand">KNOWLEDGE RAG LAB / DEVELOPMENT WORKBENCH</div><div class="topline"><h1>证据检索诊断</h1><span class="pill">开发集 · 只读报告</span></div><p>从文档命中走到证据定位：比较三种检索策略，检查排序、分块边界与上下文预算。</p></header>
+<header><div class="brand">KNOWLEDGE RAG LAB / DEVELOPMENT WORKBENCH</div><div class="topline"><h1>证据检索诊断</h1><span class="pill">开发集 · 只读报告</span></div><p>从文档命中走到证据定位：比较检索策略，检查排序、分块边界与上下文预算。</p></header>
 <div class="scope" id="scope"></div>
 <div class="summary" id="metrics"></div>
 <div class="workspace">
@@ -45,7 +45,8 @@ const span = chunk => `[${chunk.start_char}, ${chunk.end_char})`;
 const getChunk = ref => d.chunks[ref.chunk_id];
 const inContext = (selected,id) => selected.context.some(r=>r.chunk_id===id || (getChunk(r).metadata.context_chunk_ids || []).includes(id));
 const reviewed = report.dataset.human_verified_count;
-$("scope").textContent = `仅为开发诊断 · ${reviewed}/${d.case_count} 题标记人工审核 · ${config.embedding_provider} / ${config.embedding_model}。上下文策略：${config.context_policy || "neighbors"}。范围覆盖不等于答案正确性；未经人工核验的候选与 Hashing 结果不可作为简历效果数字。`;
+const modelLabel = config.rerank_provider ? `BM25 + ${config.rerank_provider} / ${config.rerank_model} 候选重排` : `${config.embedding_provider} / ${config.embedding_model}`;
+$("scope").textContent = `仅为开发诊断 · ${reviewed}/${d.case_count} 题标记人工审核 · ${modelLabel}。上下文策略：${config.context_policy || "neighbors"}。范围覆盖不等于答案正确性；未经人工核验的候选不可作为正式效果数字。`;
 const metricValues = [["开发问题",d.case_count],["参与证据诊断",d.case_status_counts.diagnosed || 0],["文档 / 分块",`${report.dataset.document_count} / ${report.dataset.chunk_count}`],["Top-K / 字符预算",`${config.top_ks[0]} / ${config.context_char_budget.toLocaleString()}`]];
 for(const [title,value] of metricValues){ const box=el("div",undefined,"metric");box.append(el("small",title),el("strong",String(value)));$("metrics").append(box); }
 for(const version of [...new Set(d.cases.map(c=>c.filters.version).filter(Boolean))].sort()){const o=el("option",version);o.value=version;$("version").append(o);}
@@ -101,7 +102,7 @@ function render(c,cases){const root=$("detail");root.replaceChildren();
   });root.append(anchors);
   for(const [key,title] of [["retrieved","初始 Top-K 分块"],["context","实际上下文分块"],["pool","诊断候选池（最终前 50 块）"]]){const p=el("section",undefined,"panel");p.append(el("h3",`${title} · ${s[key].length}`));if(key==="pool"){const fold=el("details");fold.append(el("summary","展开候选池与原文"),chunkList(s[key],c,s));p.append(fold);}else p.append(chunkList(s[key],c,s));root.append(p);}appendProvenance(root);
 }
-function appendProvenance(root){const box=el("section",undefined,"panel foot"),fold=el("details");fold.append(el("summary","复现信息与诊断边界"));const ul=el("ul");for(const warning of report.warnings)ul.append(el("li",warning));fold.append(ul,el("p",`生成时间：${report.generated_at}`),el("p",`分块：${config.chunking_strategy} / ${config.chunk_size} / overlap ${config.chunk_overlap}；RRF 输入候选各 50；${config.embedding_provider} / ${config.embedding_model}`));for(const [key,value] of Object.entries(report.provenance)){const p=el("p",key+"：");p.append(el("code",typeof value==="string"?value:JSON.stringify(value)));fold.append(p);}box.append(fold);root.append(box);}
+function appendProvenance(root){const box=el("section",undefined,"panel foot"),fold=el("details");fold.append(el("summary","复现信息与诊断边界"));const ul=el("ul");for(const warning of report.warnings)ul.append(el("li",warning));const pool=config.rerank_provider?`BM25候选池 ${config.candidate_pool_k}；重排前 ${config.candidate_k} 条`:'RRF 输入候选各 50';fold.append(ul,el("p",`生成时间：${report.generated_at}`),el("p",`分块：${config.chunking_strategy} / ${config.chunk_size} / overlap ${config.chunk_overlap}；${pool}；${config.embedding_provider} / ${config.embedding_model}`));for(const [key,value] of Object.entries(report.provenance)){const p=el("p",key+"：");p.append(el("code",typeof value==="string"?value:JSON.stringify(value)));fold.append(p);}box.append(fold);root.append(box);}
 $("query").addEventListener("input",update);$("version").addEventListener("change",update);$("issue").addEventListener("change",update);update();
 </script>
 </body>

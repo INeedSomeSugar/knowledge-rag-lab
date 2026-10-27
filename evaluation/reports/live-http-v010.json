@@ -1,0 +1,465 @@
+{
+  "scope": "Local HTTP and live-model workflow; not semantic correctness or deployment validation",
+  "checks": [
+    {
+      "route": "/health",
+      "request": null,
+      "http_status": 200,
+      "response": {
+        "status": "ok",
+        "embedding_provider": "hashing",
+        "llm_provider": "deepseek",
+        "retrieval_strategy": "bm25",
+        "context_policy": "neighbors",
+        "document_count": 34,
+        "process_id": 26680,
+        "application_version": "0.10.0",
+        "instance_id": ""
+      },
+      "request_id": "1bcfe599d09d43cc926099125488e96c"
+    },
+    {
+      "route": "/ready",
+      "request": null,
+      "http_status": 200,
+      "response": {
+        "status": "ready",
+        "reason": "index_loaded",
+        "chunk_count": 735,
+        "index_revision": "bd178253b61b794a",
+        "model_connectivity": "not_checked"
+      },
+      "request_id": "3f0d678ddc28468e9e7147f71eb89569"
+    },
+    {
+      "route": "/api/v1/chat",
+      "request": {
+        "question": "CORS 请求失败，应该怎么设置？",
+        "product": "fastapi"
+      },
+      "http_status": 200,
+      "response": {
+        "question": "CORS 请求失败，应该怎么设置？",
+        "answer": "请明确使用的版本：0.110.0、0.115.0。",
+        "status": "needs_clarification",
+        "reason": "version_required",
+        "verification": "not_applicable",
+        "claims": [],
+        "model_trace": {},
+        "citations": [],
+        "retrieval": [],
+        "context": [],
+        "trace": {
+          "request_id": "5bfa2c810b0d427e994b5c790baf711f",
+          "index_revision": "bd178253b61b794a",
+          "retrieval_strategy": "bm25",
+          "scope": {
+            "product": "fastapi"
+          },
+          "retrieval_ms": 0.0,
+          "generation_ms": 0.0,
+          "total_ms": 0.31,
+          "retrieved_count": 0,
+          "context_count": 0,
+          "context_chars": 0,
+          "unique_chars": 0,
+          "duplicate_chars": 0,
+          "context_char_budget": 16000,
+          "context_policy": "neighbors"
+        },
+        "available_versions": {
+          "fastapi": [
+            "0.110.0",
+            "0.115.0"
+          ]
+        }
+      },
+      "request_id": "5bfa2c810b0d427e994b5c790baf711f"
+    },
+    {
+      "route": "/api/v1/chat",
+      "request": {
+        "question": "前端携带 Cookie 跨域时，allow_origins 可以设为星号吗？",
+        "product": "fastapi",
+        "version": "0.115.0",
+        "top_k": 5
+      },
+      "http_status": 200,
+      "response": {
+        "question": "前端携带 Cookie 跨域时，allow_origins 可以设为星号吗？",
+        "answer": "前端携带 Cookie 跨域时，allow_origins 不能设为 ['*']，必须指定具体的源。 [3]\n\nallow_credentials 用于指示跨域请求支持 cookies，默认值为 False。 [3]",
+        "status": "answered",
+        "reason": "",
+        "verification": "model_checked_not_human_verified",
+        "claims": [
+          {
+            "text": "前端携带 Cookie 跨域时，allow_origins 不能设为 ['*']，必须指定具体的源。",
+            "evidence": [
+              {
+                "citation": 3,
+                "quote": "另外，允许凭证时 `allow_origins` 不能设定为 `['*']`，必须指定源。"
+              }
+            ]
+          },
+          {
+            "text": "allow_credentials 用于指示跨域请求支持 cookies，默认值为 False。",
+            "evidence": [
+              {
+                "citation": 3,
+                "quote": "`allow_credentials` - 指示跨域请求支持 cookies。默认是 `False`。"
+              }
+            ]
+          }
+        ],
+        "model_trace": {
+          "calls": [
+            {
+              "stage": "generation",
+              "status": "ok",
+              "prompt_tokens": 1377,
+              "completion_tokens": 122,
+              "total_tokens": 1499,
+              "requested_model": "deepseek-flash",
+              "response_model": "deepseek-flash",
+              "finish_reason": "stop",
+              "elapsed_ms": 2068.393
+            },
+            {
+              "stage": "verification",
+              "status": "ok",
+              "prompt_tokens": 1546,
+              "completion_tokens": 7,
+              "total_tokens": 1553,
+              "requested_model": "deepseek-flash",
+              "response_model": "deepseek-flash",
+              "finish_reason": "stop",
+              "elapsed_ms": 1079.017
+            }
+          ],
+          "verification_enabled": true
+        },
+        "citations": [
+          {
+            "chunk_id": "50cdefcc9c5f56fc672a5d8d",
+            "document_id": "742a6aba483112c549fa5a06",
+            "source": "fastapi/0.115.0/tutorial/cors.md",
+            "text": "有标准方法。\n* `allow_headers` - 一个允许跨域请求的 HTTP 请求头列表。默认为 `[]`。你可以使用 `['*']` 允许所有的请求头。`Accept`、`Accept-Language`、`Content-Language` 以及 `Content-Type` 请求头总是允许 CORS 请求。\n* `allow_credentials` - 指示跨域请求支持 cookies。默认是 `False`。另外，允许凭证时 `allow_origins` 不能设定为 `['*']`，必须指定源。\n* `expose_headers` - 指示可以被浏览器访问的响应头。默认为 `[]`。\n* `max_age` - 设定浏览器缓存 CORS 响应的最长时间，单位是秒。默认为 `600`。\n\n中间件响应两种特定类型的 HTTP 请求……",
+            "start_char": 2049,
+            "end_char": 2429,
+            "score": 27.608583,
+            "dense_rank": null,
+            "sparse_rank": 3,
+            "metadata": {
+              "title": "CORS（跨域资源共享）",
+              "chunk_index": 7,
+              "section": "使用 `CORSMiddleware`",
+              "heading_level": 2,
+              "product": "fastapi",
+              "version": "0.115.0",
+              "language": "zh",
+              "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+              "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/cors.md",
+              "sha256": "442c41dcb7ba461a05f89e24b74cae55be5f330e086dc3b569a5420364629378",
+              "content_sha256": "1f96b8b18770128d33aba1f172948944dd09a37b22de717e1020718ea85b78c0"
+            },
+            "citation_id": 3
+          }
+        ],
+        "retrieval": [
+          {
+            "chunk_id": "50a853f622e10ed0f70e21a8",
+            "document_id": "742a6aba483112c549fa5a06",
+            "source": "fastapi/0.115.0/tutorial/cors.md",
+            "text": "# CORS（跨域资源共享）\n\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS\" class=\"external-link\" target=\"_blank\">CORS 或者「跨域资源共享」</a> 指浏览器中运行的前端拥有与后端通信的 JavaScript 代码，而后端处于与前端不同的「源」的情况。",
+            "start_char": 0,
+            "end_char": 190,
+            "score": 34.856099,
+            "dense_rank": null,
+            "sparse_rank": 1,
+            "metadata": {
+              "title": "CORS（跨域资源共享）",
+              "chunk_index": 0,
+              "section": "CORS（跨域资源共享）",
+              "heading_level": 1,
+              "product": "fastapi",
+              "version": "0.115.0",
+              "language": "zh",
+              "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+              "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/cors.md",
+              "sha256": "442c41dcb7ba461a05f89e24b74cae55be5f330e086dc3b569a5420364629378",
+              "content_sha256": "1f96b8b18770128d33aba1f172948944dd09a37b22de717e1020718ea85b78c0"
+            }
+          },
+          {
+            "chunk_id": "c6820715798e68101608e57b",
+            "document_id": "742a6aba483112c549fa5a06",
+            "source": "fastapi/0.115.0/tutorial/cors.md",
+            "text": "eware` 实现所使用的默认参数较为保守，所以你需要显式地启用特定的源、方法或者 headers，以便浏览器能够在跨域上下文中使用它们。\n\n支持以下参数：\n\n* `allow_origins` - 一个允许跨域请求的源列表。例如 `['https://example.org', 'https://www.example.org']`。你可以使用 `['*']` 允许任何源。\n* `allow_origin_regex` - 一个正则表达式字符串，匹配的源允许跨域请求。例如 `'https://.*\\.example\\.org'`。\n* `allow_methods` - 一个允许跨域请求的 HTTP 方法列表。默认为 `['GET']`。你可以使用 `['*']` 来允许所有标准方法。\n* `allow_headers` - 一个允许跨域请求的 HTTP 请求头列表。默认为 `[]`。你可以使用 `['*']` 允许所有的请求头。",
+            "start_char": 1707,
+            "end_char": 2129,
+            "score": 28.652739,
+            "dense_rank": null,
+            "sparse_rank": 2,
+            "metadata": {
+              "title": "CORS（跨域资源共享）",
+              "chunk_index": 6,
+              "section": "使用 `CORSMiddleware`",
+              "heading_level": 2,
+              "product": "fastapi",
+              "version": "0.115.0",
+              "language": "zh",
+              "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+              "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/cors.md",
+              "sha256": "442c41dcb7ba461a05f89e24b74cae55be5f330e086dc3b569a5420364629378",
+              "content_sha256": "1f96b8b18770128d33aba1f172948944dd09a37b22de717e1020718ea85b78c0"
+            }
+          },
+          {
+            "chunk_id": "50cdefcc9c5f56fc672a5d8d",
+            "document_id": "742a6aba483112c549fa5a06",
+            "source": "fastapi/0.115.0/tutorial/cors.md",
+            "text": "有标准方法。\n* `allow_headers` - 一个允许跨域请求的 HTTP 请求头列表。默认为 `[]`。你可以使用 `['*']` 允许所有的请求头。`Accept`、`Accept-Language`、`Content-Language` 以及 `Content-Type` 请求头总是允许 CORS 请求。\n* `allow_credentials` - 指示跨域请求支持 cookies。默认是 `False`。另外，允许凭证时 `allow_origins` 不能设定为 `['*']`，必须指定源。\n* `expose_headers` - 指示可以被浏览器访问的响应头。默认为 `[]`。\n* `max_age` - 设定浏览器缓存 CORS 响应的最长时间，单位是秒。默认为 `600`。\n\n中间件响应两种特定类型的 HTTP 请求……",
+            "start_char": 2049,
+            "end_char": 2429,
+            "score": 27.608583,
+            "dense_rank": null,
+            "sparse_rank": 3,
+            "metadata": {
+              "title": "CORS（跨域资源共享）",
+              "chunk_index": 7,
+              "section": "使用 `CORSMiddleware`",
+              "heading_level": 2,
+              "product": "fastapi",
+              "version": "0.115.0",
+              "language": "zh",
+              "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+              "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/cors.md",
+              "sha256": "442c41dcb7ba461a05f89e24b74cae55be5f330e086dc3b569a5420364629378",
+              "content_sha256": "1f96b8b18770128d33aba1f172948944dd09a37b22de717e1020718ea85b78c0"
+            }
+          },
+          {
+            "chunk_id": "84eb8b603a2a08603a3d5fe3",
+            "document_id": "742a6aba483112c549fa5a06",
+            "source": "fastapi/0.115.0/tutorial/cors.md",
+            "text": "RSMiddleware\n\napp = FastAPI()\n\norigins = [\n    \"http://localhost.tiangolo.com\",\n    \"https://localhost.tiangolo.com\",\n    \"http://localhost\",\n    \"http://localhost:8080\",\n]\n\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=origins,\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n)\n\n\n@app.get(\"/\")\nasync def main():\n    return {\"message\": \"Hello World\"}\n```\n\n默认情况下，这个 `CORSMiddleware` 实现所使用的默认参数较为保守，所以你需要显式地启用特定的源、方法或者 headers，以便浏览器能够在跨域上下文中使用它们。\n\n支持以下参数：",
+            "start_char": 1290,
+            "end_char": 1785,
+            "score": 20.223144,
+            "dense_rank": null,
+            "sparse_rank": 4,
+            "metadata": {
+              "title": "CORS（跨域资源共享）",
+              "chunk_index": 5,
+              "section": "使用 `CORSMiddleware`",
+              "heading_level": 2,
+              "product": "fastapi",
+              "version": "0.115.0",
+              "language": "zh",
+              "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+              "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/cors.md",
+              "sha256": "442c41dcb7ba461a05f89e24b74cae55be5f330e086dc3b569a5420364629378",
+              "content_sha256": "1f96b8b18770128d33aba1f172948944dd09a37b22de717e1020718ea85b78c0"
+            }
+          },
+          {
+            "chunk_id": "a3186faf7eaf27da30fa33fe",
+            "document_id": "742a6aba483112c549fa5a06",
+            "source": "fastapi/0.115.0/tutorial/cors.md",
+            "text": "## 步骤\n\n假设你的浏览器中有一个前端运行在 `http://localhost:8080`，并且它的 JavaScript 正在尝试与运行在 `http://localhost` 的后端通信（因为我们没有指定端口，浏览器会采用默认的端口 `80`）。\n\n然后，浏览器会向后端发送一个 HTTP `OPTIONS` 请求，如果后端发送适当的 headers 来授权来自这个不同源（`http://localhost:8080`）的通信，浏览器将允许前端的 JavaScript 向后端发送请求。\n\n为此，后端必须有一个「允许的源」列表。\n\n在这种情况下，它必须包含 `http://localhost:8080`，前端才能正常工作。",
+            "start_char": 435,
+            "end_char": 752,
+            "score": 15.98179,
+            "dense_rank": null,
+            "sparse_rank": 5,
+            "metadata": {
+              "title": "CORS（跨域资源共享）",
+              "chunk_index": 2,
+              "section": "步骤",
+              "heading_level": 2,
+              "product": "fastapi",
+              "version": "0.115.0",
+              "language": "zh",
+              "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+              "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/cors.md",
+              "sha256": "442c41dcb7ba461a05f89e24b74cae55be5f330e086dc3b569a5420364629378",
+              "content_sha256": "1f96b8b18770128d33aba1f172948944dd09a37b22de717e1020718ea85b78c0"
+            }
+          }
+        ],
+        "context": [
+          {
+            "chunk_id": "50a853f622e10ed0f70e21a8",
+            "document_id": "742a6aba483112c549fa5a06",
+            "source": "fastapi/0.115.0/tutorial/cors.md",
+            "text": "# CORS（跨域资源共享）\n\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS\" class=\"external-link\" target=\"_blank\">CORS 或者「跨域资源共享」</a> 指浏览器中运行的前端拥有与后端通信的 JavaScript 代码，而后端处于与前端不同的「源」的情况。",
+            "start_char": 0,
+            "end_char": 190,
+            "score": 34.856099,
+            "dense_rank": null,
+            "sparse_rank": 1,
+            "metadata": {
+              "title": "CORS（跨域资源共享）",
+              "chunk_index": 0,
+              "section": "CORS（跨域资源共享）",
+              "heading_level": 1,
+              "product": "fastapi",
+              "version": "0.115.0",
+              "language": "zh",
+              "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+              "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/cors.md",
+              "sha256": "442c41dcb7ba461a05f89e24b74cae55be5f330e086dc3b569a5420364629378",
+              "content_sha256": "1f96b8b18770128d33aba1f172948944dd09a37b22de717e1020718ea85b78c0"
+            }
+          },
+          {
+            "chunk_id": "c6820715798e68101608e57b",
+            "document_id": "742a6aba483112c549fa5a06",
+            "source": "fastapi/0.115.0/tutorial/cors.md",
+            "text": "eware` 实现所使用的默认参数较为保守，所以你需要显式地启用特定的源、方法或者 headers，以便浏览器能够在跨域上下文中使用它们。\n\n支持以下参数：\n\n* `allow_origins` - 一个允许跨域请求的源列表。例如 `['https://example.org', 'https://www.example.org']`。你可以使用 `['*']` 允许任何源。\n* `allow_origin_regex` - 一个正则表达式字符串，匹配的源允许跨域请求。例如 `'https://.*\\.example\\.org'`。\n* `allow_methods` - 一个允许跨域请求的 HTTP 方法列表。默认为 `['GET']`。你可以使用 `['*']` 来允许所有标准方法。\n* `allow_headers` - 一个允许跨域请求的 HTTP 请求头列表。默认为 `[]`。你可以使用 `['*']` 允许所有的请求头。",
+            "start_char": 1707,
+            "end_char": 2129,
+            "score": 28.652739,
+            "dense_rank": null,
+            "sparse_rank": 2,
+            "metadata": {
+              "title": "CORS（跨域资源共享）",
+              "chunk_index": 6,
+              "section": "使用 `CORSMiddleware`",
+              "heading_level": 2,
+              "product": "fastapi",
+              "version": "0.115.0",
+              "language": "zh",
+              "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+              "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/cors.md",
+              "sha256": "442c41dcb7ba461a05f89e24b74cae55be5f330e086dc3b569a5420364629378",
+              "content_sha256": "1f96b8b18770128d33aba1f172948944dd09a37b22de717e1020718ea85b78c0"
+            }
+          },
+          {
+            "chunk_id": "50cdefcc9c5f56fc672a5d8d",
+            "document_id": "742a6aba483112c549fa5a06",
+            "source": "fastapi/0.115.0/tutorial/cors.md",
+            "text": "有标准方法。\n* `allow_headers` - 一个允许跨域请求的 HTTP 请求头列表。默认为 `[]`。你可以使用 `['*']` 允许所有的请求头。`Accept`、`Accept-Language`、`Content-Language` 以及 `Content-Type` 请求头总是允许 CORS 请求。\n* `allow_credentials` - 指示跨域请求支持 cookies。默认是 `False`。另外，允许凭证时 `allow_origins` 不能设定为 `['*']`，必须指定源。\n* `expose_headers` - 指示可以被浏览器访问的响应头。默认为 `[]`。\n* `max_age` - 设定浏览器缓存 CORS 响应的最长时间，单位是秒。默认为 `600`。\n\n中间件响应两种特定类型的 HTTP 请求……",
+            "start_char": 2049,
+            "end_char": 2429,
+            "score": 27.608583,
+            "dense_rank": null,
+            "sparse_rank": 3,
+            "metadata": {
+              "title": "CORS（跨域资源共享）",
+              "chunk_index": 7,
+              "section": "使用 `CORSMiddleware`",
+              "heading_level": 2,
+              "product": "fastapi",
+              "version": "0.115.0",
+              "language": "zh",
+              "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+              "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/cors.md",
+              "sha256": "442c41dcb7ba461a05f89e24b74cae55be5f330e086dc3b569a5420364629378",
+              "content_sha256": "1f96b8b18770128d33aba1f172948944dd09a37b22de717e1020718ea85b78c0"
+            }
+          },
+          {
+            "chunk_id": "84eb8b603a2a08603a3d5fe3",
+            "document_id": "742a6aba483112c549fa5a06",
+            "source": "fastapi/0.115.0/tutorial/cors.md",
+            "text": "RSMiddleware\n\napp = FastAPI()\n\norigins = [\n    \"http://localhost.tiangolo.com\",\n    \"https://localhost.tiangolo.com\",\n    \"http://localhost\",\n    \"http://localhost:8080\",\n]\n\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=origins,\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n)\n\n\n@app.get(\"/\")\nasync def main():\n    return {\"message\": \"Hello World\"}\n```\n\n默认情况下，这个 `CORSMiddleware` 实现所使用的默认参数较为保守，所以你需要显式地启用特定的源、方法或者 headers，以便浏览器能够在跨域上下文中使用它们。\n\n支持以下参数：",
+            "start_char": 1290,
+            "end_char": 1785,
+            "score": 20.223144,
+            "dense_rank": null,
+            "sparse_rank": 4,
+            "metadata": {
+              "title": "CORS（跨域资源共享）",
+              "chunk_index": 5,
+              "section": "使用 `CORSMiddleware`",
+              "heading_level": 2,
+              "product": "fastapi",
+              "version": "0.115.0",
+              "language": "zh",
+              "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+              "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/cors.md",
+              "sha256": "442c41dcb7ba461a05f89e24b74cae55be5f330e086dc3b569a5420364629378",
+              "content_sha256": "1f96b8b18770128d33aba1f172948944dd09a37b22de717e1020718ea85b78c0"
+            }
+          },
+          {
+            "chunk_id": "a3186faf7eaf27da30fa33fe",
+            "document_id": "742a6aba483112c549fa5a06",
+            "source": "fastapi/0.115.0/tutorial/cors.md",
+            "text": "## 步骤\n\n假设你的浏览器中有一个前端运行在 `http://localhost:8080`，并且它的 JavaScript 正在尝试与运行在 `http://localhost` 的后端通信（因为我们没有指定端口，浏览器会采用默认的端口 `80`）。\n\n然后，浏览器会向后端发送一个 HTTP `OPTIONS` 请求，如果后端发送适当的 headers 来授权来自这个不同源（`http://localhost:8080`）的通信，浏览器将允许前端的 JavaScript 向后端发送请求。\n\n为此，后端必须有一个「允许的源」列表。\n\n在这种情况下，它必须包含 `http://localhost:8080`，前端才能正常工作。",
+            "start_char": 435,
+            "end_char": 752,
+            "score": 15.98179,
+            "dense_rank": null,
+            "sparse_rank": 5,
+            "metadata": {
+              "title": "CORS（跨域资源共享）",
+              "chunk_index": 2,
+              "section": "步骤",
+              "heading_level": 2,
+              "product": "fastapi",
+              "version": "0.115.0",
+              "language": "zh",
+              "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+              "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/cors.md",
+              "sha256": "442c41dcb7ba461a05f89e24b74cae55be5f330e086dc3b569a5420364629378",
+              "content_sha256": "1f96b8b18770128d33aba1f172948944dd09a37b22de717e1020718ea85b78c0"
+            }
+          },
+          {
+            "chunk_id": "fe453cbb39fb40cd8a5e811e",
+            "document_id": "742a6aba483112c549fa5a06",
+            "source": "fastapi/0.115.0/tutorial/cors.md",
+            "text": "## 使用 `CORSMiddleware`\n\n你可以在 **FastAPI** 应用中使用 `CORSMiddleware` 来配置它。\n\n* 导入 `CORSMiddleware`。\n* 创建一个允许的源列表（由字符串组成）。\n* 将其作为「中间件」添加到你的 **FastAPI** 应用中。\n\n你也可以指定后端是否允许：\n\n* 凭证（授权 headers，Cookies 等）。\n* 特定的 HTTP 方法（`POST`，`PUT`）或者使用通配符 `\"*\"` 允许所有方法。\n* 特定的 HTTP headers 或者使用通配符 `\"*\"` 允许所有 headers。\n\n```Python hl_lines=\"2  6-11  13-19\"\nfrom fastapi import FastAPI\nfrom fastapi.middleware.cors import CORSMiddleware\n\napp = FastAPI()\n\norigins = [\n    \"http://localhost.tiangolo.com\",",
+            "start_char": 897,
+            "end_char": 1369,
+            "score": 20.223144,
+            "dense_rank": null,
+            "sparse_rank": null,
+            "metadata": {
+              "title": "CORS（跨域资源共享）",
+              "chunk_index": 4,
+              "section": "使用 `CORSMiddleware`",
+              "heading_level": 2,
+              "product": "fastapi",
+              "version": "0.115.0",
+              "language": "zh",
+              "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+              "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/cors.md",
+              "sha256": "442c41dcb7ba461a05f89e24b74cae55be5f330e086dc3b569a5420364629378",
+              "content_sha256": "1f96b8b18770128d33aba1f172948944dd09a37b22de717e1020718ea85b78c0"
+            }
+          }
+        ],
+        "trace": {
+          "request_id": "6c5522b940904a8a9b54a38d3408e498",
+          "index_revision": "bd178253b61b794a",
+          "retrieval_strategy": "bm25",
+          "scope": {
+            "product": "fastapi",
+            "version": "0.115.0"
+          },
+          "retrieval_ms": 5.43,
+          "generation_ms": 3147.88,
+          "total_ms": 3153.47,
+          "retrieved_count": 5,
+          "context_count": 6,
+          "context_chars": 2276,
+          "unique_chars": 2039,
+          "duplicate_chars": 237,
+          "context_char_budget": 16000,
+          "context_policy": "neighbors"
+        },
+        "available_versions": {
+          "fastapi": [
+            "0.110.0",
+            "0.115.0"
+          ]
+        }
+      },
+      "request_id": "6c5522b940904a8a9b54a38d3408e498"
+    }
+  ]
+}

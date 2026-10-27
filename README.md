@@ -4,6 +4,31 @@
 
 先阅读 [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) 和 [AGENTS.md](AGENTS.md)。场景选择及验收范围见 [实施计划](docs/IMPLEMENTATION_PLAN.md)，数据边界见 [数据卡](evaluation/SUPPORT_DATA_CARD.md)。
 
+## v0.10：人工复核与真实 DeepSeek 开发实验
+
+2026-10-26 已完成一次真实 DeepSeek / BM25 开发试跑和一次固定候选重排对照。使用现有 `DEEPSEEK_API_KEY`，未创建或复制密钥。
+
+- 新增本地问题复核工作台：问题、参考答案和来源原文并排核对；支持修改逐字证据、保存待审稿、人工确认、断点续审和 JSONL 导出。
+- 原始候选、产品版本和分组划分保持固定；复核记录绑定问题与语料哈希，拒绝过期页面或其他进程覆盖。默认只展示47道开发候选。
+- DeepSeek 从实际模型目录选择可用模型，按供应商接口发送 JSON 请求；记录请求模型、实际响应模型、用量及截断状态。
+- 9道未审开发候选完成真实生成／核验配对试跑：13次模型调用、22,147 tokens、0接口或格式错误；导出6份待人工评分答案。
+- 根据文档命中但具体证据遗漏的案例，试验对固定 BM25 前20候选做 DeepSeek 重排。41道可回答开发候选中，最终上下文完整覆盖由32题变为37题，5题增加、0题减少；仍有4题未完整覆盖。
+- 重排41次调用使用325,022 tokens，SDK调用累计49.212秒。相同的是候选池、Top-K和上下文字符上限，不是实际 token 或总成本。
+
+这些题目全部仍待人工审核；上述覆盖变化不是答案正确率，也不是保留测试集效果。重排目前为独立对照实验，默认服务检索行为未切换。真实语义 Embedding 仍未评测。
+
+```powershell
+# 不调用模型的人工复核工作台：http://127.0.0.1:8013
+.\start-review.ps1
+
+# DeepSeek + BM25 本地问答：http://127.0.0.1:8014；问答会消耗API用量
+.\start-deepseek.ps1
+```
+
+详细操作与可用简历表述见 [v0.10说明](docs/EVALUATION_V010.md)，查看 [真实试跑](evaluation/reports/deepseek-bm25-development-v010.md)、[重排配对结果](evaluation/reports/deepseek-reranking-development-v010.md) 和 [交互诊断报告](evaluation/reports/deepseek-reranking-development-v010.html)。
+
+![问题人工复核工作台](docs/images/question-review-v010.png)
+
 ## 当前能做什么
 
 - 固定官方文档提交号、文件哈希和许可证，展开同版本的代码示例引用。
@@ -20,13 +45,13 @@
 
 核心链路保持显式 Python 实现，便于定位分块、召回、证据不足和生成错误。
 
-v0.5 已补充同一答案的核验开关对照、分阶段耗时/token、人工答案复核和报告哈希绑定；当前真实模型凭据仍缺失，尚无真实核验效果结论。完整步骤见 [核验实验说明](docs/VERIFICATION_EXPERIMENT.md)。开发问题审核入口为 [47 题复核表](evaluation/review/support-development.md)，全部保持待审核。
+v0.5 已补充同一答案的核验开关对照、分阶段耗时/token、人工答案复核和报告哈希绑定；当时缺少凭据，v0.10已运行真实 DeepSeek 开发试跑，人工核验效果仍待评分。完整步骤见 [核验实验说明](docs/VERIFICATION_EXPERIMENT.md)。开发问题审核入口为 [47 题复核表](evaluation/review/support-development.md) 或 v0.10 工作台，全部保持待审核。
 
-v0.6 新增一条命令导入并启动、就绪检查、关联请求日志与独立 HTTP 验证。用户当前选择先开发、后续再接 API。本机 73 项测试及 24 次本地 HTTP 行为检查通过；Docker 和 CI 配置已添加但尚未实际运行。详见 [启动与交付说明](docs/DELIVERY.md)。
+v0.6 新增一条命令导入并启动、就绪检查、关联请求日志与独立 HTTP 验证。当时采用零密钥开发。该版本73项测试及24次本地HTTP行为检查通过；Docker和CI配置已添加但尚未实际运行。详见 [启动与交付说明](docs/DELIVERY.md)。
 
 v0.7 新增离线检索诊断工作台；当轮本机 **89 项测试通过**。已运行 47 道开发候选题，其中 41 道参与证据诊断、6 道拒答或澄清题跳过。查看 [交互报告](evaluation/reports/retrieval-diagnostics-v07.html)、[原始 JSON](evaluation/reports/retrieval-diagnostics-v07.json) 和 [诊断规则与演示步骤](docs/RETRIEVAL_DIAGNOSTICS.md)。原始标注仍待人工审核，未运行测试集或模型 API。
 
-v0.8 新增可追溯的上下文合并与配对预算实验；当前 **107 项测试通过**，合并模式的 12 次真实 HTTP 行为检查通过。默认策略仍为 `neighbors`，可用 `--context-policy merged_neighbors` 启动合并模式。详见 [合并规则与复现](docs/CONTEXT_PACKING.md) 和 [配对开发报告](evaluation/reports/context-comparison-v08.md)。这轮验证了工程行为及原文范围覆盖，未验证真实模型回答质量。
+v0.8 新增可追溯的上下文合并与配对预算实验；当轮 **107项测试通过**，合并模式的12次真实HTTP行为检查通过。默认策略仍为 `neighbors`，可用 `--context-policy merged_neighbors` 启动合并模式。详见 [合并规则与复现](docs/CONTEXT_PACKING.md) 和 [配对开发报告](evaluation/reports/context-comparison-v08.md)。该版本验证了工程行为及原文范围覆盖，未验证真实模型回答质量。
 
 ```mermaid
 flowchart LR
@@ -46,7 +71,7 @@ flowchart LR
 
 v0.9 新增 [复现与面试演示](docs/VERSION_LAB.md)：对照 FastAPI 0.117.1 与 0.118.0 官方固定文档，在两套隔离环境实跑流式/后台任务的四种资源管理案例。打开启动后的 `/versions`，查看原文范围、提交来源、实际失败与事件顺序。
 
-本轮 **119 项测试通过**；八个固定版本/案例组合均符合预期。原始报告见 [JSON](evaluation/reports/version-behavior-v09.json) 和 [脚本派生摘要](evaluation/reports/version-behavior-v09.md)。这是实际框架与模拟资源的行为实验，不是数据库验证或 RAG 回答准确率。原有 55 题仍待人工复核，真实模型尚未评测。
+该版本 **119项测试通过**；八个固定版本/案例组合均符合预期。原始报告见 [JSON](evaluation/reports/version-behavior-v09.json) 和 [脚本派生摘要](evaluation/reports/version-behavior-v09.md)。这是实际框架与模拟资源的行为实验，不是数据库验证或 RAG 回答准确率。原有55题仍待人工复核，真实模型的后续开发实验见v0.10。
 
 ## 立即运行零密钥演示
 
@@ -189,4 +214,4 @@ HTTP 响应的 `X-Request-ID` 与问答 `trace.request_id` 一致，可关联到
 
 向量缓存按供应商、模型、接口及 `EMBEDDING_CACHE_REVISION` 隔离；同名模型升级时应提高该修订值并重建索引。缓存中可以保留已经删除文档的向量，但删除后其分块不再参与检索。
 
-下一步先用诊断工作台整理开发失败案例并完成人工复核；用户准备好 API 后再建立真实模型基线，按证据决定是否增加重排。扫描 PDF 的 OCR、完整代码块解析、鉴权、多进程一致性、向量数据库与部署压测尚未完成，不在简历中描述为已验证。
+下一步先完成人工问题复核与答案评分，补充真实语义Embedding基线，并检查重排仍未解决的4道开发候选；冻结配置后再运行保留测试集。扫描PDF的OCR、完整代码块解析、鉴权、多进程一致性、向量数据库与部署压测尚未完成。

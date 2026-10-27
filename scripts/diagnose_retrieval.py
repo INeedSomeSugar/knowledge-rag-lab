@@ -23,7 +23,8 @@ TEMPLATE = Path(__file__).resolve().parents[1] / "app/static/diagnostics.html"
 
 def render_html(report: dict) -> str:
     # JSON in a non-executable script still needs '<' escaped to prevent </script> injection.
-    data = json.dumps(report, ensure_ascii=False).replace("<", "\\u003c")
+    view = {**report, "outcome_labels": report.get("outcome_labels", OUTCOMES)}
+    data = json.dumps(view, ensure_ascii=False).replace("<", "\\u003c")
     return TEMPLATE.read_text(encoding="utf-8").replace("__DIAGNOSTIC_DATA__", data)
 
 

@@ -4,8 +4,13 @@ __pycache__/
 *.egg-info/
 .pytest_cache/
 .env
+.env.*
+!.env.example
+.ruff_cache/
+evaluation/corpus/培养管理/
 data/index/
 data/demo-index/
+data/deepseek-index/
 work/
 evaluation/reports/latest.json
 evaluation/reports/latest.md

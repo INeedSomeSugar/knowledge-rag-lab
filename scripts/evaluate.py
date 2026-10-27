@@ -296,6 +296,7 @@ def parse_args() -> argparse.Namespace:
         "--answers", action="store_true", help="同时运行回答状态评测；真实模型会产生 API 请求"
     )
     parser.add_argument("--split", choices=["development", "test"])
+    parser.add_argument("--case-ids", nargs="+", help="仅开发集的小批量试跑，保留选题 ID")
     parser.add_argument("--require-reviewed", action="store_true")
     parser.add_argument("--demo", action="store_true", help="强制零密钥模式，不调用模型 API")
     parser.add_argument("--answer-strategy", choices=["bm25", "dense", "hybrid"])
@@ -361,6 +362,15 @@ def main() -> None:
         cases = [case for case in cases if case.split == args.split]
     if not cases:
         raise ValueError("所选划分没有问题")
+    if args.case_ids:
+        if args.split != "development":
+            raise ValueError("--case-ids 仅允许显式 development，不能挑选保留测试题")
+        if len(args.case_ids) != len(set(args.case_ids)):
+            raise ValueError("--case-ids 不能重复")
+        selected = {case.case_id: case for case in cases}
+        if set(args.case_ids) - selected.keys():
+            raise ValueError("--case-ids 包含不属于当前开发集的问题")
+        cases = [selected[case_id] for case_id in args.case_ids]
     if args.require_reviewed and any(case.review_status != "human_verified" for case in cases):
         raise ValueError("正式评测要求全部问题已经人工核验")
     validate_evidence(cases, args.documents)
@@ -415,8 +425,10 @@ def main() -> None:
                     report["answers"]["details"]
                 )
             report["configuration"]["llm_provider"] = settings.llm_provider
-            report["configuration"]["llm_model"] = settings.llm_model
-            report["configuration"]["llm_enable_thinking"] = settings.llm_enable_thinking
+            report["configuration"]["llm_model"] = getattr(generator, "model", settings.llm_model)
+            report["configuration"]["llm_enable_thinking"] = getattr(
+                generator, "enable_thinking", settings.llm_enable_thinking
+            )
             report["configuration"]["answer_retrieval_strategy"] = settings.retrieval_strategy
             report["configuration"]["verification_mode"] = (
                 "not_applicable"
