@@ -17,6 +17,8 @@ Knowledge RAG Lab 是面向 AI 应用开发实习的版本感知开发者技术�
 
 ## 2. 当前真实状态
 
+v0.11功能提交`b028c9e1f69f63f50247bb1e192119bd4a15cb61`已推送现有公开仓库；本地HEAD、Git远端main与GitHub API三方提交一致。发布26个文件，逐文件凭据扫描无匹配，原始报告暂存字节一致；权重、向量缓存、索引和私有资料未发布。原有未跟踪`.github/`保留本地，不声称远端CI通过。
+
 v0.11已完成固定MIT模型`intfloat/multilingual-e5-small@614241f622f53c4eeff9890bdc4f31cfecc418b3`本地接入，384维、CPU float32、4线程、batch8、512 tokens右截断、query/passage前缀、掩码均值池化及L2归一化。模型清单/文件SHA256、输入与推理配置、依赖版本参与缓存namespace，索引指纹绑定namespace；模型缺失或错误明确失败，不静默回退。
 
 固定34文档/735分块、sections500/80、Top5、neighbors/8000字符，完成41可诊断开发候选×4策略×3重复，共492条实测检索。上下文完整标注覆盖BM25 32、Hashing 29、E5 Dense 33、E5 Hybrid 36；Hybrid较BM25改善5题、退化support-034一题、不变35题。全部47开发候选仍unreviewed，6题跳过效果诊断；未运行保留测试或生成模型。优先审核034、029和仍缺证据的013/020/026，原文位置与逐字引文见报告。
