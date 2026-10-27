@@ -16,7 +16,7 @@ class EmbeddingModel(Protocol):
 
 
 class HashingEmbedding:
-    """无需下载模型的开发用向量器；正式演示应切换真实 Embedding API。"""
+    """无需下载模型的开发基线；语义检索应显式选择本地模型或真实 API。"""
 
     def __init__(self, dimension: int = 384) -> None:
         self.dimension = dimension

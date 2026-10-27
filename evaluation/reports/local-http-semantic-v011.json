@@ -1,0 +1,45 @@
+{
+  "generated_at": "2026-10-27T08:06:14.156781+00:00",
+  "code_sha256": "6c7cb5a05701f0b298fcb585cb31b9dd71d4e6289f0f9c9e4d57569c1117099e",
+  "model": "intfloat/multilingual-e5-small",
+  "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+  "checks": [
+    {
+      "name": "configured_local_e5_hybrid_extractive",
+      "passed": true
+    },
+    {
+      "name": "nonempty_real_index",
+      "passed": true
+    },
+    {
+      "name": "five_real_semantic_hybrid_hits",
+      "passed": true
+    },
+    {
+      "name": "version_filter",
+      "passed": true
+    },
+    {
+      "name": "missing_version",
+      "passed": true
+    },
+    {
+      "name": "unknown_version",
+      "passed": true
+    },
+    {
+      "name": "evidence_answer",
+      "passed": true
+    },
+    {
+      "name": "owned_process_stopped",
+      "passed": true
+    }
+  ],
+  "passed_count": 8,
+  "server_log": "work/semantic-http/5250b144788c43088764d52ef6d4d0b7/server.log",
+  "scope": "Real loopback HTTP, local E5 and extractive output; no LLM/production/answer-quality claim.",
+  "model_api_calls": 0,
+  "offline_model_loading": true
+}

@@ -25,7 +25,7 @@ service = create_service(settings)
 
 app = FastAPI(
     title="Knowledge RAG Lab · 开发者技术支持",
-    version="0.10.0",
+    version="0.11.0",
     description="版本约束检索、证据引用核验与可复现评测",
 )
 app.add_middleware(

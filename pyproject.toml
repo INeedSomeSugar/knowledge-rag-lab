@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "knowledge-rag-lab"
-version = "0.10.0"
+version = "0.11.0"
 description = "版本感知的开发者技术支持、证据核验与检索评测"
 requires-python = ">=3.11"
 dependencies = [
@@ -17,6 +17,11 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+embedding = [
+  "torch==2.9.1",
+  "transformers==4.57.6",
+  "psutil==7.2.2",
+]
 version-lab = [
   "starlette==0.48.0",
   "pydantic==2.11.9",

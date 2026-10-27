@@ -183,7 +183,9 @@ class RAGService:
             try:
                 retrieved = self._search(snapshot, question.strip(), top_k, scope)
                 hits = expand_context(
-                    retrieved, snapshot.dense.chunks, char_budget=self.context_char_budget,
+                    retrieved,
+                    snapshot.dense.chunks,
+                    char_budget=self.context_char_budget,
                     policy=self.context_policy,
                 )
             except Exception as exc:
@@ -251,13 +253,19 @@ class RAGService:
                 products[str(product)].add(str(version))
         return {product: sorted(versions) for product, versions in sorted(products.items())}
 
-    @staticmethod
-    def _revision(chunks: list[Chunk]) -> str:
+    def _revision(self, chunks: list[Chunk]) -> str:
         import json
 
         return hashlib.sha256(
             json.dumps(
-                [chunk.to_dict() for chunk in chunks], sort_keys=True, ensure_ascii=False
+                {
+                    "chunks": [chunk.to_dict() for chunk in chunks],
+                    "embedding": getattr(
+                        self.retriever.dense.embedding_model, "namespace", "uncached"
+                    ),
+                },
+                sort_keys=True,
+                ensure_ascii=False,
             ).encode()
         ).hexdigest()[:16]
 

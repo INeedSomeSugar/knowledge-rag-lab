@@ -11,6 +11,10 @@ evaluation/corpus/培养管理/
 data/index/
 data/demo-index/
 data/deepseek-index/
+data/semantic-index/
+*.safetensors
+*.onnx
+*.sqlite3
 work/
 evaluation/reports/latest.json
 evaluation/reports/latest.md

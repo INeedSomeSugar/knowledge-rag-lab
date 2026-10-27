@@ -45,6 +45,19 @@ class Settings:
     chunk_overlap: int = _int_env("CHUNK_OVERLAP", 80)
     chunking_strategy: str = os.getenv("CHUNKING_STRATEGY", "window")
     embedding_cache_revision: str = os.getenv("EMBEDDING_CACHE_REVISION", "1")
+    embedding_model_revision: str = os.getenv(
+        "EMBEDDING_MODEL_REVISION", "614241f622f53c4eeff9890bdc4f31cfecc418b3"
+    )
+    embedding_model_dir: Path = Path(
+        os.getenv(
+            "EMBEDDING_MODEL_DIR",
+            "work/models/multilingual-e5-small/614241f622f53c4eeff9890bdc4f31cfecc418b3",
+        )
+    )
+    embedding_max_length: int = _int_env("EMBEDDING_MAX_LENGTH", 512)
+    embedding_batch_size: int = _int_env("EMBEDDING_BATCH_SIZE", 8)
+    embedding_cpu_threads: int = _int_env("EMBEDDING_CPU_THREADS", 4)
+    embedding_device: str = os.getenv("EMBEDDING_DEVICE", "cpu")
     retrieval_top_k: int = _int_env("RETRIEVAL_TOP_K", 5)
     retrieval_strategy: str = os.getenv("RETRIEVAL_STRATEGY", "hybrid")
     context_char_budget: int = _int_env("CONTEXT_CHAR_BUDGET", 16000)

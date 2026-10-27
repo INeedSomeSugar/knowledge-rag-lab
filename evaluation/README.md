@@ -1,6 +1,18 @@
 # 评测集说明
 
-## v0.10 当前入口
+## v0.11 当前入口
+
+本地真实E5语义Embedding与四组固定对照已实跑，详见[复现说明](../docs/EMBEDDING_V011.md)和[逐题报告](reports/semantic-embedding-development-v011.md)。34份文档、735分块、Top-5、neighbors及8000字符上限；41题×四策略×三重复，共492次检索。Hashing Dense单独保留，不混称为语义模型。
+
+最终上下文完整标注覆盖：BM25 32/41、Hashing 29/41、E5 Dense 33/41、E5 Hybrid 36/41；Hybrid对BM25改善5、退化1、不变35题。原文、逐题排名、文档/证据/上下文指标、冷/热建库和在线查询计时均保存。全部47道开发候选仍未人工审核；6题跳过效果诊断，保留测试集未运行，未生成答案或代签人工审核。
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -m scripts.compare_embeddings --split development --repeats 3 --output evaluation/reports/semantic-new.json --run-dir work/semantic-runs/new
+```
+
+模型需先按文档下载；输出与run-dir拒绝覆盖。`--split test`被拒绝。优先复核`support-034`（Hybrid退化）、`support-029`（Dense优势被融合稀释）及仍缺证据的013/020/026；全部逐字证据和定位在报告内。审核不影响工程复现；正式效果仍须人工确认问题与答案。
+
+## v0.10 历史入口
 
 运行`./start-review.ps1`打开本地47题开发复核工作台，支持逐字证据修订与导出，原始55题及划分不改写。使用见`docs/EVALUATION_V010.md`。
 

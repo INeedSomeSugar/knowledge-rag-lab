@@ -1,4 +1,5 @@
 from __future__ import annotations
+import json
 from urllib.parse import urlparse
 
 from app.chunking import TextChunker
@@ -26,6 +27,18 @@ def require_compatible_endpoint(base_url: str) -> None:
 
 
 def create_embedding_model(settings: Settings) -> EmbeddingModel:
+    if settings.embedding_provider == "local_e5":
+        from app.local_embeddings import LocalE5Embedding
+
+        return LocalE5Embedding(
+            model=settings.embedding_model,
+            revision=settings.embedding_model_revision,
+            directory=settings.embedding_model_dir,
+            max_length=settings.embedding_max_length,
+            batch_size=settings.embedding_batch_size,
+            cpu_threads=settings.embedding_cpu_threads,
+            device=settings.embedding_device,
+        )
     if settings.embedding_provider == "hashing":
         return HashingEmbedding()
     if settings.embedding_provider in {"openai_compatible", "ollama"}:
@@ -70,10 +83,12 @@ def create_answer_generator(settings: Settings) -> AnswerGenerator:
 
 
 def create_cached_embedding(settings: Settings) -> CachedEmbedding:
+    model = create_embedding_model(settings)
+    identity = json.dumps(getattr(model, "descriptor", {}), sort_keys=True, ensure_ascii=False)
     return CachedEmbedding(
-        create_embedding_model(settings),
+        model,
         settings.data_dir / "vectors.sqlite3",
-        f"v1:{settings.embedding_provider}:{settings.embedding_model}:{settings.embedding_base_url}:{settings.embedding_cache_revision}",
+        f"v2:{settings.embedding_provider}:{settings.embedding_model}:{settings.embedding_base_url}:{settings.embedding_cache_revision}:{identity}",
     )
 
 

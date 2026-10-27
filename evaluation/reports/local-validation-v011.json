@@ -1,0 +1,187 @@
+{
+  "generated_at": "2026-10-27T08:07:41.658601+00:00",
+  "checks": [
+    {
+      "name": "frozen_code_sha256",
+      "passed": true
+    },
+    {
+      "name": "frozen_questions_sha256",
+      "passed": true
+    },
+    {
+      "name": "frozen_corpus_sha256",
+      "passed": true
+    },
+    {
+      "name": "frozen_chunks_sha256",
+      "passed": true
+    },
+    {
+      "name": "frozen_selected_case_ids",
+      "passed": true
+    },
+    {
+      "name": "frozen_splits",
+      "passed": true
+    },
+    {
+      "name": "unreviewed_development_only",
+      "passed": true
+    },
+    {
+      "name": "trials_sha256",
+      "passed": true
+    },
+    {
+      "name": "492_trials_development_only",
+      "passed": true
+    },
+    {
+      "name": "repeat_ranking_stability",
+      "passed": true
+    },
+    {
+      "name": "no_model_api_or_generation",
+      "passed": true
+    },
+    {
+      "name": "735_warm_cache_hits",
+      "passed": true
+    },
+    {
+      "name": "no_actual_input_truncation",
+      "passed": true
+    },
+    {
+      "name": "markdown_bound_to_json",
+      "passed": true
+    },
+    {
+      "name": "real_semantic_http_8_checks",
+      "passed": true
+    },
+    {
+      "name": "http_final_code_hash",
+      "passed": true
+    },
+    {
+      "name": "166_engineering_tests_including_real_e5",
+      "passed": true
+    },
+    {
+      "name": "portable_html_javascript_syntax",
+      "passed": true
+    },
+    {
+      "name": "no_private_or_runtime_files_in_public_scope",
+      "passed": true
+    },
+    {
+      "name": "public_scope_secret_scan",
+      "passed": true
+    },
+    {
+      "name": "candidate_file_unchanged_from_git",
+      "passed": true
+    }
+  ],
+  "junit": {
+    "tests": 166,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "local_path": "work/semantic-validation/junit-final.xml",
+    "sha256": "b3275936a6ffdc882feb34665a9f15daddb7cabfbd9a62a8f064edeb676c535f"
+  },
+  "ruff_check": "passed",
+  "ruff_format_changed_python_files": 8,
+  "pip_check": "passed",
+  "third_party_deprecation_warnings": 2,
+  "input_fingerprints": {
+    "code_sha256": "6c7cb5a05701f0b298fcb585cb31b9dd71d4e6289f0f9c9e4d57569c1117099e",
+    "questions_sha256": "97df2962ada7c8d41476c02d20a16fafcc739a02d41f4d6011572643d433d584",
+    "corpus_sha256": "aad40f02f11b221f3c4e2da1199b88aff1e5bd53f5aecfb8700a57fdc313ca18",
+    "chunks_sha256": "ff45fc25baba9c7a687b7bc7775d7333e06477e8e5f213cf23486e39b113e140",
+    "selected_case_ids": [
+      "support-001",
+      "support-002",
+      "support-003",
+      "support-004",
+      "support-005",
+      "support-006",
+      "support-007",
+      "support-008",
+      "support-009",
+      "support-010",
+      "support-011",
+      "support-012",
+      "support-013",
+      "support-014",
+      "support-015",
+      "support-016",
+      "support-017",
+      "support-018",
+      "support-019",
+      "support-020",
+      "support-021",
+      "support-022",
+      "support-023",
+      "support-024",
+      "support-025",
+      "support-026",
+      "support-027",
+      "support-028",
+      "support-029",
+      "support-030",
+      "support-031",
+      "support-034",
+      "support-035",
+      "support-036",
+      "support-037",
+      "support-038",
+      "support-039",
+      "support-040",
+      "support-045",
+      "support-046",
+      "support-047",
+      "support-unanswerable-01",
+      "support-unanswerable-02",
+      "support-unanswerable-03",
+      "support-unanswerable-05",
+      "support-unanswerable-06",
+      "support-unanswerable-07"
+    ],
+    "splits": [
+      "development"
+    ]
+  },
+  "artifacts": {
+    "evaluation/reports/semantic-embedding-development-v011.json": "c5c1bf04d9fa0413952c6eeb304db87ef87b6d8acfa64096dad546acf7ba5cee",
+    "evaluation/reports/semantic-embedding-development-v011.md": "9f1c21e6e40422403bc59827a3544e25246ddff91b6ca2b5b8524105e90ef2be",
+    "evaluation/reports/semantic-embedding-development-v011.html": "6cb5bf73f2aabc542f527051aa75564bb924c7a838d17165788bc0c418d0d130",
+    "evaluation/reports/semantic-embedding-development-v011.trials.jsonl": "f1590fd80b17984e27ac43f16df375a110bb300a7b7487427f02e2967e440fe3",
+    "evaluation/reports/local-http-semantic-v011.json": "84806505eb4917fc0ced2c891cbcaf886eccc2f514ad11b5b9609faf6c1e8c71"
+  },
+  "public_scan": {
+    "files_checked": 199,
+    "secret_value_or_pattern_match_count": 0,
+    "forbidden_path_count": 0,
+    "scope": "tracked plus new nonignored files; existing untracked .github excluded"
+  },
+  "standalone_build": {
+    "command": ".\\start-semantic.ps1 -BuildOnly",
+    "document_count": 34,
+    "chunk_count": 735,
+    "cache_hits": 0,
+    "embedded_unique_texts": 558,
+    "deduplicated_texts": 177
+  },
+  "boundaries": {
+    "human_signoffs_added": 0,
+    "held_out_retrieval_runs": 0,
+    "answer_accuracy": null,
+    "production_deployment": false,
+    "remote_ci_claim": false
+  }
+}
