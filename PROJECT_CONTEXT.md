@@ -17,7 +17,7 @@ Knowledge RAG Lab 是面向 AI 应用开发实习的版本感知开发者技术�
 
 ## 2. 当前真实状态
 
-2026-10-27准备同步v0.10到既有公开仓库：完整157项工程测试通过，Ruff检查通过，本轮新增8个Python文件格式通过；全仓格式检查仍有16个旧文件差异，保留历史源码。JUnit位于`work/publication-20261027/junit.xml`。公开范围排除培养管理PDF、凭据、索引与运行目录；FastAPI快照许可证保留。现有OAuth缺workflow权限，工作流继续留本地，不声称已上传或远端CI通过。
+2026-10-27已同步v0.10到既有公开仓库，功能提交`f7fb98b355fd98db0f36f91f0b3a5194b8148da2`已核对远端main：完整157项工程测试通过，Ruff检查通过，本轮新增8个Python文件格式通过；全仓格式检查仍有16个旧文件差异，保留历史源码。JUnit位于`work/publication-20261027/junit.xml`。公开范围排除培养管理PDF、凭据、索引与运行目录；FastAPI快照许可证保留。现有OAuth缺workflow权限，工作流继续留本地，不声称已上传或远端CI通过。
 
 源码仓库：<https://github.com/INeedSomeSugar/knowledge-rag-lab>，默认分支 `main`。发布范围包含代码、官方 FastAPI 文档快照、候选问题和原始开发报告；`.env`、虚拟环境、运行索引及未用于本场景的培养管理 PDF 保留在本地。
 
