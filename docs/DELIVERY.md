@@ -78,7 +78,7 @@ docker compose logs -f rag
 - Docker HEALTHCHECK 检查 `/ready`。这不执行模型连通性检查。
 - 镜像构建需要下载基础镜像与 Python 依赖，但不需要模型 API Key。
 
-本机没有检测到 Docker CLI 或 Docker Desktop，因此本轮只完成配置与 YAML 语法检查，**没有实际构建或运行容器**。基础镜像使用 `python:3.12-slim` 标签，依赖按 `pyproject.toml` 范围解析；当前不是按镜像 digest 和全量依赖哈希固定的逐字节复现环境。
+v0.6当时没有检测到Docker，只完成配置与YAML语法检查。2026-10-27已实际构建并完成本机容器验证，最终13项检查及12次业务请求通过，详见 [容器实测与复现](CONTAINER_VALIDATION.md)。基础镜像仍使用`python:3.12-slim`标签、依赖按`pyproject.toml`范围解析；报告保存实际镜像ID和依赖快照，当前不保证异机逐字节构建一致。
 
 ## GitHub Actions
 

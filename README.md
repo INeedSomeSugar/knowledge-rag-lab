@@ -4,6 +4,10 @@
 
 先阅读 [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) 和 [AGENTS.md](AGENTS.md)。场景选择及验收范围见 [实施计划](docs/IMPLEMENTATION_PLAN.md)，数据边界见 [数据卡](evaluation/SUPPORT_DATA_CARD.md)。
 
+2026-10-28发布前完整172项工程测试通过，包含本地E5模型集成。项目展示见[三分钟演示与面试](docs/SHOWCASE.md)，真实人工判断的操作见[审核交接](docs/HUMAN_REVIEW_HANDOFF.md)；当前候选与答案审核仍待实际人员完成。
+
+2026-10-27补充本地Docker交付实测：实际构建、12次零密钥业务请求、重启后索引与资源清理均通过，最终13项检查及20项相关工程测试通过。复现见 [容器验证](docs/CONTAINER_VALIDATION.md)；E5权重、真实生成与远端CI不在本次容器验证范围。
+
 ## v0.11：本地真实语义检索与可复现对照
 
 已接入固定MIT版本的多语言E5-small，实际生成文档和查询的384维向量；本地CPU推理，模型缺失明确失败，模型/配置/文件哈希隔离缓存与索引身份。Hashing保留为独立工程基线。
@@ -61,7 +65,7 @@
 
 v0.5 已补充同一答案的核验开关对照、分阶段耗时/token、人工答案复核和报告哈希绑定；当时缺少凭据，v0.10已运行真实 DeepSeek 开发试跑，人工核验效果仍待评分。完整步骤见 [核验实验说明](docs/VERIFICATION_EXPERIMENT.md)。开发问题审核入口为 [47 题复核表](evaluation/review/support-development.md) 或 v0.10 工作台，全部保持待审核。
 
-v0.6 新增一条命令导入并启动、就绪检查、关联请求日志与独立 HTTP 验证。当时采用零密钥开发。该版本73项测试及24次本地HTTP行为检查通过；Docker和CI配置已添加但尚未实际运行。详见 [启动与交付说明](docs/DELIVERY.md)。
+v0.6 新增一条命令导入并启动、就绪检查、关联请求日志与独立 HTTP 验证。当时采用零密钥开发。该版本73项测试及24次本地HTTP行为检查通过；Docker已于2026-10-27补充本机实测，远端CI仍未触发。详见 [启动与交付说明](docs/DELIVERY.md)。
 
 v0.7 新增离线检索诊断工作台；当轮本机 **89 项测试通过**。已运行 47 道开发候选题，其中 41 道参与证据诊断、6 道拒答或澄清题跳过。查看 [交互报告](evaluation/reports/retrieval-diagnostics-v07.html)、[原始 JSON](evaluation/reports/retrieval-diagnostics-v07.json) 和 [诊断规则与演示步骤](docs/RETRIEVAL_DIAGNOSTICS.md)。原始标注仍待人工审核，未运行测试集或模型 API。
 

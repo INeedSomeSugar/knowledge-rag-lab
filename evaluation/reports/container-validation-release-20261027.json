@@ -1,0 +1,32 @@
+{
+  "schema_version": "rag.container-validation.v1",
+  "generated_at": "2026-10-27T12:56:54.861683+00:00",
+  "project": "rag-verify-67b21ae427384026b0320d5c604b3da9",
+  "checks": [
+    {
+      "name": "local_docker_endpoint",
+      "passed": true
+    },
+    {
+      "name": "ephemeral_project_cleanup",
+      "passed": true
+    }
+  ],
+  "passed": false,
+  "scope": "Local Linux demo container; no generation API, answer scoring, or remote CI.",
+  "run_directory": "D:\\User\\AI\\knowledge-rag-lab\\work\\container-verification\\67b21ae427384026b0320d5c604b3da9",
+  "existing_image": null,
+  "docker_endpoint": "npipe:////./pipe/dockerDesktopLinuxEngine",
+  "error_type": "RuntimeError",
+  "error": "container_command_failed: docker --host npipe:////./pipe/dockerDesktopLinuxEngine info --format",
+  "source_sha256": {
+    "Dockerfile": "2dd964b95fe554c29617bae32ce917addb49ace6c32e14f5a3ef616dec5e8076",
+    "compose.yaml": "249677f4eb591ca49255e2a21f45673bb82fd6526179453611fa558528cad71f",
+    ".dockerignore": "80ee9f62b581b07a5e5dee2d32b0649806f07b24b584d9dc22d172a74a09151e",
+    "pyproject.toml": "c9a3766a9820e60a1324319fed7205868ad23181f5dab1a5eea2c6d5e30300a7",
+    "scripts/verify_container.py": "d4a4b51f771dbdc6e9a2a9d610fc01cfa862bf6055578ce87e99874c52da2997"
+  },
+  "artifact_sha256": {
+    "compose.yaml": "b61c56e48aca41bd04985e6968a65bf191e11edd1bf08c7635bf0aad98962e13"
+  }
+}

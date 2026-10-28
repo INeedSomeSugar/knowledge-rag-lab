@@ -1,0 +1,269 @@
+{
+  "schema_version": "rag.container-validation.v1",
+  "generated_at": "2026-10-27T08:41:33.692265+00:00",
+  "project": "rag-verify-e636cbce580e4b4493b20191a7859a0f",
+  "checks": [
+    {
+      "name": "linux_engine",
+      "passed": true
+    },
+    {
+      "name": "loopback_only_publish",
+      "passed": true
+    },
+    {
+      "name": "read_only_root",
+      "passed": true
+    },
+    {
+      "name": "non_root_user",
+      "passed": true
+    },
+    {
+      "name": "healthy",
+      "passed": true
+    },
+    {
+      "name": "no_api_credentials",
+      "passed": true
+    },
+    {
+      "name": "container_dependency_consistency",
+      "passed": true
+    },
+    {
+      "name": "http_12_business_checks",
+      "passed": true
+    },
+    {
+      "name": "restart_loopback_only_publish",
+      "passed": true
+    },
+    {
+      "name": "restart_preserves_ready_index",
+      "passed": true
+    },
+    {
+      "name": "ephemeral_project_cleanup",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "scope": "Local Linux demo container; no generation API, answer scoring, or remote CI.",
+  "run_directory": "D:\\User\\AI\\knowledge-rag-lab\\work\\container-verification\\e636cbce580e4b4493b20191a7859a0f",
+  "existing_image": "rag-v012-local-rag",
+  "container": {
+    "id": "fef13ee9b928550e89cfb0446730d7ec4531e12accad11eefb205038140cc8c2",
+    "image_id": "sha256:0324b61c902a1a26a69aa4a0b4b67d198084a3200c6c7908130d04e46653c0e7",
+    "user": "10001:10001",
+    "ports": [
+      {
+        "HostIp": "127.0.0.1",
+        "HostPort": "51642"
+      }
+    ],
+    "read_only_root": true,
+    "environment_names": [
+      "PATH",
+      "LANG",
+      "GPG_KEY",
+      "PYTHON_VERSION",
+      "PYTHON_SHA256",
+      "PYTHONDONTWRITEBYTECODE",
+      "PYTHONUNBUFFERED",
+      "PYTHONUTF8",
+      "DATA_DIR"
+    ]
+  },
+  "http": {
+    "schema_version": "1.0",
+    "generated_at": "2026-10-27T08:41:44.131524+00:00",
+    "scope": "loopback demo HTTP workload; not model quality or production capacity",
+    "configuration": {
+      "base_url": "http://127.0.0.1:51642",
+      "requests": 12,
+      "concurrency": 3,
+      "warmup_requests": 3,
+      "request_timeout_seconds": 10,
+      "connections": "new connection per request"
+    },
+    "environment": {
+      "python": "3.12.14",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "logical_cpu_count": 16
+    },
+    "server": {
+      "status": "ok",
+      "embedding_provider": "hashing",
+      "llm_provider": "extractive",
+      "retrieval_strategy": "bm25",
+      "context_policy": "neighbors",
+      "document_count": 34,
+      "process_id": 1,
+      "application_version": "0.11.0",
+      "instance_id": ""
+    },
+    "readiness": {
+      "status": "ready",
+      "reason": "index_loaded",
+      "chunk_count": 735,
+      "index_revision": "1a6c44cd3610f9e5",
+      "model_connectivity": "not_checked"
+    },
+    "client_code_sha256": "40cbf7e03a7c743f2d64ede3c9568cafb146b23f75644fcd01617a67faf54b9d",
+    "summary": {
+      "completed_count": 12,
+      "success_count": 12,
+      "failure_count": 0,
+      "elapsed_seconds": 0.1856,
+      "completed_requests_per_second": 64.669,
+      "latency_p50_ms": 45.878,
+      "latency_p95_ms": 47.56,
+      "latency_max_ms": 47.56,
+      "status_counts": {
+        "evidence_only": 4,
+        "needs_clarification": 4,
+        "insufficient_evidence": 4
+      }
+    },
+    "notes": [
+      "只有 3 类重复请求，不能当作同等数量的独立问题或效果评测集。",
+      "延迟包含连接、响应正文与解析；不含客户端任务排队时间，分位数为 nearest-rank。",
+      "客户端与服务端位于同机，共享资源；没有真实 Embedding/LLM，不推断线上容量。"
+    ],
+    "details": [
+      {
+        "index": 0,
+        "workload": "versioned_evidence",
+        "ok": true,
+        "expected_status": "evidence_only",
+        "status": "evidence_only",
+        "request_id": "e9c98a9aa7e2497fb25603e1514a0ea9",
+        "elapsed_ms": 46.912
+      },
+      {
+        "index": 1,
+        "workload": "version_clarification",
+        "ok": true,
+        "expected_status": "needs_clarification",
+        "status": "needs_clarification",
+        "request_id": "026a6ac17b6e4c15947a84824da30adb",
+        "elapsed_ms": 47.023
+      },
+      {
+        "index": 2,
+        "workload": "unknown_version",
+        "ok": true,
+        "expected_status": "insufficient_evidence",
+        "status": "insufficient_evidence",
+        "request_id": "84c3c6c791fb4ee6a59691267319504b",
+        "elapsed_ms": 45.383
+      },
+      {
+        "index": 3,
+        "workload": "versioned_evidence",
+        "ok": true,
+        "expected_status": "evidence_only",
+        "status": "evidence_only",
+        "request_id": "5062f42da1e34773b338d7e25ce07c7f",
+        "elapsed_ms": 47.56
+      },
+      {
+        "index": 4,
+        "workload": "version_clarification",
+        "ok": true,
+        "expected_status": "needs_clarification",
+        "status": "needs_clarification",
+        "request_id": "0886c17060ac4f5db10aa86353c8f820",
+        "elapsed_ms": 47.485
+      },
+      {
+        "index": 5,
+        "workload": "unknown_version",
+        "ok": true,
+        "expected_status": "insufficient_evidence",
+        "status": "insufficient_evidence",
+        "request_id": "58b783170a1b454a88e0634cf4b02b94",
+        "elapsed_ms": 45.878
+      },
+      {
+        "index": 6,
+        "workload": "versioned_evidence",
+        "ok": true,
+        "expected_status": "evidence_only",
+        "status": "evidence_only",
+        "request_id": "66f0b6cf971e41d2a337545bcd455eec",
+        "elapsed_ms": 46.901
+      },
+      {
+        "index": 7,
+        "workload": "version_clarification",
+        "ok": true,
+        "expected_status": "needs_clarification",
+        "status": "needs_clarification",
+        "request_id": "1bfd65c86fdc448f9c6a14c916879c73",
+        "elapsed_ms": 47.063
+      },
+      {
+        "index": 8,
+        "workload": "unknown_version",
+        "ok": true,
+        "expected_status": "insufficient_evidence",
+        "status": "insufficient_evidence",
+        "request_id": "9769e512f4c04d9e9824973fbbe625c4",
+        "elapsed_ms": 44.951
+      },
+      {
+        "index": 9,
+        "workload": "versioned_evidence",
+        "ok": true,
+        "expected_status": "evidence_only",
+        "status": "evidence_only",
+        "request_id": "dac9fe934f6f404aba7eaaaac59cf2f2",
+        "elapsed_ms": 45.59
+      },
+      {
+        "index": 10,
+        "workload": "version_clarification",
+        "ok": true,
+        "expected_status": "needs_clarification",
+        "status": "needs_clarification",
+        "request_id": "c8ae5d95d0624bd19d1a0ba13f16d384",
+        "elapsed_ms": 44.506
+      },
+      {
+        "index": 11,
+        "workload": "unknown_version",
+        "ok": true,
+        "expected_status": "insufficient_evidence",
+        "status": "insufficient_evidence",
+        "request_id": "33732307b3394043818ab147158525cd",
+        "elapsed_ms": 43.833
+      }
+    ]
+  },
+  "after_restart_bindings": [
+    {
+      "HostIp": "127.0.0.1",
+      "HostPort": "64810"
+    }
+  ],
+  "after_restart": {
+    "status": "ready",
+    "reason": "index_loaded",
+    "chunk_count": 735,
+    "index_revision": "1a6c44cd3610f9e5",
+    "model_connectivity": "not_checked"
+  },
+  "source_sha256": {
+    "Dockerfile": "2dd964b95fe554c29617bae32ce917addb49ace6c32e14f5a3ef616dec5e8076",
+    "compose.yaml": "249677f4eb591ca49255e2a21f45673bb82fd6526179453611fa558528cad71f",
+    ".dockerignore": "80ee9f62b581b07a5e5dee2d32b0649806f07b24b584d9dc22d172a74a09151e",
+    "scripts/verify_container.py": "e4d2a167febecf6b7dd5810286d15ef73eb4d4ef7e107644e5216fa6eacf80dc"
+  },
+  "artifact_sha256": {
+    "compose.yaml": "a27ed13b7c423c6fab5957719f0fbae75809a93bed7c964444cb197d965eb5fd",
+    "container.log": "e610307f14bc89afce0f50d7309fbaa33580ccb4991c0785d2c48590b5f61d92",
+    "dependencies.txt": "c6e99575ae5720d6abb832a5c4ad46b86a73a119e7c181c5c5c7c79d1698596e"
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "schema_version": "rag.container-local-validation.v1",
+  "generated_at": "2026-10-27T13:00:55.240772+00:00",
+  "passed": true,
+  "related_engineering_tests": {
+    "tests": "20",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0"
+  },
+  "full_suite_rerun": false,
+  "container_checks": [
+    {
+      "name": "local_docker_endpoint",
+      "passed": true
+    },
+    {
+      "name": "linux_engine",
+      "passed": true
+    },
+    {
+      "name": "image_build",
+      "passed": true
+    },
+    {
+      "name": "loopback_only_publish",
+      "passed": true
+    },
+    {
+      "name": "read_only_root",
+      "passed": true
+    },
+    {
+      "name": "non_root_user",
+      "passed": true
+    },
+    {
+      "name": "healthy",
+      "passed": true
+    },
+    {
+      "name": "no_api_credentials",
+      "passed": true
+    },
+    {
+      "name": "container_dependency_consistency",
+      "passed": true
+    },
+    {
+      "name": "http_12_business_checks",
+      "passed": true
+    },
+    {
+      "name": "restart_loopback_only_publish",
+      "passed": true
+    },
+    {
+      "name": "restart_preserves_ready_index",
+      "passed": true
+    },
+    {
+      "name": "ephemeral_project_cleanup",
+      "passed": true
+    }
+  ],
+  "http_requests": 12,
+  "checks": [
+    {
+      "name": "ruff",
+      "passed": true
+    },
+    {
+      "name": "changed_python_format",
+      "passed": true
+    },
+    {
+      "name": "dependencies",
+      "passed": true
+    },
+    {
+      "name": "diff_whitespace",
+      "passed": true
+    }
+  ],
+  "source_and_evidence_sha256": {
+    "scripts/verify_container.py": "d4a4b51f771dbdc6e9a2a9d610fc01cfa862bf6055578ce87e99874c52da2997",
+    "tests/test_container_verification.py": "4f89d50f6835dde975603a664729aff2cd2c22064be9198cc21f4fe956d16624",
+    "pyproject.toml": "c9a3766a9820e60a1324319fed7205868ad23181f5dab1a5eea2c6d5e30300a7",
+    "README.md": "f26605a856919a53d8a7d2ce0a4c6b073ca32f938cec967dc7e01e2261ebf8cb",
+    "PROJECT_CONTEXT.md": "7a45de3d22aa1a8ccb9550c297c37d7d0881b2c974a501428d1d885756844ed6",
+    "docs/CONTAINER_VALIDATION.md": "fe9f39f747a288bd594a00daae20624b12f860a8f04a92fb303c2fee347bbe10",
+    "docs/DELIVERY.md": "1b58fca0ae52697e0d47ec689f1b3df73443eb68eebc9c68286ddd9e74d615b7",
+    "work/container-validation-release-tests.xml": "f7ac084326370a5982fbe8a28be5c3e571f6c1ce4b2150a6ed3aba41ef8944a2",
+    "evaluation/reports/container-validation-release-rerun-20261027.json": "e84f5468e301cf8faa10a67fa9a8b68341b3aa24e315c78447bf1fb1489b1b31"
+  },
+  "container_report_sources_and_artifacts_hash_verified": true,
+  "live_model_calls_this_iteration": 0,
+  "human_ratings_added_this_iteration": 0,
+  "remote_ci_or_production_deployment_verified": false,
+  "publication": "local changes; not committed or pushed"
+}
