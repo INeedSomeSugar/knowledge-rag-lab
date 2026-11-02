@@ -2,6 +2,12 @@
 
 > 这是给开发者和 Codex 使用的长期交接文件。最后更新：2026-11-02；当前阶段：`v0.14-judge-mcp-showcase`。更早发布与实验记录保留为历史快照。
 
+## 2026-11-02 首页标题与演示文案
+
+- 首页、浏览器标签页与 API 文档标题统一为“AI 技术文档问答助手”；副标题为“选择文档版本后提问，回答附上原文出处，方便核对。”README 同步名称与通俗介绍。
+- 当前 `docs/assets/demo.gif` 与 `demo.png` 改为新标题的本地抽取式演示：34 份文档、版本澄清、选定 0.115.0 后的 CORS 检索及原文出处，共三帧／10 秒，模型调用 0。此前的真实 DeepSeek 流式录像逐字节保留为 `docs/assets/deepseek-streaming-20261102.gif`，README 分别标注两种演示来源。
+- `tests/test_api.py` 与 `tests/test_streaming_conversation.py` 共 13 项通过；修改的 Python 文件 Ruff 检查通过。实际浏览器确认页面标题、副标题、版本澄清及引用展示，实际 HTTP 确认 API 文档名称；README 53 条本地链接、演示帧数、原录像内容摘要和 Git diff 检查通过。
+
 ## 2026-11-02 v0.14 端到端答案评测（LLM-as-Judge）、MCP 服务端与首屏演示快照
 
 - **102 文档扩充语料端到端答案评测与 LLM-as-Judge 校准**（`evaluation/reports/answer-judge-20261102.{json,md}`，冻结协议 SHA256 `29fd88a8fe7ec019b5c58f63ee87f81598811e992aea8c2de92ec973039b3cda`）：

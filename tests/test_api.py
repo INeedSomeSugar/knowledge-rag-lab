@@ -75,4 +75,4 @@ def test_version_scope_flows_through_chat_and_search_api(tmp_path: Path, monkeyp
     ).json()
     assert {hit["metadata"]["version"] for hit in searched["hits"]} == {"2"}
     assert client.get("/api/v1/catalog").json()["products"] == {"fastapi": ["1", "2"]}
-    assert "开发者技术支持" in client.get("/").text
+    assert "AI 技术文档问答助手" in client.get("/").text

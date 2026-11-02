@@ -24,7 +24,7 @@ settings = Settings()
 service = create_service(settings)
 
 app = FastAPI(
-    title="Knowledge RAG Lab · 开发者技术支持",
+    title="Knowledge RAG Lab · AI 技术文档问答助手",
     version="0.12.0",
     description="版本约束检索、证据引用核验与可复现评测",
 )
