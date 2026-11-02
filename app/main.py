@@ -9,7 +9,7 @@ from time import perf_counter
 import uuid
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from starlette.concurrency import run_in_threadpool
@@ -25,7 +25,7 @@ service = create_service(settings)
 
 app = FastAPI(
     title="Knowledge RAG Lab · 开发者技术支持",
-    version="0.11.0",
+    version="0.12.0",
     description="版本约束检索、证据引用核验与可复现评测",
 )
 app.add_middleware(
@@ -91,11 +91,18 @@ class SearchRequest(BaseModel):
     version: str | None = Field(default=None, min_length=1, max_length=80)
 
 
+class PreviousTurn(BaseModel):
+    question: str = Field(min_length=1, max_length=4000)
+    product: str | None = Field(default=None, min_length=1, max_length=80)
+    version: str | None = Field(default=None, min_length=1, max_length=80)
+
+
 class ChatRequest(BaseModel):
-    question: str = Field(min_length=1)
+    question: str = Field(min_length=1, max_length=4000, pattern=r"\S")
     top_k: int = Field(default=5, ge=1, le=20)
     product: str | None = Field(default=None, min_length=1, max_length=80)
     version: str | None = Field(default=None, min_length=1, max_length=80)
+    previous_turn: PreviousTurn | None = None
 
 
 class VersionComparisonRequest(BaseModel):
@@ -112,6 +119,11 @@ def request_filters(request: SearchRequest | ChatRequest | TextDocumentRequest) 
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
 def home() -> str:
     return (Path(__file__).parent / "static" / "index.html").read_text(encoding="utf-8")
+
+
+@app.get("/chat.js", include_in_schema=False)
+def chat_script():
+    return FileResponse(Path(__file__).parent / "static" / "chat.js", media_type="text/javascript")
 
 
 @app.get("/versions", response_class=HTMLResponse, include_in_schema=False)
@@ -164,6 +176,8 @@ def health() -> dict[str, object]:
         "llm_provider": settings.llm_provider,
         "retrieval_strategy": settings.retrieval_strategy,
         "context_policy": service.context_policy,
+        "reranker_provider": settings.reranker_provider,
+        "conversation_rewrite": "one_turn_rules",
         "document_count": len(service.list_documents()),
         "process_id": os.getpid(),
         "application_version": app.version,
@@ -239,4 +253,30 @@ def search(request: SearchRequest) -> dict[str, object]:
 
 @app.post("/api/v1/chat")
 def chat(request: ChatRequest) -> dict[str, object]:
-    return service.answer(request.question, request.top_k, filters=request_filters(request))
+    return service.answer(
+        request.question,
+        request.top_k,
+        filters=request_filters(request),
+        previous_turn=request.previous_turn.model_dump(exclude_none=True)
+        if request.previous_turn
+        else None,
+    )
+
+
+@app.post("/api/v1/chat/stream")
+async def chat_stream(request: ChatRequest) -> StreamingResponse:
+    from app.streaming import stream_answer
+
+    return StreamingResponse(
+        stream_answer(
+            service,
+            request.question,
+            request.top_k,
+            filters=request_filters(request),
+            previous_turn=request.previous_turn.model_dump(exclude_none=True)
+            if request.previous_turn
+            else None,
+        ),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )

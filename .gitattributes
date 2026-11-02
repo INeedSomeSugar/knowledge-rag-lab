@@ -2,4 +2,5 @@
 evaluation/reports/** -text
 evaluation/review/** -text
 evaluation/support_corpus/** -text
+evaluation/support_corpus_large/** -text
 evaluation/version_corpus/** -text

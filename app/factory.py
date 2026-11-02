@@ -100,6 +100,11 @@ def create_service(settings: Settings | None = None) -> RAGService:
 
     dense = DenseRetriever(embedding)
     retriever = HybridRetriever(dense, BM25Retriever())
+    reranker = None
+    if settings.reranker_provider == "bge_cross_encoder":
+        from app.cross_encoder import BGEReranker
+
+        reranker = BGEReranker(settings.reranker_model_dir, device=settings.reranker_device)
     return RAGService(
         chunker=TextChunker(
             settings.chunk_size, settings.chunk_overlap, strategy=settings.chunking_strategy
@@ -110,4 +115,6 @@ def create_service(settings: Settings | None = None) -> RAGService:
         retrieval_strategy=settings.retrieval_strategy,
         context_char_budget=settings.context_char_budget,
         context_policy=settings.context_policy,
+        reranker=reranker,
+        reranker_candidate_k=settings.reranker_candidate_k,
     )

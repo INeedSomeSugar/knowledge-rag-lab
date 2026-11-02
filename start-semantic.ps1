@@ -2,7 +2,8 @@ param(
     [int]$Port = 8016,
     [switch]$Bootstrap,
     [switch]$BuildOnly,
-    [switch]$DeepSeek
+    [switch]$DeepSeek,
+    [switch]$Rerank
 )
 $ErrorActionPreference = 'Stop'
 Set-Location -LiteralPath $PSScriptRoot
@@ -21,6 +22,7 @@ $env:CHUNK_SIZE = '500'
 $env:CHUNK_OVERLAP = '80'
 $env:RETRIEVAL_STRATEGY = 'hybrid'
 $env:RETRIEVAL_TOP_K = '5'
+$env:RERANKER_PROVIDER = if ($Rerank) { 'bge_cross_encoder' } else { 'none' }
 $env:CONTEXT_POLICY = 'neighbors'
 $env:CONTEXT_CHAR_BUDGET = '8000'
 $env:LLM_PROVIDER = if ($DeepSeek) { 'deepseek' } else { 'extractive' }

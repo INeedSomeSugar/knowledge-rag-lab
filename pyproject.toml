@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "knowledge-rag-lab"
-version = "0.11.0"
+version = "0.12.0"
 description = "版本感知的开发者技术支持、证据核验与检索评测"
 requires-python = ">=3.11"
 dependencies = [
@@ -17,6 +17,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+reranking = ["torch==2.9.1", "transformers==4.57.6"]
 embedding = [
   "torch==2.9.1",
   "transformers==4.57.6",
@@ -26,6 +27,9 @@ version-lab = [
   "starlette==0.48.0",
   "pydantic==2.11.9",
   "anyio==4.10.0",
+]
+mcp = [
+  "mcp>=1.0,<2",
 ]
 dev = [
   "httpx>=0.28,<1",
@@ -42,7 +46,7 @@ testpaths = ["tests"]
 addopts = "-q"
 
 [tool.setuptools.package-data]
-app = ["static/*.html"]
+app = ["static/*.html", "static/*.js"]
 
 [tool.ruff]
 target-version = "py311"

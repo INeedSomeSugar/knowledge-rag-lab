@@ -103,6 +103,82 @@ class OpenAICompatibleGenerator:
             return draft
         return self.verify_answer(question, hits, draft)
 
+    def generate_stream(self, question, hits, on_event):
+        trace = {"calls": [], "verification_enabled": self.verify_support, "streaming": True}
+        if not hits:
+            return GeneratedAnswer(
+                "insufficient_evidence", REFUSAL, reason="no_evidence", model_trace=trace
+            )
+        call = {
+            "stage": "generation",
+            "status": "error",
+            "streaming": True,
+            "requested_model": self.model,
+            "prompt_tokens": None,
+            "completion_tokens": None,
+            "total_tokens": None,
+        }
+        trace["calls"].append(call)
+        started = perf_counter()
+        raw, draft_text = "", ""
+        try:
+            with self.client.chat.completions.create(
+                model=self.model,
+                temperature=0.1,
+                max_tokens=1600,
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {
+                        "role": "user",
+                        "content": f"证据：\n{build_context(hits)}\n\n问题：{question}",
+                    },
+                ],
+                stream=True,
+                stream_options={"include_usage": True},
+                **self._request_options(),
+            ) as stream:
+                finish = None
+                for part in stream:
+                    if getattr(part, "model", None):
+                        call["response_model"] = part.model
+                    usage = getattr(part, "usage", None)
+                    if usage:
+                        for key in ("prompt_tokens", "completion_tokens", "total_tokens"):
+                            value = getattr(usage, key, None)
+                            call[key] = value if type(value) is int and value >= 0 else None
+                    if not part.choices:
+                        continue
+                    choice = part.choices[0]
+                    if choice.finish_reason:
+                        finish = choice.finish_reason
+                    delta = choice.delta.content or ""
+                    if delta:
+                        call.setdefault("first_delta_ms", (perf_counter() - started) * 1000)
+                        raw += delta
+                        if len(raw) > 64000:
+                            raise ValueError("stream_output_limit")
+                        text = partial_claim_text(raw)
+                        if text != draft_text:
+                            draft_text = text
+                            on_event("draft", {"text": text, "provisional": True})
+            call["finish_reason"] = finish
+            if finish != "stop":
+                raise ValueError("incomplete_model_response")
+            call["status"] = "ok"
+        except Exception as exc:
+            call["error_type"] = type(exc).__name__
+            return GeneratedAnswer(
+                "error", "生成服务暂时不可用。", reason=type(exc).__name__, model_trace=trace
+            )
+        finally:
+            call["elapsed_ms"] = round((perf_counter() - started) * 1000, 3)
+        draft = parse_grounded_answer(raw, hits)
+        draft.model_trace = trace
+        if self.verify_support:
+            on_event("stage", {"stage": "verification"})
+            return self.verify_answer(question, hits, draft)
+        return draft
+
     def generate_draft(self, question: str, hits: list[SearchHit]) -> GeneratedAnswer:
         trace: dict[str, object] = {"calls": [], "verification_enabled": False}
         if not hits:
@@ -246,3 +322,23 @@ class OpenAICompatibleGenerator:
         if self.enable_thinking is not None:
             request_options["extra_body"] = {"enable_thinking": self.enable_thinking}
         return request_options
+
+
+def partial_claim_text(raw: str) -> str:
+    """Decode only JSON text-string prefixes; quotes/escapes may straddle SDK chunks."""
+    strings = []
+    for match in re.finditer(r'"text"\s*:\s*"', raw):
+        fragment, escaped = "", False
+        for char in raw[match.end() :]:
+            if char == '"' and not escaped:
+                break
+            fragment += char
+            escaped = char == "\\" and not escaped
+        # A partial backslash or unicode escape is withheld until complete.
+        while fragment:
+            try:
+                strings.append(json.loads('"' + fragment + '"'))
+                break
+            except (ValueError, json.JSONDecodeError):
+                fragment = fragment[:-1]
+    return "\n\n".join(strings)

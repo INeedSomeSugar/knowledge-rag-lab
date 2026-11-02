@@ -1,10 +1,63 @@
 # Knowledge RAG Lab：版本感知的开发者技术支持助手
 
+> **一句话定位：** 面向多版本技术文档的可溯源 RAG 问答系统——基于 4 个版本、102 份 FastAPI 官方文档（2,212 个分块），通过“版本识别与预过滤 → BM25 + E5 双路召回 → RRF 融合 → BGE 重排 → 邻块预算装配 → 逐字引用与支持核验”，从源头避免跨版本内容混用与无据幻觉。
+
+![Knowledge RAG Lab 演示（未指定版本先澄清 → 选定 0.115.0 后 DeepSeek SSE 流式草稿与核验终稿）](docs/assets/demo.gif)
+
+## 核心亮点
+
+- **多阶段版本感知检索链路：** 显式实现“版本识别与召回前预过滤 → BM25 + 本地 `multilingual-e5-small`（384 维）双路召回 → RRF 融合 → `bge-reranker-base` Cross-Encoder 重排 → 同章节邻块扩展与字符预算装配”，支持一轮版本补充与规则查询改写。
+- **评测驱动与逐阶段 Bad Case 归因：** 自建 47 道已人工审核开发题（41 道有证据诊断题 + 6 道版本澄清/拒答题），按“版本过滤 → 候选池召回 → Top-K 截断 → 上下文预算”逐阶段归因；在 34 份文档（735 分块）上，Top-5 召回配合邻块扩展的完整证据覆盖率由 BM25 基线 **78.0%（32/41）提升至 E5 Hybrid 87.8%（36/41）、叠加 BGE 重排达 92.7%（38/41，种子 Top-5 为 36/41）**；语料扩容约 3 倍至 **102 份文档（4 个版本、2,212 分块）** 后仍保持 **90.2%（37/41，E5 Hybrid 为 85.4% / 35/41）**，并量化 CPU 重排额外延迟（P50 +8.5s / 扩容后 +11.5s）设计为按需开启（注：上述指标为开发集证据覆盖率，非生成答案正确率）。
+- **可信生成与端到端答案评测（LLM-as-Judge）：** 强制模型按结论输出文档、版本与逐字引文，程序校验引用编号与原文字符区间精确匹配，再由模型执行支持关系检查；版本未指定时主动追问澄清，超出收录版本或证据不足时明确拒答。在 102 份文档（2,212 分块）与 47 道已审核开发题上完成真实 `deepseek-flash` 端到端生成与独立 LLM-as-Judge 评测（[评测报告](evaluation/reports/answer-judge-20261102.md)）：41 道可回答题达到 **87.8%（36/41）完整正确率、90.2%（37/41）核心问题解决率与 100%（37/37）已作答忠实度**（另有 4 题安全拒答，零无依据编造），6 道缺版本澄清与超范围拒答边界题准确率 **6/6（100%）**；Judge 经 11 份人工盲审、12 份助手复核与 3 份合成矛盾负例分层校准（一致率均为 100%，并独立检出 `F001` 源文档翻译滞后负例）。
+- **SSE 流式交互、MCP 协议接入与工程化交付：** `POST /api/v1/chat/stream` 实现“未核验草稿（`draft`）实时流式输出 → 引用与支持核验后原子替换终稿（`final`）”，支持取消、心跳与有界队列背压；基于官方 `mcp` SDK（`FastMCP`）封装标准 **MCP Server**（暴露 `list_catalog`、`search_docs`、`ask_docs` 工具与 `rag://chunk/{chunk_id}`、`rag://document/{document_id}` 资源，通过真实 `stdio` 子进程端到端验证，可直接接入 Claude Desktop / Cursor，见 [MCP 说明](docs/MCP.md)）；SQLite 向量缓存按模型文件 SHA-256 与推理配置隔离（2,212 分块热重建 100% 命中、零重复编码、0.39s 完成），新索引原子切换、失败保留旧索引；通过本地 Docker 交付实测与 **220+ 项自动化测试**。
+
+## 系统架构
+
+```mermaid
+flowchart LR
+    D["多版本官方文档\n(4版本 / 102文档 / 2212分块)"] --> C["章节分块 + SQLite向量缓存\n(内容与模型配置SHA256隔离)"]
+    Q["用户问题 + 一轮追问改写"] --> S{"版本范围明确?"}
+    S -->|未指定/未收录| A["主动澄清或明确拒答"]
+    S -->|版本明确| R["版本预过滤 → BM25 + E5双路召回\n→ RRF融合 → 可选BGE重排"]
+    C --> R
+    R --> X["同章节邻块扩展 + 字符预算装配"]
+    X --> G["SSE流式草稿生成 (DeepSeek / 抽取式)"]
+    G --> V["逐字引文匹配 + 支持关系核验"]
+    V --> O["核验终稿 / 证据原文 / 诊断轨迹"]
+```
+
+## 快速开始（零密钥 ≤ 4 条命令）
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
+.\.venv\Scripts\python.exe -m scripts.serve --demo --bootstrap
+# 打开 http://127.0.0.1:8000 体验版本澄清与证据定位（本地 E5 语义检索见 .\start-semantic.ps1）
+```
+
+## 文档导航
+
+- **项目全局与面试展示：** [项目上下文与验证档案](PROJECT_CONTEXT.md) · [三分钟演示与面试](docs/SHOWCASE.md) · [开发约定](AGENTS.md) · [实施计划](docs/IMPLEMENTATION_PLAN.md)
+- **检索、重排与扩容实验：** [v0.13 扩容语料对照](docs/CORPUS_LARGE_V013.md) · [v0.12 SSE 与 BGE 重排](docs/STREAMING_RERANKING_V012.md) · [v0.11 本地 E5 语义检索](docs/EMBEDDING_V011.md) · [v0.8 上下文合并与预算](docs/CONTEXT_PACKING.md) · [v0.7 离线检索诊断工作台](docs/RETRIEVAL_DIAGNOSTICS.md)
+- **生成核验、端到端评测、MCP 与交付：** [端到端答案评测与 Judge 校准](evaluation/reports/answer-judge-20261102.md) · [MCP 服务端接入](docs/MCP.md) · [生成与核验配对对照](docs/GENERATION_COMPARISON.md) · [v0.10 人工复核与 DeepSeek 试跑](docs/EVALUATION_V010.md) · [人工审核交接](docs/HUMAN_REVIEW_HANDOFF.md) · [版本故障实验室](docs/VERSION_LAB.md) · [Docker 容器验证](docs/CONTAINER_VALIDATION.md) · [数据卡](evaluation/SUPPORT_DATA_CARD.md)
+
+---
+
 面向 AI 应用开发实习的可复现工程项目。当前以 FastAPI 官方中文文档为知识域，围绕接口使用、跨域、文件上传、依赖清理、代理和部署问题提供带证据的技术支持。
 
 先阅读 [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) 和 [AGENTS.md](AGENTS.md)。场景选择及验收范围见 [实施计划](docs/IMPLEMENTATION_PLAN.md)，数据边界见 [数据卡](evaluation/SUPPORT_DATA_CARD.md)。
 
-2026-10-28发布前完整172项工程测试通过，包含本地E5模型集成。项目展示见[三分钟演示与面试](docs/SHOWCASE.md)，真实人工判断的操作见[审核交接](docs/HUMAN_REVIEW_HANDOFF.md)；当前候选与答案审核仍待实际人员完成。
+## v0.12：SSE、追问与Cross-Encoder
+
+网页已改用SSE：实时生成未核验草稿，最终结果经原有引用／支持检查后替换；支持取消、新对话及一轮版本补充／规则查询改写。可选固定`bge-reranker-base`在RRF之后、Top-K之前对50候选重排，`start-semantic.ps1 -Rerank`启用。
+
+本机193项工程测试通过，包含真实E5/BGE集成；实际回环SSE探针通过。47道已审核开发题中41道可诊断题的最终上下文完整覆盖36→38，Top-5完整覆盖36→36；CPU重排额外P50约8.5秒，因此默认关闭。没有新答案质量结论或保留测试。接口、复现及完整取舍见[说明](docs/STREAMING_RERANKING_V012.md)。
+
+2026-10-28发布前完整172项工程测试通过，包含本地E5模型集成。随后本机47道开发问题已由实际人员保存人工确认；已审核快照下重跑四策略三重复492条检索，覆盖和历史排序一致。6份实际模型答案已按用户明确判断完成评分，报告／答案哈希校验通过；该小批开发样本不能代表整体答案正确率或独立测试效果。个人审核记录与此次运行保留本地，当前状态见[项目上下文](PROJECT_CONTEXT.md)；项目展示见[三分钟演示与面试](docs/SHOWCASE.md)，审核操作见[审核交接](docs/HUMAN_REVIEW_HANDOFF.md)。
+
+本机后续已在明确批次授权下完成15道已审核开发题的BM25／E5 Hybrid生成与同答案核验对照：30组成对记录、49次deepseek-flash补全、90,170 tokens，离线重放及调用前上下文一致性通过。17份有效新答案中5份已由用户实际评分，另12份按用户委托完成助手复核；助手判断11份通过、R015有中文语料事实冲突，已保存修正建议。两种评分来源分别记录，整体人工正确率未知；单列的3份原答案／3份明确改错压力测试不能代替自然答案质量。本次复核无新增DeepSeek调用，原始实验及旧评分保持不变。新增工具27项相关离线测试通过，设计与复现见[生成与核验对照](docs/GENERATION_COMPARISON.md)。默认服务、保留测试及公开版本未随该本地实验改变。
+
+2026-10-28复核修订已落地：旧6份与新17份实际答案合并为本机最新材料，R003补充Pydantic版本条件，R015删除错误的headers差异扩展；6道澄清／拒答题追加明确署名的助手理由。原11份人工评分及冻结报告保留，修订稿不继承原人工评分。入口`work/human-review/20261028/CURRENT_REVIEW.md`，详见[审核交接](docs/HUMAN_REVIEW_HANDOFF.md)。后续版本段落中的“待审核”描述保留当时实验状态，不能替代当前本机进度。
 
 2026-10-27补充本地Docker交付实测：实际构建、12次零密钥业务请求、重启后索引与资源清理均通过，最终13项检查及20项相关工程测试通过。复现见 [容器验证](docs/CONTAINER_VALIDATION.md)；E5权重、真实生成与远端CI不在本次容器验证范围。
 

@@ -14,6 +14,7 @@ from app.generation import AnswerGenerator, ExtractiveGenerator
 from app.retrieval import BM25Retriever, DenseRetriever, HybridRetriever
 from app.storage import JsonChunkRepository
 from app.observability import request_id_context
+from app.conversation import rewrite_turn
 
 
 def answer_fields(result: GeneratedAnswer, hits: list[SearchHit]) -> dict[str, object]:
@@ -41,6 +42,8 @@ class RAGService:
         retrieval_strategy: str = "hybrid",
         context_char_budget: int = 16000,
         context_policy: str = "neighbors",
+        reranker=None,
+        reranker_candidate_k: int = 50,
     ) -> None:
         self.chunker = chunker
         self.retriever = retriever
@@ -55,6 +58,8 @@ class RAGService:
         if context_policy not in CONTEXT_POLICIES:
             raise ValueError("不支持的上下文策略")
         self.context_policy = context_policy
+        self.reranker = reranker
+        self.reranker_candidate_k = reranker_candidate_k
         self._write_lock = RLock()
         self.index_revision = ""
         self._rebuild_index()
@@ -126,10 +131,23 @@ class RAGService:
         retriever = {"hybrid": snapshot, "bm25": snapshot.sparse, "dense": snapshot.dense}[
             self.retrieval_strategy
         ]
-        return retriever.search(query, top_k, filters=filters)
+        candidates = retriever.search(
+            query,
+            max(top_k, self.reranker_candidate_k) if self.reranker else top_k,
+            filters=filters,
+        )
+        if self.reranker:
+            candidates, _ = self.reranker.rerank(query, candidates)
+        return candidates[:top_k]
 
     def answer(
-        self, question: str, top_k: int, *, filters: dict[str, str] | None = None
+        self,
+        question: str,
+        top_k: int,
+        *,
+        filters: dict[str, str] | None = None,
+        previous_turn: dict | None = None,
+        on_event=None,
     ) -> dict[str, object]:
         if not question.strip() or not 1 <= top_k <= 100:
             raise ValueError("问题不能为空且 top_k 必须在 1 到 100 之间")
@@ -143,6 +161,11 @@ class RAGService:
             "retrieval_strategy": self.retrieval_strategy,
         }
         catalog = self.catalog(snapshot.dense.chunks)
+        rewrite = rewrite_turn(question, scope, previous_turn, catalog)
+        query, scope = rewrite["query"], rewrite["scope"]
+        trace["query_rewrite"] = rewrite["trace"]
+        if on_event:
+            on_event("rewrite", rewrite)
         result: GeneratedAnswer | None = None
         product = scope.get("product")
         if catalog and not product:
@@ -181,7 +204,21 @@ class RAGService:
         if result is None:
             retrieval_start = perf_counter()
             try:
-                retrieved = self._search(snapshot, question.strip(), top_k, scope)
+                if on_event:
+                    on_event("stage", {"stage": "retrieval"})
+                retriever = {"hybrid": snapshot, "bm25": snapshot.sparse, "dense": snapshot.dense}[
+                    self.retrieval_strategy
+                ]
+                candidates = retriever.search(
+                    query,
+                    max(top_k, self.reranker_candidate_k) if self.reranker else top_k,
+                    filters=scope,
+                )
+                if self.reranker:
+                    if on_event:
+                        on_event("stage", {"stage": "reranking"})
+                    candidates, trace["reranking"] = self.reranker.rerank(query, candidates)
+                retrieved = candidates[:top_k]
                 hits = expand_context(
                     retrieved,
                     snapshot.dense.chunks,
@@ -194,6 +231,9 @@ class RAGService:
                 )
             trace["retrieval_ms"] = round((perf_counter() - retrieval_start) * 1000, 2)
             if result is None:
+                if on_event:
+                    on_event("retrieval", {"hits": [h.to_dict() for h in retrieved]})
+                    on_event("stage", {"stage": "generation"})
                 generation_start = perf_counter()
                 try:
                     if isinstance(self.generator, ExtractiveGenerator) and not any(
@@ -203,7 +243,10 @@ class RAGService:
                             "insufficient_evidence", REFUSAL, reason="no_lexical_evidence_in_demo"
                         )
                     else:
-                        result = self.generator.generate(question, hits)
+                        if on_event and hasattr(self.generator, "generate_stream"):
+                            result = self.generator.generate_stream(query, hits, on_event)
+                        else:
+                            result = self.generator.generate(query, hits)
                 except Exception as exc:
                     result = GeneratedAnswer(
                         "error",
@@ -225,6 +268,14 @@ class RAGService:
             "context": [hit.to_dict() for hit in hits],
             "trace": trace,
             "available_versions": catalog,
+            "conversation": {
+                "question": (
+                    previous_turn["question"]
+                    if previous_turn and rewrite["trace"].get("version_only")
+                    else question
+                ),
+                **{k: scope[k] for k in ("product", "version") if k in scope},
+            },
         }
 
     def list_documents(self) -> list[dict[str, object]]:

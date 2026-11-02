@@ -1,0 +1,658 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-11-02T07:47:50.143273+00:00",
+  "experiment_id": "answer-judge-20261102",
+  "split": "development",
+  "held_out_test_run": false,
+  "provenance": {
+    "protocol_sha256": "29fd88a8fe7ec019b5c58f63ee87f81598811e992aea8c2de92ec973039b3cda",
+    "questions_path": "work/human-review/20261028/review-corrections-20261028T075633Z/questions.current.jsonl",
+    "questions_sha256": "9042dbb526ffb53e7ead9c5f5f1487b6f394c7eb48d0065cf306712d5b2e0d84",
+    "revision1_questions_path": "work/human-review/20261028/reviewed-retrieval-20261028T044628Z/questions.reviewed.jsonl",
+    "revision1_questions_sha256": "ae92f6b8522684f8f0008ed7538a3bb02816f7a726a191efa1c2dc852417f002",
+    "corpus_dir": "evaluation/support_corpus_large",
+    "corpus_manifest_sha256": "5e3dfbed084085c847ec01f0241571f4b85829eea347aaa533f8dc9ecb88a416",
+    "chunks_sha256": "ed4081af9afb13d4a2683044fcbf75d1835b3672bb193dad5006d28635810db8",
+    "pipeline_code_sha256": "d6bf210730fd7f87a072f121ea517a9b947ec84f47b525956b3b2b24424183f5",
+    "execution_jsonl_sha256": "b5100f78cbdaee22cef5ba54f766272ea3009b94a115be67a9c0554d3d27ffc5",
+    "calibration_jsonl_sha256": "98ac545221804bbb86885712c52ca57db33d0c0cdf8892e503b9225bc791f603",
+    "provider_responses_jsonl_sha256": "0f89d40a2c2e5c567b5182fc1a6990dc9ed708601b72fba7c3c5ed191c70bad8"
+  },
+  "configuration": {
+    "rag": {
+      "system_variant": "best_non_rerank_e5_hybrid_large_corpus",
+      "chunking_strategy": "sections",
+      "chunk_size": 500,
+      "chunk_overlap": 80,
+      "embedding_provider": "local_e5",
+      "embedding_model": "intfloat/multilingual-e5-small",
+      "embedding_revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+      "embedding_device": "cpu",
+      "embedding_cpu_threads": 4,
+      "embedding_batch_size": 8,
+      "embedding_max_length": 512,
+      "retrieval_strategy": "hybrid",
+      "rrf_k": 60,
+      "rrf_candidate_k": 50,
+      "top_k": 5,
+      "reranker_provider": "none",
+      "context_policy": "neighbors",
+      "context_char_budget": 8000,
+      "llm_provider": "deepseek",
+      "preferred_llm_model": "deepseek-flash",
+      "llm_base_url": "https://api.deepseek.com",
+      "llm_temperature": 0.1,
+      "llm_max_tokens": 1600,
+      "llm_verify_support": true,
+      "sdk_retries": 0
+    },
+    "judge": {
+      "provider": "deepseek",
+      "model": "deepseek-flash",
+      "rubric_version": "1.0",
+      "max_parse_retries": 1
+    },
+    "dataset": {
+      "document_count": 102,
+      "chunk_count": 2212,
+      "question_count": 47,
+      "answerable_count": 41,
+      "needs_clarification_count": 3,
+      "insufficient_evidence_count": 3
+    }
+  },
+  "end_to_end_evaluation": {
+    "total_questions": 47,
+    "overall_correct": {
+      "numerator": 42,
+      "denominator": 47,
+      "rate": 0.8936
+    },
+    "overall_faithful": {
+      "numerator": 47,
+      "denominator": 47,
+      "rate": 1.0
+    },
+    "overall_behavior_matched": {
+      "numerator": 43,
+      "denominator": 47,
+      "rate": 0.9149
+    },
+    "answerable_questions": {
+      "count": 41,
+      "context_complete_evidence_coverage": {
+        "numerator": 35,
+        "denominator": 41,
+        "rate": 0.8537
+      },
+      "missing_complete_evidence_case_ids": [
+        "support-006",
+        "support-013",
+        "support-020",
+        "support-026",
+        "support-029",
+        "support-034"
+      ],
+      "rag_status_counts": {
+        "answered": 37,
+        "insufficient_evidence": 4
+      },
+      "rag_reason_counts": {
+        "none": 37,
+        "model_found_insufficient_evidence": 3,
+        "support_verification_failed": 1
+      },
+      "correctness_counts": {
+        "correct": 36,
+        "partially_correct": 1,
+        "incorrect": 4
+      },
+      "correct_rate": {
+        "numerator": 36,
+        "denominator": 41,
+        "rate": 0.878
+      },
+      "correct_or_partial_rate": {
+        "numerator": 37,
+        "denominator": 41,
+        "rate": 0.9024
+      },
+      "core_question_answered_rate": {
+        "numerator": 37,
+        "denominator": 41,
+        "rate": 0.9024
+      },
+      "faithfulness_on_all_answerable": {
+        "numerator": 41,
+        "denominator": 41,
+        "rate": 1.0
+      },
+      "faithfulness_on_answered_responses": {
+        "numerator": 37,
+        "denominator": 37,
+        "rate": 1.0
+      },
+      "unsupported_claim_cases": [],
+      "pre_verification_draft_comparison": {
+        "drafts_answered_count": 38,
+        "blocked_by_support_verification_count": 1,
+        "blocked_case_ids": [
+          "support-020"
+        ],
+        "draft_correctness_counts": {
+          "correct": 37,
+          "partially_correct": 1,
+          "incorrect": 3
+        },
+        "draft_correct_rate": {
+          "numerator": 37,
+          "denominator": 41,
+          "rate": 0.9024
+        }
+      },
+      "non_correct_cases": [
+        {
+          "id": "support-006",
+          "question": "需要匹配一组子域名时，CORS 提供了什么配置项？",
+          "filters": {
+            "product": "fastapi",
+            "version": "0.115.0"
+          },
+          "context_evidence_recall": 0.0,
+          "system_status": "insufficient_evidence",
+          "system_reason": "model_found_insufficient_evidence",
+          "pre_verification_draft_status": "insufficient_evidence",
+          "judge_correctness": "incorrect",
+          "judge_faithfulness": true,
+          "judge_reasoning": "该题预期状态为 answered，但系统返回 insufficient_evidence 误拒答，未回答核心问题（allow_origin_regex），故 behavior_matched 为 false、core_question_answered 为 false、correctness 为 incorrect。系统未编造事实性结论，faithfulness 为 true。",
+          "draft_judge_correctness": null
+        },
+        {
+          "id": "support-013",
+          "question": "HTTPException 的 detail 只能是字符串吗？",
+          "filters": {
+            "product": "fastapi",
+            "version": "0.115.0"
+          },
+          "context_evidence_recall": 0.0,
+          "system_status": "insufficient_evidence",
+          "system_reason": "model_found_insufficient_evidence",
+          "pre_verification_draft_status": "insufficient_evidence",
+          "judge_correctness": "incorrect",
+          "judge_faithfulness": true,
+          "judge_reasoning": "该问题在 0.115.0 范围内可回答（detail 可为任意可 JSON 序列化的值，如 dict、list），但系统误判为 insufficient_evidence 并拒答，未给出实质回答，行为与 expected_status=answered 不匹配，核心问题未回答。系统未编造事实，故 faithfulness 为 true。",
+          "draft_judge_correctness": null
+        },
+        {
+          "id": "support-020",
+          "question": "一个普通参数没有出现在路径模板里，会被识别到哪里？",
+          "filters": {
+            "product": "fastapi",
+            "version": "0.115.0"
+          },
+          "context_evidence_recall": 0.0,
+          "system_status": "insufficient_evidence",
+          "system_reason": "support_verification_failed",
+          "pre_verification_draft_status": "answered",
+          "judge_correctness": "incorrect",
+          "judge_faithfulness": true,
+          "judge_reasoning": "期望状态为 answered，但系统返回 insufficient_evidence 误拒答，未回答核心问题，行为不匹配，故 correctness 判为 incorrect、core_question_answered 为 false。系统未编造事实性结论，faithfulness 为 true。",
+          "draft_judge_correctness": "correct"
+        },
+        {
+          "id": "support-029",
+          "question": "给响应模型设置 include 或 exclude 时，参数是什么结构？",
+          "filters": {
+            "product": "fastapi",
+            "version": "0.115.0"
+          },
+          "context_evidence_recall": 0.0,
+          "system_status": "insufficient_evidence",
+          "system_reason": "model_found_insufficient_evidence",
+          "pre_verification_draft_status": "insufficient_evidence",
+          "judge_correctness": "incorrect",
+          "judge_faithfulness": true,
+          "judge_reasoning": "该题在 0.115.0 文档中有明确答案（include/exclude 接收由属性名称字符串组成的 set），系统却误判为证据不足而拒答，属于应回答却拒答，行为不匹配且未解决核心问题；因未编造事实，忠实度为 true。",
+          "draft_judge_correctness": null
+        },
+        {
+          "id": "support-034",
+          "question": "依赖注入需要先建立专门的类并注册吗？",
+          "filters": {
+            "product": "fastapi",
+            "version": "0.115.0"
+          },
+          "context_evidence_recall": 0.0,
+          "system_status": "answered",
+          "system_reason": "",
+          "pre_verification_draft_status": "answered",
+          "judge_correctness": "partially_correct",
+          "judge_faithfulness": true,
+          "judge_reasoning": "系统状态与期望一致（answered），行为匹配。回答核心结论“不需要预先建立专门的类并注册”与参考答案一致，且所有结论均可由检索上下文支持，忠实度通过。但回答未直接点明参考答案的核心要点“把依赖函数传给 Depends 即可”，而是以间接方式说明，覆盖不够完整，故判为 partially_correct。",
+          "draft_judge_correctness": null
+        }
+      ]
+    },
+    "clarification_and_refusal_questions": {
+      "count": 6,
+      "behavior_matched_rate": {
+        "numerator": 6,
+        "denominator": 6,
+        "rate": 1.0
+      },
+      "correctness_counts": {
+        "correct": 6,
+        "partially_correct": 0,
+        "incorrect": 0
+      },
+      "correct_rate": {
+        "numerator": 6,
+        "denominator": 6,
+        "rate": 1.0
+      },
+      "faithfulness_rate": {
+        "numerator": 6,
+        "denominator": 6,
+        "rate": 1.0
+      },
+      "needs_clarification_breakdown": {
+        "count": 3,
+        "correct_count": 3,
+        "case_ids": [
+          "support-unanswerable-01",
+          "support-unanswerable-02",
+          "support-unanswerable-03"
+        ]
+      },
+      "insufficient_evidence_breakdown": {
+        "count": 3,
+        "correct_count": 3,
+        "case_ids": [
+          "support-unanswerable-05",
+          "support-unanswerable-06",
+          "support-unanswerable-07"
+        ]
+      }
+    },
+    "judge_reliability": {
+      "parse_failure_count": 0,
+      "documented_retry_count": 0,
+      "unrecovered_parse_error_count": 0
+    }
+  },
+  "judge_calibration": {
+    "note": "Human (JQH) labels and AI assistant (Codex) labels are kept strictly separate. Synthetic contradiction negative controls are also reported separately.",
+    "vs_human_all": {
+      "total_items": 11,
+      "evaluated_items": 11,
+      "parse_error_count": 0,
+      "retry_count": 0,
+      "correctness_strict_agreement": {
+        "n": 11,
+        "agreed": 11,
+        "disagreed": 0,
+        "accuracy": 1.0,
+        "confusion": {
+          "tp_ref_true_pred_true": 11,
+          "fp_ref_false_pred_true": 0,
+          "tn_ref_false_pred_false": 0,
+          "fn_ref_true_pred_false": 0
+        }
+      },
+      "correctness_lenient_agreement": {
+        "n": 11,
+        "agreed": 11,
+        "disagreed": 0,
+        "accuracy": 1.0,
+        "confusion": {
+          "tp_ref_true_pred_true": 11,
+          "fp_ref_false_pred_true": 0,
+          "tn_ref_false_pred_false": 0,
+          "fn_ref_true_pred_false": 0
+        }
+      },
+      "correctness_3x2_counts": {
+        "label_correct_true": {
+          "correct": 11,
+          "partially_correct": 0,
+          "incorrect": 0
+        },
+        "label_correct_false": {
+          "correct": 0,
+          "partially_correct": 0,
+          "incorrect": 0
+        }
+      },
+      "faithfulness_agreement": {
+        "n": 11,
+        "agreed": 11,
+        "disagreed": 0,
+        "accuracy": 1.0,
+        "confusion": {
+          "tp_ref_true_pred_true": 11,
+          "fp_ref_false_pred_true": 0,
+          "tn_ref_false_pred_false": 0,
+          "fn_ref_true_pred_false": 0
+        }
+      },
+      "joint_strict_agreement": {
+        "n": 11,
+        "agreed": 11,
+        "disagreed": 0,
+        "accuracy": 1.0
+      },
+      "disagreements": []
+    },
+    "vs_human_old_v010": {
+      "total_items": 6,
+      "evaluated_items": 6,
+      "parse_error_count": 0,
+      "retry_count": 0,
+      "correctness_strict_agreement": {
+        "n": 6,
+        "agreed": 6,
+        "disagreed": 0,
+        "accuracy": 1.0,
+        "confusion": {
+          "tp_ref_true_pred_true": 6,
+          "fp_ref_false_pred_true": 0,
+          "tn_ref_false_pred_false": 0,
+          "fn_ref_true_pred_false": 0
+        }
+      },
+      "correctness_lenient_agreement": {
+        "n": 6,
+        "agreed": 6,
+        "disagreed": 0,
+        "accuracy": 1.0,
+        "confusion": {
+          "tp_ref_true_pred_true": 6,
+          "fp_ref_false_pred_true": 0,
+          "tn_ref_false_pred_false": 0,
+          "fn_ref_true_pred_false": 0
+        }
+      },
+      "correctness_3x2_counts": {
+        "label_correct_true": {
+          "correct": 6,
+          "partially_correct": 0,
+          "incorrect": 0
+        },
+        "label_correct_false": {
+          "correct": 0,
+          "partially_correct": 0,
+          "incorrect": 0
+        }
+      },
+      "faithfulness_agreement": {
+        "n": 6,
+        "agreed": 6,
+        "disagreed": 0,
+        "accuracy": 1.0,
+        "confusion": {
+          "tp_ref_true_pred_true": 6,
+          "fp_ref_false_pred_true": 0,
+          "tn_ref_false_pred_false": 0,
+          "fn_ref_true_pred_false": 0
+        }
+      },
+      "joint_strict_agreement": {
+        "n": 6,
+        "agreed": 6,
+        "disagreed": 0,
+        "accuracy": 1.0
+      },
+      "disagreements": []
+    },
+    "vs_human_new_v012": {
+      "total_items": 5,
+      "evaluated_items": 5,
+      "parse_error_count": 0,
+      "retry_count": 0,
+      "correctness_strict_agreement": {
+        "n": 5,
+        "agreed": 5,
+        "disagreed": 0,
+        "accuracy": 1.0,
+        "confusion": {
+          "tp_ref_true_pred_true": 5,
+          "fp_ref_false_pred_true": 0,
+          "tn_ref_false_pred_false": 0,
+          "fn_ref_true_pred_false": 0
+        }
+      },
+      "correctness_lenient_agreement": {
+        "n": 5,
+        "agreed": 5,
+        "disagreed": 0,
+        "accuracy": 1.0,
+        "confusion": {
+          "tp_ref_true_pred_true": 5,
+          "fp_ref_false_pred_true": 0,
+          "tn_ref_false_pred_false": 0,
+          "fn_ref_true_pred_false": 0
+        }
+      },
+      "correctness_3x2_counts": {
+        "label_correct_true": {
+          "correct": 5,
+          "partially_correct": 0,
+          "incorrect": 0
+        },
+        "label_correct_false": {
+          "correct": 0,
+          "partially_correct": 0,
+          "incorrect": 0
+        }
+      },
+      "faithfulness_agreement": {
+        "n": 5,
+        "agreed": 5,
+        "disagreed": 0,
+        "accuracy": 1.0,
+        "confusion": {
+          "tp_ref_true_pred_true": 5,
+          "fp_ref_false_pred_true": 0,
+          "tn_ref_false_pred_false": 0,
+          "fn_ref_true_pred_false": 0
+        }
+      },
+      "joint_strict_agreement": {
+        "n": 5,
+        "agreed": 5,
+        "disagreed": 0,
+        "accuracy": 1.0
+      },
+      "disagreements": []
+    },
+    "vs_assistant_v012": {
+      "total_items": 12,
+      "evaluated_items": 12,
+      "parse_error_count": 0,
+      "retry_count": 0,
+      "correctness_strict_agreement": {
+        "n": 12,
+        "agreed": 12,
+        "disagreed": 0,
+        "accuracy": 1.0,
+        "confusion": {
+          "tp_ref_true_pred_true": 11,
+          "fp_ref_false_pred_true": 0,
+          "tn_ref_false_pred_false": 1,
+          "fn_ref_true_pred_false": 0
+        }
+      },
+      "correctness_lenient_agreement": {
+        "n": 12,
+        "agreed": 12,
+        "disagreed": 0,
+        "accuracy": 1.0,
+        "confusion": {
+          "tp_ref_true_pred_true": 11,
+          "fp_ref_false_pred_true": 0,
+          "tn_ref_false_pred_false": 1,
+          "fn_ref_true_pred_false": 0
+        }
+      },
+      "correctness_3x2_counts": {
+        "label_correct_true": {
+          "correct": 11,
+          "partially_correct": 0,
+          "incorrect": 0
+        },
+        "label_correct_false": {
+          "correct": 0,
+          "partially_correct": 0,
+          "incorrect": 1
+        }
+      },
+      "faithfulness_agreement": {
+        "n": 12,
+        "agreed": 12,
+        "disagreed": 0,
+        "accuracy": 1.0,
+        "confusion": {
+          "tp_ref_true_pred_true": 12,
+          "fp_ref_false_pred_true": 0,
+          "tn_ref_false_pred_false": 0,
+          "fn_ref_true_pred_false": 0
+        }
+      },
+      "joint_strict_agreement": {
+        "n": 12,
+        "agreed": 12,
+        "disagreed": 0,
+        "accuracy": 1.0
+      },
+      "disagreements": []
+    },
+    "vs_synthetic_negative_controls": {
+      "total_items": 3,
+      "evaluated_items": 3,
+      "parse_error_count": 0,
+      "retry_count": 0,
+      "correctness_strict_agreement": {
+        "n": 3,
+        "agreed": 3,
+        "disagreed": 0,
+        "accuracy": 1.0,
+        "confusion": {
+          "tp_ref_true_pred_true": 0,
+          "fp_ref_false_pred_true": 0,
+          "tn_ref_false_pred_false": 3,
+          "fn_ref_true_pred_false": 0
+        }
+      },
+      "correctness_lenient_agreement": {
+        "n": 3,
+        "agreed": 3,
+        "disagreed": 0,
+        "accuracy": 1.0,
+        "confusion": {
+          "tp_ref_true_pred_true": 0,
+          "fp_ref_false_pred_true": 0,
+          "tn_ref_false_pred_false": 3,
+          "fn_ref_true_pred_false": 0
+        }
+      },
+      "correctness_3x2_counts": {
+        "label_correct_true": {
+          "correct": 0,
+          "partially_correct": 0,
+          "incorrect": 0
+        },
+        "label_correct_false": {
+          "correct": 0,
+          "partially_correct": 0,
+          "incorrect": 3
+        }
+      },
+      "faithfulness_agreement": {
+        "n": 3,
+        "agreed": 3,
+        "disagreed": 0,
+        "accuracy": 1.0,
+        "confusion": {
+          "tp_ref_true_pred_true": 0,
+          "fp_ref_false_pred_true": 0,
+          "tn_ref_false_pred_false": 3,
+          "fn_ref_true_pred_false": 0
+        }
+      },
+      "joint_strict_agreement": {
+        "n": 3,
+        "agreed": 3,
+        "disagreed": 0,
+        "accuracy": 1.0
+      },
+      "disagreements": []
+    },
+    "judge_reliability": {
+      "parse_failure_count": 0,
+      "documented_retry_count": 0,
+      "unrecovered_parse_error_count": 0
+    }
+  },
+  "usage_and_runtime": {
+    "hard_token_budget": 800000,
+    "max_completion_calls": 220,
+    "total_sdk_calls": 155,
+    "prompt_tokens": 368978,
+    "completion_tokens": 15702,
+    "total_tokens": 384680,
+    "execute_wall_seconds": 191.115,
+    "by_phase": {
+      "execute_rag_generation": {
+        "calls": 43,
+        "ok_calls": 43,
+        "error_calls": 0,
+        "prompt_tokens": 66771,
+        "completion_tokens": 7270,
+        "total_tokens": 74041,
+        "elapsed_ms_total": 59375.633
+      },
+      "execute_rag_verification": {
+        "calls": 38,
+        "ok_calls": 38,
+        "error_calls": 0,
+        "prompt_tokens": 69937,
+        "completion_tokens": 316,
+        "total_tokens": 70253,
+        "elapsed_ms_total": 26039.679
+      },
+      "execute_judge": {
+        "calls": 47,
+        "ok_calls": 47,
+        "error_calls": 0,
+        "prompt_tokens": 143057,
+        "completion_tokens": 4975,
+        "total_tokens": 148032,
+        "elapsed_ms_total": 56770.885
+      },
+      "execute_draft_judge": {
+        "calls": 1,
+        "ok_calls": 1,
+        "error_calls": 0,
+        "prompt_tokens": 3340,
+        "completion_tokens": 151,
+        "total_tokens": 3491,
+        "elapsed_ms_total": 1421.676
+      },
+      "calibrate_judge": {
+        "calls": 26,
+        "ok_calls": 26,
+        "error_calls": 0,
+        "prompt_tokens": 85873,
+        "completion_tokens": 2990,
+        "total_tokens": 88863,
+        "elapsed_ms_total": 34017.623
+      }
+    }
+  },
+  "caveats": [
+    "Self-judge bias: both the RAG generator/verifier and the LLM-as-Judge use DeepSeek (deepseek-flash), which can share blind spots or stylistic preferences.",
+    "Small development set: results are measured on the 47 human-reviewed development questions (41 answerable + 6 clarification/refusal), not the 8 held-out test questions.",
+    "Calibration sample size: human calibration has n=11 (all positive natural drafts from JQH) and assistant calibration has n=12 (11 positive + 1 source-conflict negative R015 from Codex), supplemented separately by n=3 synthetic contradiction controls.",
+    "Chinese documentation translation lag: as seen in R015/support-011 (issue F001), faithful reproduction of an outdated Chinese doc sentence can still be factually outdated for the target FastAPI/Starlette version."
+  ]
+}

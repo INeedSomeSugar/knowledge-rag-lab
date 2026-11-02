@@ -60,11 +60,24 @@ class Settings:
     embedding_device: str = os.getenv("EMBEDDING_DEVICE", "cpu")
     retrieval_top_k: int = _int_env("RETRIEVAL_TOP_K", 5)
     retrieval_strategy: str = os.getenv("RETRIEVAL_STRATEGY", "hybrid")
+    reranker_provider: str = os.getenv("RERANKER_PROVIDER", "none")
+    reranker_model_dir: Path = Path(
+        os.getenv(
+            "RERANKER_MODEL_DIR",
+            "work/models/bge-reranker-base/2cfc18c9415c912f9d8155881c133215df768a70",
+        )
+    )
+    reranker_device: str = os.getenv("RERANKER_DEVICE", "cpu")
+    reranker_candidate_k: int = _int_env("RERANKER_CANDIDATE_K", 50)
     context_char_budget: int = _int_env("CONTEXT_CHAR_BUDGET", 16000)
     context_policy: str = os.getenv("CONTEXT_POLICY", "neighbors")
     data_dir: Path = Path(os.getenv("DATA_DIR", "data/index"))
 
     def validate(self) -> None:
+        if self.reranker_provider not in {"none", "bge_cross_encoder"}:
+            raise ValueError("RERANKER_PROVIDER必须为none或bge_cross_encoder")
+        if not 20 <= self.reranker_candidate_k <= 100:
+            raise ValueError("RERANKER_CANDIDATE_K范围20..100")
         if self.chunk_size < 100:
             raise ValueError("CHUNK_SIZE 不能小于 100")
         if not 0 <= self.chunk_overlap < self.chunk_size:

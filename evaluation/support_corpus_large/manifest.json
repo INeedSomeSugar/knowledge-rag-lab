@@ -1,0 +1,2527 @@
+{
+  "schema_version": "1.1",
+  "scenario": "developer-support-large",
+  "created_at": "2026-10-28T14:49:28.449108+00:00",
+  "completed_at": "2026-10-28T14:54:04.658574+00:00",
+  "upstream": "fastapi/fastapi",
+  "transport": "curl",
+  "revisions": {
+    "0.110.0": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+    "0.115.0": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+    "0.117.1": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+    "0.118.0": "333f1ba737be6507fc707278f6b69cf1f81efdc1"
+  },
+  "requested_pages": [
+    "tutorial/cors.md",
+    "tutorial/background-tasks.md",
+    "tutorial/handling-errors.md",
+    "tutorial/middleware.md",
+    "tutorial/body.md",
+    "tutorial/query-params.md",
+    "tutorial/path-params.md",
+    "tutorial/response-model.md",
+    "tutorial/request-files.md",
+    "tutorial/request-forms-and-files.md",
+    "tutorial/static-files.md",
+    "tutorial/dependencies/index.md",
+    "tutorial/dependencies/dependencies-with-yield.md",
+    "advanced/behind-a-proxy.md",
+    "advanced/events.md",
+    "deployment/docker.md",
+    "deployment/server-workers.md",
+    "tutorial/first-steps.md",
+    "tutorial/path-params-numeric-validations.md",
+    "tutorial/query-params-str-validations.md",
+    "tutorial/body-multiple-params.md",
+    "tutorial/body-fields.md",
+    "tutorial/body-nested-models.md",
+    "tutorial/response-status-code.md",
+    "advanced/response-headers.md",
+    "tutorial/security/first-steps.md",
+    "tutorial/dependencies/classes-as-dependencies.md",
+    "tutorial/bigger-applications.md",
+    "advanced/response-directly.md",
+    "deployment/https.md"
+  ],
+  "requested_document_count": 120,
+  "document_count": 102,
+  "version_counts": {
+    "0.110.0": 30,
+    "0.115.0": 30,
+    "0.117.1": 22,
+    "0.118.0": 20
+  },
+  "baseline": {
+    "directory": "evaluation/support_corpus",
+    "manifest_sha256": "da2fdd379e735654046f6ff63b3357eb83a3d6664a9e36d35b17e9f70f24f03b",
+    "reused_document_count": 34
+  },
+  "license_file": "LICENSE.fastapi.txt",
+  "license_sha256": "4ec89ffc81485b97fec584b2d4a961032eeffe834453894fd9c1274906cc744e",
+  "license_upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/333f1ba737be6507fc707278f6b69cf1f81efdc1/LICENSE",
+  "transformations": [
+    "Byte-copy all original sources and preserve original metadata",
+    "New sources: expand MkDocs code includes using the same pinned commit",
+    "Expand both {!...!} and {*...*}; honor inclusive ln[start:end], omit display highlighting"
+  ],
+  "documents": [
+    {
+      "source": "fastapi/0.110.0/tutorial/cors.md",
+      "sha256": "a0dce3a56c4046fc295213c79e9e9ab3d1cb35a0c5ea30f60f5ae33154f54334",
+      "upstream_sha256": "cdd146da1cc1e3070331adf6894289b91ac3f8acc593e51095c51d417f4cb840",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/cors/tutorial001.py": "145cde24734c8bb5e11184c97596449162e234f5cd770f79e959976bd61877b2"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/cors.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/cors.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.110.0/tutorial/background-tasks.md",
+      "sha256": "e71b82e39ef42fbf7bfe7cb00c48284d9d4522936166d13cbffd910a25c71952",
+      "upstream_sha256": "809444ff4a27bbe875f988d1ac1607afc5251f3c89dfaa9e9f5b6b494baa1a8f",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/background_tasks/tutorial001.py": "8218ad01272cffb42643773619fe7025bee2d3a826361fe9db4f7cf5db8a8308",
+        "docs_src/background_tasks/tutorial002_an_py310.py": "9550189a7e3385a09d46cf8b636514a610845f4c32ce06ee03d1735999bc2272",
+        "docs_src/background_tasks/tutorial002_an_py39.py": "ace7f2be2feae0739c65a9bae2d0fcd571dda0e8a5822a05d95e92e81671683a",
+        "docs_src/background_tasks/tutorial002_an.py": "906cb9d9ad3b08c500dc32937269156bda59f4a3138d3e6f19b827eeb5cee9af",
+        "docs_src/background_tasks/tutorial002_py310.py": "5a6034b96b936c9d507f5ac38e7fec9e2b1c4ef4624b9a836efd345535ff6bc9",
+        "docs_src/background_tasks/tutorial002.py": "b058b54a2472977c3d7832c90a3dcc95d68bc37989e53f0f75cdae0dde3875d5"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/background-tasks.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/background-tasks.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.110.0/tutorial/handling-errors.md",
+      "sha256": "0eb25424584f2335f6ac1d1b118d6bcf8edfaf406c34f283d5bb8a13ff40ca7d",
+      "upstream_sha256": "4f52c02b4cd13331b82da7e5ef1a9ef16cc9c6c11cff127634cc4bdc5367be35",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/handling_errors/tutorial001.py": "ae11c344b30574d3ef126de0d05a96b6c9d2466fc7c566e4e8bf989704807b5c",
+        "docs_src/handling_errors/tutorial002.py": "c022ef435507bef0a0dcb8c889b8c1a9d0abf48da9b83cb5f626ac5c9c3fd38d",
+        "docs_src/handling_errors/tutorial003.py": "6d9cc868c5b98d899b1e199a7ee4ad0f0e914a56a6b265e88e635c05afb9e722",
+        "docs_src/handling_errors/tutorial004.py": "8f8e310c110f97d855cd2fa7aed634a6fd5d69f28cd952d2b6180a5754a49b00",
+        "docs_src/handling_errors/tutorial005.py": "61824da4694a1099574a666fe6034cb70d8551c897b362ba2703f3b27fa3e8fc",
+        "docs_src/handling_errors/tutorial006.py": "ce86939ebe2b508226de8f01d760dd8e0c34ed6238b526306257c49eb274aa01"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/handling-errors.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/handling-errors.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.110.0/tutorial/middleware.md",
+      "sha256": "6a1978c14c940395d50cede3778ebbe2e2e979a903ceade89fe72ee4a57b9ad2",
+      "upstream_sha256": "23861b40894c388a2b99f2c342793fd15fe118a4ef063181dca6c12e0da059de",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/middleware/tutorial001.py": "553736190ef1db7a845a84a14e7a90f3bebf692f28a0198bb8ef88d2083a8baf"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/middleware.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/middleware.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.110.0/tutorial/body.md",
+      "sha256": "52aaa676674f73b14b194db52223ffb7f31ea11e1454063f4d80a14bc125cde3",
+      "upstream_sha256": "a694f72852dbd2912258e1f6202c34839f011df7054c855dbe08e3ba8391fb3f",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/body/tutorial001_py310.py": "e481030f5b9ceaddc5e1ab2cd7bb36ef415799d457e54fa89f58b93510166a3a",
+        "docs_src/body/tutorial001.py": "82783bc51cd4212ee8cdcdbe9b181be327f5a60b44765bff1c2847a9ece781b3",
+        "docs_src/body/tutorial002_py310.py": "6bb3540765d6cf6f588191493cb227aedbc164a14eb3ff968c8a25f4fd43c52f",
+        "docs_src/body/tutorial002.py": "fe6446a28f22f121e486c5a1b1e0717fa5fdcb8c3fb9d19f90623ce1411ee3c6",
+        "docs_src/body/tutorial003_py310.py": "af21d8ede3844d1756e51f38dcb3fec485e9134ece80ff12927f5de2226f62a7",
+        "docs_src/body/tutorial003.py": "981c79b68a6d44d6c1abdc3f7ee37c9fbac5e1e90c41393bcb0e933ca32ddf78",
+        "docs_src/body/tutorial004_py310.py": "293f9e2dae1a7f9ec39381eb4dcea85da7ca0aaea943acd390440cbefd7ca00f",
+        "docs_src/body/tutorial004.py": "4ede4ebc987011947fb8868efa4bdf71eeeac3ee6a468f572ddbdadf4ae8c503"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/body.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/body.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.110.0/tutorial/query-params.md",
+      "sha256": "074c36130378b7ded697fcd79a3c1ad1b909218a9f1939adf856e69570b2dbf1",
+      "upstream_sha256": "8e7e62461e6281c4a61700d4a4619e972b309b7ecf190646d4550a00d3aa3922",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/query_params/tutorial001.py": "6adfaedf0f557cb2ebe4b75b805c7f6c783c61e50845572f4020e888dac69489",
+        "docs_src/query_params/tutorial002.py": "f5c7ece8351b6f63187b072a3c672937d2c76c1e824e0b955d29084301ca47c4",
+        "docs_src/query_params/tutorial003.py": "8407923dca66412638aab5245d30fc34a17cc5bb72d223fd86ccbdd67ac06540",
+        "docs_src/query_params/tutorial004.py": "92dbd8f7b745f66a3eec4b47d210fcfe6c2e27c6dcc19f67a47ac3a1bd4768e3",
+        "docs_src/query_params/tutorial005.py": "c532cc66d7a9b90cf79773b7fcbdbe306a88353aac72bc72ffd7bc990d91c25f",
+        "docs_src/query_params/tutorial006.py": "3d4967540e0c707f1d817d6136090a6c1712da99e1f1e6407f435a558a7e2e35"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/query-params.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/query-params.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.110.0/tutorial/path-params.md",
+      "sha256": "728f9d258d1dfa9385c762d8efacff93cdb710194bc194f059d46237e73db868",
+      "upstream_sha256": "6ce59ffdbb9f5af04c340258dcae0dacb7c406e15735f5bb5831e48738341a78",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/path_params/tutorial001.py": "c10c9be93c07a592e1bc473ff53027152459d6565043d9fef5548089752fd0e2",
+        "docs_src/path_params/tutorial002.py": "e315342e8a391de45042201b39fd985c65f9107559581e2516b06f97e433e0f4",
+        "docs_src/path_params/tutorial003.py": "8e61b9cf938034484ada46a920f68e7ac54e28e9fc1b5305e591cd88247bdca2",
+        "docs_src/path_params/tutorial005.py": "1c68f2c5549486ef0da4c198e5068e0a25227b0e87e53237aba9bd89b3ce6de8",
+        "docs_src/path_params/tutorial004.py": "7d51acce2e571de480e402ae7cc1f3e383e3751f4a661becddd0001c0469fd71"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/path-params.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/path-params.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.110.0/tutorial/response-model.md",
+      "sha256": "016feeeacf8c45635424465b9fee113780a95f288a425ed2caaac1b0437d131c",
+      "upstream_sha256": "9c0cd2276761ff72c0ff280f027a461c6f04f36dead53e5ed9fd07008cdc3fdd",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/response_model/tutorial001_py310.py": "780e13196289168227c3a5b59c063e9637e796c7285347c4d875a5c956f3f599",
+        "docs_src/response_model/tutorial001_py39.py": "2cf0cf8ba31c35f1df4bca2d41940bf5d2b8c6796923fa33dc9e8f4e46744013",
+        "docs_src/response_model/tutorial001.py": "7a3709f1ec2006d863ba89266e2f839d922f3b0e44f7a51ae39c95dd21632b58",
+        "docs_src/response_model/tutorial002.py": "ba3110b896d48276863edae1e81c73b535125a668ff6c2052f4bc4fc8269e898",
+        "docs_src/response_model/tutorial003_py310.py": "f0f863999159135b89dcbbc063e57e1c3c693e53c5cae2cfb0f540873525f3ec",
+        "docs_src/response_model/tutorial003.py": "240aed06726bba90181c356e022c276644e01c67ae990489cf8cf088a55505de",
+        "docs_src/response_model/tutorial004.py": "76ba5ec7bd28653c5549bb0fd26a376bb9789dd1cf69a87c827259c2090f491e",
+        "docs_src/response_model/tutorial005.py": "1ddc227a6153599104c4a5b6f3b55ca0efdb245e0428f0d25eabd0ad97e29c45",
+        "docs_src/response_model/tutorial006.py": "85a25ed4d2d59477463231bf80c6916530968ff9c5bb99c069b41d4208a6f55f"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/response-model.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/response-model.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.110.0/tutorial/request-files.md",
+      "sha256": "a4859b2637039d4ab0d1b919db66a1ce4e95bfb41c7a76ba3aaaea9c67fd721a",
+      "upstream_sha256": "2c851f09445b75cc0e3457237d749b780d9f0220e168b533e7fb0b93efde5e83",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/request_files/tutorial001.py": "6054527e53c62a9ecaeae39a335acf144040d8e6ba9ee1c2fcd0291a41d6cca6",
+        "docs_src/request_files/tutorial001_02_py310.py": "64d83c4899f9b2d15d33551e62d5fa154995c355fff2884690591b35dcc6eaa5",
+        "docs_src/request_files/tutorial001_02.py": "fa36d058db4f53a9fb1ab45226b32bc75c3a72d9c66a6555809c292080175ca4",
+        "docs_src/request_files/tutorial001_03.py": "6e054f7f7bedeb06e366cf6b0dd2834acda38d5b1c002eeb6fed0d5ea248edb3",
+        "docs_src/request_files/tutorial002_py39.py": "989895ac7d5e93dac0b108bb7311e5f74e5d76ecf50b3dac89ecd3078ca0cf50",
+        "docs_src/request_files/tutorial002.py": "0e10a4a0fa1c632b08e224a87a2d128e70264583c738e0bfd2601142f35c430b",
+        "docs_src/request_files/tutorial003_py39.py": "7cf24e56bc59319a89bf0bdcff21cc464d488785a634350aa0e59c2d32e1311d",
+        "docs_src/request_files/tutorial003.py": "042622cc06609986b91f1b8d2083a8f54e10e1fa67c976433c3b1a4e4ca031ba"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/request-files.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/request-files.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.110.0/tutorial/request-forms-and-files.md",
+      "sha256": "124ef5fc7f94d2898e6e3e10557cb0b56cfa109ccb4e5608faaad6997629b5e5",
+      "upstream_sha256": "b0ea157a1369bde78eb0118da9b0a39233b1d33d7440cdcd0f56fd9aece5cf73",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/request_forms_and_files/tutorial001.py": "4ad31d9a5ff9ad625ed175cb9259d4e50c76dfd7bb186a8fea2858b33e50e1e7"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/request-forms-and-files.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/request-forms-and-files.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.110.0/tutorial/static-files.md",
+      "sha256": "38a9b4e2e7f6efd1b65114cfdcf50f87a7c781bb4f254a9cf5b798ff575e11b2",
+      "upstream_sha256": "69cc4ae25c9b2412962ac6b88cfc20863748c2678db2979083c39a38fcf8ba6b",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/static_files/tutorial001.py": "968815810bb48e51e25bb62fdb07ce3a54aab1dfe14aa838edec4e4a5b244186"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/static-files.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/static-files.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.110.0/tutorial/dependencies/index.md",
+      "sha256": "ee633c813d07d395778663aee8ec4ddfab0f5e894c8df575e7132b9e3c380610",
+      "upstream_sha256": "6998a14eb91da703f84362c1e86617c800c940202cb50bdb4cdbf2c2498b49f7",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/dependencies/tutorial001.py": "6e2ca2bbdb6ca348a09e9fbbb91afc8af0da3c08290196374ea51f9244fbda6c"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/dependencies/index.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/dependencies/index.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.110.0/tutorial/dependencies/dependencies-with-yield.md",
+      "sha256": "56acb4cc536c0406e2810353d791d8dc4bde72f5d76dc729a15793aca1b8d1a5",
+      "upstream_sha256": "444e63e225f85cd8defc067edbcba7f210532ad5e45eb07aea1b6b71d98d4b82",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/dependencies/tutorial007.py": "f73b07eb2d9caa2225227e8d57fc348f3912a1640ff9dcf3d9f68b3eae8f6508",
+        "docs_src/dependencies/tutorial008_an_py39.py": "439bdc0dd6bdaa08a4d428f41fcfc45d350fc96cd29d451a60c3f7f80b7c365d",
+        "docs_src/dependencies/tutorial008_an.py": "11ffcad4599172203109835cec591d0ad85bb22009cd969e4ee589e03e99fd0f",
+        "docs_src/dependencies/tutorial008.py": "77033370bf44797294f4c02ce1a432c33e86fad8e4c1754c4ab72d3c1410cfc1",
+        "docs_src/dependencies/tutorial010.py": "ff0c310d621034082022bfee2a5cafa552dc5528422aaa30be109ed4dd40c676"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/dependencies/dependencies-with-yield.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/dependencies/dependencies-with-yield.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.110.0/advanced/behind-a-proxy.md",
+      "sha256": "61416c407cb55a028039b44e601036ecd1ab2acaa5db5803370c7403dcb958b8",
+      "upstream_sha256": "09f23dc9da45d46c7553c9b3d8ec3d732b617a90fbd892ad1f063cd1b65204ed",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/behind_a_proxy/tutorial001.py": "801a2f91be33c28c39eb2413abce0d0236eaffd8830abc758cbb389ea14bbe35",
+        "docs_src/behind_a_proxy/tutorial002.py": "3605c987044b55a696860b1625420935af3f54837ae4aded4ea7b3b066a8c0e6",
+        "docs_src/behind_a_proxy/tutorial003.py": "817921af608c6a2c4a9d9e660296d74f99052c94ef0c90e4ebffdce75a590e40",
+        "docs_src/behind_a_proxy/tutorial004.py": "0719f8625b70ec8c4d645b1231944e21a515001792fc0807d27be707d3790fbb"
+      },
+      "upstream_path": "docs/zh/docs/advanced/behind-a-proxy.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/advanced/behind-a-proxy.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.110.0/advanced/events.md",
+      "sha256": "9bbfe92e21c972127bbd58107cbf3f4ef246294c69c942ddd5d97ad539699c71",
+      "upstream_sha256": "4d94defeafed0893c99c3e67b7eaba8f5ec765824fd49b28a42a035c68587bac",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/events/tutorial001.py": "604cbccedd27a9b4923c143b21df0d2bcf7e74635ee76af610c555c7244cc9c0",
+        "docs_src/events/tutorial002.py": "2fcaf57d6821142045a7e66ced2591164d83983286e5339ee30d51efc0dc7386"
+      },
+      "upstream_path": "docs/zh/docs/advanced/events.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/advanced/events.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.110.0/deployment/docker.md",
+      "sha256": "2c60a1b4cd888e3ae9500bdad0c0cd30cbe6b6376fbda2ba540ce7a5188c777c",
+      "upstream_sha256": "2c60a1b4cd888e3ae9500bdad0c0cd30cbe6b6376fbda2ba540ce7a5188c777c",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {},
+      "upstream_path": "docs/zh/docs/deployment/docker.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/deployment/docker.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.110.0/deployment/server-workers.md",
+      "sha256": "3684383e09c0f5c4ac6ec087df944b47c0d7b2f587192975b19f7a9458598ebe",
+      "upstream_sha256": "3684383e09c0f5c4ac6ec087df944b47c0d7b2f587192975b19f7a9458598ebe",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {},
+      "upstream_path": "docs/zh/docs/deployment/server-workers.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/deployment/server-workers.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/cors.md",
+      "sha256": "442c41dcb7ba461a05f89e24b74cae55be5f330e086dc3b569a5420364629378",
+      "upstream_sha256": "dfc724eb9f7d1db037d84ce8e6743e16fd9d56d1649f1b7d3657de0f1976cf76",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/cors/tutorial001.py": "145cde24734c8bb5e11184c97596449162e234f5cd770f79e959976bd61877b2"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/cors.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/cors.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/background-tasks.md",
+      "sha256": "0310d31652eec4d36097e50aace0567766d9510eb96761489495e39550602db7",
+      "upstream_sha256": "383aa6739457575193007b3672dfd8d122fd390f45575924cfdbf95324b68369",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/background_tasks/tutorial001.py": "8218ad01272cffb42643773619fe7025bee2d3a826361fe9db4f7cf5db8a8308",
+        "docs_src/background_tasks/tutorial002_an_py310.py": "9550189a7e3385a09d46cf8b636514a610845f4c32ce06ee03d1735999bc2272",
+        "docs_src/background_tasks/tutorial002_an_py39.py": "ace7f2be2feae0739c65a9bae2d0fcd571dda0e8a5822a05d95e92e81671683a",
+        "docs_src/background_tasks/tutorial002_an.py": "906cb9d9ad3b08c500dc32937269156bda59f4a3138d3e6f19b827eeb5cee9af",
+        "docs_src/background_tasks/tutorial002_py310.py": "5a6034b96b936c9d507f5ac38e7fec9e2b1c4ef4624b9a836efd345535ff6bc9",
+        "docs_src/background_tasks/tutorial002.py": "b058b54a2472977c3d7832c90a3dcc95d68bc37989e53f0f75cdae0dde3875d5"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/background-tasks.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/background-tasks.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/handling-errors.md",
+      "sha256": "afd9ed00730226bd45f502bb7a2bbad6b1d99ccbebe7f17d2e02c5c47f184b5e",
+      "upstream_sha256": "1a563f8f491a2cc981294ec69ea5d7f6545849870817e0a5775441447d7cc6d1",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/handling_errors/tutorial001.py": "ae11c344b30574d3ef126de0d05a96b6c9d2466fc7c566e4e8bf989704807b5c",
+        "docs_src/handling_errors/tutorial002.py": "c022ef435507bef0a0dcb8c889b8c1a9d0abf48da9b83cb5f626ac5c9c3fd38d",
+        "docs_src/handling_errors/tutorial003.py": "6d9cc868c5b98d899b1e199a7ee4ad0f0e914a56a6b265e88e635c05afb9e722",
+        "docs_src/handling_errors/tutorial004.py": "8f8e310c110f97d855cd2fa7aed634a6fd5d69f28cd952d2b6180a5754a49b00",
+        "docs_src/handling_errors/tutorial005.py": "61824da4694a1099574a666fe6034cb70d8551c897b362ba2703f3b27fa3e8fc",
+        "docs_src/handling_errors/tutorial006.py": "ce86939ebe2b508226de8f01d760dd8e0c34ed6238b526306257c49eb274aa01"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/handling-errors.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/handling-errors.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/middleware.md",
+      "sha256": "52960b3060e4dadfa9477fa7a270402c6636999f9f0698b1bbe21a6224b00d79",
+      "upstream_sha256": "dc587a32e84826d3b68f3745ddf7d75b0e2997f5fc6e031b40ee8b022a3cd186",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/middleware/tutorial001.py": "bf7786e78360628c04482e348ae8b749e54dff17b8448f6ec8971470d38e3800"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/middleware.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/middleware.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/body.md",
+      "sha256": "5f697c8048f3284332c2675811b2c47d384ba06cd3272baaad6101fb4f741917",
+      "upstream_sha256": "16db7d2ac3d05e01e0e437f3e507119c5bbadd5ab04082b5361f435c3e5a258b",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/body/tutorial001_py310.py": "e481030f5b9ceaddc5e1ab2cd7bb36ef415799d457e54fa89f58b93510166a3a",
+        "docs_src/body/tutorial001.py": "82783bc51cd4212ee8cdcdbe9b181be327f5a60b44765bff1c2847a9ece781b3",
+        "docs_src/body/tutorial002_py310.py": "6bb3540765d6cf6f588191493cb227aedbc164a14eb3ff968c8a25f4fd43c52f",
+        "docs_src/body/tutorial002.py": "fe6446a28f22f121e486c5a1b1e0717fa5fdcb8c3fb9d19f90623ce1411ee3c6",
+        "docs_src/body/tutorial003_py310.py": "af21d8ede3844d1756e51f38dcb3fec485e9134ece80ff12927f5de2226f62a7",
+        "docs_src/body/tutorial003.py": "981c79b68a6d44d6c1abdc3f7ee37c9fbac5e1e90c41393bcb0e933ca32ddf78",
+        "docs_src/body/tutorial004_py310.py": "293f9e2dae1a7f9ec39381eb4dcea85da7ca0aaea943acd390440cbefd7ca00f",
+        "docs_src/body/tutorial004.py": "4ede4ebc987011947fb8868efa4bdf71eeeac3ee6a468f572ddbdadf4ae8c503"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/body.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/body.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/query-params.md",
+      "sha256": "34267077d1f463a44a281a245256d95499f46faa63c66bf0e4c027e15b50fbdd",
+      "upstream_sha256": "804e51f8c9bb9a5877f720195e903170e3d855de48880d02118726fb585d94c7",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/query_params/tutorial001.py": "6adfaedf0f557cb2ebe4b75b805c7f6c783c61e50845572f4020e888dac69489",
+        "docs_src/query_params/tutorial002_py310.py": "17d2182e85ea040919e7b965c428147f30a203f9c7d6e9d1da0bd55ae502f88b",
+        "docs_src/query_params/tutorial002.py": "f5c7ece8351b6f63187b072a3c672937d2c76c1e824e0b955d29084301ca47c4",
+        "docs_src/query_params/tutorial003_py310.py": "a2db585926ed6c203565561ae8e1bbf74b5e27d78cf50a2c58f139085957e2d8",
+        "docs_src/query_params/tutorial003.py": "8407923dca66412638aab5245d30fc34a17cc5bb72d223fd86ccbdd67ac06540",
+        "docs_src/query_params/tutorial004_py310.py": "105c31a085865fd99bb5336c5e0168dbced8eed9ddf0f37f89cdfe5e8a657697",
+        "docs_src/query_params/tutorial004.py": "92dbd8f7b745f66a3eec4b47d210fcfe6c2e27c6dcc19f67a47ac3a1bd4768e3",
+        "docs_src/query_params/tutorial005.py": "c532cc66d7a9b90cf79773b7fcbdbe306a88353aac72bc72ffd7bc990d91c25f",
+        "docs_src/query_params/tutorial006_py310.py": "d39ad4b41b19a6af1528e46eccac3c149d6128e98a2cb935575cf85142c10c9a",
+        "docs_src/query_params/tutorial006.py": "3d4967540e0c707f1d817d6136090a6c1712da99e1f1e6407f435a558a7e2e35"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/query-params.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/query-params.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/path-params.md",
+      "sha256": "727049b8463883a6bf5148c0aaa2c745b629959c41b88d57fc8981c89eebd48e",
+      "upstream_sha256": "06ff14e12d1c5af886fd8a78ee470a607ffa48525abbbd74ea84563f5cace3ab",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/path_params/tutorial001.py": "c10c9be93c07a592e1bc473ff53027152459d6565043d9fef5548089752fd0e2",
+        "docs_src/path_params/tutorial002.py": "e315342e8a391de45042201b39fd985c65f9107559581e2516b06f97e433e0f4",
+        "docs_src/path_params/tutorial003.py": "8e61b9cf938034484ada46a920f68e7ac54e28e9fc1b5305e591cd88247bdca2",
+        "docs_src/path_params/tutorial005.py": "1c68f2c5549486ef0da4c198e5068e0a25227b0e87e53237aba9bd89b3ce6de8",
+        "docs_src/path_params/tutorial004.py": "7d51acce2e571de480e402ae7cc1f3e383e3751f4a661becddd0001c0469fd71"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/path-params.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/path-params.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/response-model.md",
+      "sha256": "bae37bbad097afb036ac3aba5cb7a3a98889065ad97d483ea3f58c5816a6be5e",
+      "upstream_sha256": "4e37eb98ba4770e2dd96bde5f80aa5dcf63b652b4ba776be579e6447aec2a84f",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/response_model/tutorial001_py310.py": "780e13196289168227c3a5b59c063e9637e796c7285347c4d875a5c956f3f599",
+        "docs_src/response_model/tutorial001_py39.py": "2cf0cf8ba31c35f1df4bca2d41940bf5d2b8c6796923fa33dc9e8f4e46744013",
+        "docs_src/response_model/tutorial001.py": "7a3709f1ec2006d863ba89266e2f839d922f3b0e44f7a51ae39c95dd21632b58",
+        "docs_src/response_model/tutorial002.py": "ba3110b896d48276863edae1e81c73b535125a668ff6c2052f4bc4fc8269e898",
+        "docs_src/response_model/tutorial003_py310.py": "f0f863999159135b89dcbbc063e57e1c3c693e53c5cae2cfb0f540873525f3ec",
+        "docs_src/response_model/tutorial003.py": "240aed06726bba90181c356e022c276644e01c67ae990489cf8cf088a55505de",
+        "docs_src/response_model/tutorial004.py": "76ba5ec7bd28653c5549bb0fd26a376bb9789dd1cf69a87c827259c2090f491e",
+        "docs_src/response_model/tutorial005.py": "1ddc227a6153599104c4a5b6f3b55ca0efdb245e0428f0d25eabd0ad97e29c45",
+        "docs_src/response_model/tutorial006.py": "85a25ed4d2d59477463231bf80c6916530968ff9c5bb99c069b41d4208a6f55f"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/response-model.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/response-model.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/request-files.md",
+      "sha256": "be6ebdc3452fa6e8894aaf30a21fc9eee19eeb4a6dbad57c1ffc3f78602344ec",
+      "upstream_sha256": "958ec524ee0d65cc3d7218ae50fc8da1e138aa99f30d345d16265d56d9b6eb50",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/request_files/tutorial001.py": "6054527e53c62a9ecaeae39a335acf144040d8e6ba9ee1c2fcd0291a41d6cca6",
+        "docs_src/request_files/tutorial001_02_py310.py": "64d83c4899f9b2d15d33551e62d5fa154995c355fff2884690591b35dcc6eaa5",
+        "docs_src/request_files/tutorial001_02.py": "fa36d058db4f53a9fb1ab45226b32bc75c3a72d9c66a6555809c292080175ca4",
+        "docs_src/request_files/tutorial001_03.py": "6e054f7f7bedeb06e366cf6b0dd2834acda38d5b1c002eeb6fed0d5ea248edb3",
+        "docs_src/request_files/tutorial002_py39.py": "989895ac7d5e93dac0b108bb7311e5f74e5d76ecf50b3dac89ecd3078ca0cf50",
+        "docs_src/request_files/tutorial002.py": "0e10a4a0fa1c632b08e224a87a2d128e70264583c738e0bfd2601142f35c430b",
+        "docs_src/request_files/tutorial003_py39.py": "7cf24e56bc59319a89bf0bdcff21cc464d488785a634350aa0e59c2d32e1311d",
+        "docs_src/request_files/tutorial003.py": "042622cc06609986b91f1b8d2083a8f54e10e1fa67c976433c3b1a4e4ca031ba"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/request-files.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/request-files.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/request-forms-and-files.md",
+      "sha256": "a60335ef1b7e1bd604fb31ded8000ac9c0b38e59468923eef1e546ee998110b8",
+      "upstream_sha256": "220a42758463d535d4cc3ef52e35a9d9dce91a449e1a357ad292779b11669503",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/request_forms_and_files/tutorial001.py": "4ad31d9a5ff9ad625ed175cb9259d4e50c76dfd7bb186a8fea2858b33e50e1e7"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/request-forms-and-files.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/request-forms-and-files.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/static-files.md",
+      "sha256": "bf0b52b9e78d29f3acce42d555f2c63e0c84dd2d21d05efcc39f45ec1f34f026",
+      "upstream_sha256": "e0ab929a79351b976b9f863e3f1866607be606477f321978cf69cbc19bdc857f",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/static_files/tutorial001.py": "968815810bb48e51e25bb62fdb07ce3a54aab1dfe14aa838edec4e4a5b244186"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/static-files.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/static-files.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/dependencies/index.md",
+      "sha256": "50a2b0dd609d8ed6d38f3fa16f4e1ed2028c482c6176fd7ad679be7002124e2e",
+      "upstream_sha256": "15414f521c9d508d60ac0f65777d4d8499c1dd66abbeaeb265862aa75d1e416f",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/dependencies/tutorial001.py": "6e2ca2bbdb6ca348a09e9fbbb91afc8af0da3c08290196374ea51f9244fbda6c"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/dependencies/index.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/dependencies/index.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/dependencies/dependencies-with-yield.md",
+      "sha256": "172c8da7f37616060e677964d40aae8fa4a571e1ec5ac6ef6b1ac28903002ac2",
+      "upstream_sha256": "128d186c83fe79b5e9067e531c73cd2848ce65984f6099e76d7f1c8fcfa0dd75",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/dependencies/tutorial007.py": "f73b07eb2d9caa2225227e8d57fc348f3912a1640ff9dcf3d9f68b3eae8f6508",
+        "docs_src/dependencies/tutorial008_an_py39.py": "439bdc0dd6bdaa08a4d428f41fcfc45d350fc96cd29d451a60c3f7f80b7c365d",
+        "docs_src/dependencies/tutorial008_an.py": "11ffcad4599172203109835cec591d0ad85bb22009cd969e4ee589e03e99fd0f",
+        "docs_src/dependencies/tutorial008.py": "77033370bf44797294f4c02ce1a432c33e86fad8e4c1754c4ab72d3c1410cfc1",
+        "docs_src/dependencies/tutorial008b_an_py39.py": "a401e288a548d12ac72b307f54dc792413896b70db731dec49d65fb08fc6369d",
+        "docs_src/dependencies/tutorial008b_an.py": "fa1be844d746c6d8834182473349a5496065b580dd94132c005f38528bb5b196",
+        "docs_src/dependencies/tutorial008b.py": "b106c0c620dcf44f6e45461abf0993e37023a62aa20a49b760bb090751a370db",
+        "docs_src/dependencies/tutorial008c_an_py39.py": "6e0ea198f11f19c2812d040d7757e486497f771ec5d0fa9ce03551c879298fe8",
+        "docs_src/dependencies/tutorial008c_an.py": "c0ab948c9eab95dde509585d8d560f29b1ba9e66cf8f12576772a2617ae0563e",
+        "docs_src/dependencies/tutorial008c.py": "55fe98698b5905cfd99926832798f1ae691be65c7f4a127c57ef6e2981af1ade",
+        "docs_src/dependencies/tutorial008d_an_py39.py": "3b49b4fb2321efaf78def86ca4c11ff6c8aff4690fdaf66953bec49adc90c294",
+        "docs_src/dependencies/tutorial008d_an.py": "84669e12cadb027e274b09775d655b39202cba42c812f1a676c6d888fff75eba",
+        "docs_src/dependencies/tutorial008d.py": "614470dd257097853e0252def01d5ae786196487c9879bc7f0816f2b049793b6",
+        "docs_src/dependencies/tutorial010.py": "ff0c310d621034082022bfee2a5cafa552dc5528422aaa30be109ed4dd40c676"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/dependencies/dependencies-with-yield.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/dependencies/dependencies-with-yield.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.115.0/advanced/behind-a-proxy.md",
+      "sha256": "6777fb137c60a115ad9a564d7db2f356e3c7acb720ce22fcbac495236d282163",
+      "upstream_sha256": "c9dec30311a8cb57ccab6a2726e131569518759f4fdcb745ef314aff156f3886",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/behind_a_proxy/tutorial001.py": "801a2f91be33c28c39eb2413abce0d0236eaffd8830abc758cbb389ea14bbe35",
+        "docs_src/behind_a_proxy/tutorial002.py": "3605c987044b55a696860b1625420935af3f54837ae4aded4ea7b3b066a8c0e6",
+        "docs_src/behind_a_proxy/tutorial003.py": "817921af608c6a2c4a9d9e660296d74f99052c94ef0c90e4ebffdce75a590e40",
+        "docs_src/behind_a_proxy/tutorial004.py": "0719f8625b70ec8c4d645b1231944e21a515001792fc0807d27be707d3790fbb"
+      },
+      "upstream_path": "docs/zh/docs/advanced/behind-a-proxy.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/advanced/behind-a-proxy.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.115.0/advanced/events.md",
+      "sha256": "5ccf16ef11add8e35147d0955c9f94bd6caf01ee3518c3773a0702029ff3c659",
+      "upstream_sha256": "3f78719da4d198fb96d3d92f07940d78c8a59b9b727c74839e5fc5206a81ed9d",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/events/tutorial001.py": "604cbccedd27a9b4923c143b21df0d2bcf7e74635ee76af610c555c7244cc9c0",
+        "docs_src/events/tutorial002.py": "2fcaf57d6821142045a7e66ced2591164d83983286e5339ee30d51efc0dc7386"
+      },
+      "upstream_path": "docs/zh/docs/advanced/events.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/advanced/events.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.115.0/deployment/docker.md",
+      "sha256": "2fdef3adc1e959f51bd7f6ef039b7b31aa260ddf7abadd826ef33f31bce979e0",
+      "upstream_sha256": "2fdef3adc1e959f51bd7f6ef039b7b31aa260ddf7abadd826ef33f31bce979e0",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {},
+      "upstream_path": "docs/zh/docs/deployment/docker.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/deployment/docker.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.115.0/deployment/server-workers.md",
+      "sha256": "72cdb766729bf45084f2a31c4163bb296565be1e669508c55b9b496a215b5a1d",
+      "upstream_sha256": "72cdb766729bf45084f2a31c4163bb296565be1e669508c55b9b496a215b5a1d",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {},
+      "upstream_path": "docs/zh/docs/deployment/server-workers.md",
+      "upstream_url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/deployment/server-workers.md",
+      "license": "MIT",
+      "acquisition": "byte_copy_from_frozen_baseline"
+    },
+    {
+      "source": "fastapi/0.110.0/tutorial/first-steps.md",
+      "sha256": "855b7ed56825704617406f3fc185fc31be925434901491d4494f871b16cef219",
+      "upstream_sha256": "45b6c3b9099ffbbb0f3da9fee9a90ed85cae547f2ee0c77a41b15f210e7430e2",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/first_steps/tutorial001.py": "88c744bf8154cc2a96793f9df1058431588029f7422ee0bcb62b74130a801650",
+        "docs_src/first_steps/tutorial002.py": "fcf695469747a98628dd4ffe2df8e6a60fe715aba4e8e351c88b9fb5582fe6d1",
+        "docs_src/first_steps/tutorial003.py": "b0ba3b1d47204510640516d3808558eb6fa65f15cc027dd86db2e236eea57375"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/first-steps.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/first-steps.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.110.0/tutorial/path-params-numeric-validations.md",
+      "sha256": "5383e9332004a6fb1aedf06cf4667f4bd40707408757f52319b83244605e246d",
+      "upstream_sha256": "1a32ee080a38aa3002fccddf8fff0271ec14dfa8a48345d88923d57df6ac009d",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/path_params_numeric_validations/tutorial001_an_py310.py": "0d12ce071f0bcc1973064bcf7a95caa90f4547c59f6827d74688a24d78544d51",
+        "docs_src/path_params_numeric_validations/tutorial001_an_py39.py": "d13f579455ee77137946d1a435ef5c3677572fc439f1e1d45dd123bdff76dc8a",
+        "docs_src/path_params_numeric_validations/tutorial001_an.py": "9f1abd3bed173d97727fededa27a17d66de30dd4a609badc5c8efe43170f708f",
+        "docs_src/path_params_numeric_validations/tutorial001_py310.py": "ce23e93167c1d5eb7ebac94bca05400ed4afa68b8e0e1cd096cd11b9319ca6ce",
+        "docs_src/path_params_numeric_validations/tutorial001.py": "a2d0c3eef716435d6ea26871f1fd51f8496baebd8fbdda0bd895cf1d3ecc46e5",
+        "docs_src/path_params_numeric_validations/tutorial002.py": "7a11d3256e6140daf836ede85da6a6ba70e87f556da04d6d6a0d077f260ac37e",
+        "docs_src/path_params_numeric_validations/tutorial003.py": "a3f144f675f2ab365b51911abd76255c2b9f78b08b374705aaf7813fd5ba1c99",
+        "docs_src/path_params_numeric_validations/tutorial004.py": "a8941b5cbe0afbe5f38a0ce3c1c007a070b4fd81718e0bb292e215b2e9053ddf",
+        "docs_src/path_params_numeric_validations/tutorial005.py": "f04c821c27f018d6e87d7b23aff2706a0f03315a99c5c8974c536dbd18f5d834",
+        "docs_src/path_params_numeric_validations/tutorial006.py": "da593ee29478728b10acef8921c2a159e075cc75a0dbd30bb6ce36b8323386fe"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/path-params-numeric-validations.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/path-params-numeric-validations.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.110.0/tutorial/query-params-str-validations.md",
+      "sha256": "4add397616c5cfc7030463f35d040933e5ed34f488d7a0ce580024d0d8f8a574",
+      "upstream_sha256": "38241ff6826ba0a41c5f2d02837450eb7b18ccbb74dd6f7c7057403595ec1ede",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/query_params_str_validations/tutorial001_py310.py": "2b7731e82fe407fc7671fbe318c7b34e8ee4845641059605984d12d952d9bf92",
+        "docs_src/query_params_str_validations/tutorial001.py": "e1eb8cb3484ef72f195987512216055faf9963d232ba88f8aeda3f3b306142dc",
+        "docs_src/query_params_str_validations/tutorial002.py": "4a6bcf4b1a0661740d290690d3c1437a9f310c41462526b4861b48f8c57b3d13",
+        "docs_src/query_params_str_validations/tutorial003.py": "f3bb7900fc13c3d2022d26ee010e1cd156824f06e3f76e9d30be66505304c040",
+        "docs_src/query_params_str_validations/tutorial004.py": "2ade709d206f749d98f28630c12836b0621ad7f6d22b39d4123fbc5f44d052b4",
+        "docs_src/query_params_str_validations/tutorial005.py": "e26433821eb629149b5199cda7cfb67c88f11123fe7d27880670a4f5a8194c16",
+        "docs_src/query_params_str_validations/tutorial006.py": "683f2564fe38de353ab03720ec2fbd3f4d132bac9c98c0bb68c118cc0370537e",
+        "docs_src/query_params_str_validations/tutorial006b.py": "850750f09ead1413b17178883d2ecf3ba724647c2ac4f059f0f25f41a9e62e93",
+        "docs_src/query_params_str_validations/tutorial006c.py": "b56f324acdc260b09a05d5f4d04d73b4055ef3f512adf8b40e6d7b9205491f52",
+        "docs_src/query_params_str_validations/tutorial006d.py": "352fa14e407eac9e037979d1b19dc58dac7c4d50ffdcae40650d1efd14d77c62",
+        "docs_src/query_params_str_validations/tutorial011.py": "a7d66172632a9cdc35869fe66fa330786b2a624cc66d892a6e2e6da06ab25fee",
+        "docs_src/query_params_str_validations/tutorial012.py": "49660502fa86df003ff7513a782f25b1de95bd076d19ee5d2cbc1097f6d88d8d",
+        "docs_src/query_params_str_validations/tutorial013.py": "019fa9f61aca81d3e15b7d9fff040f8416ececf97a7732b1ad83d4a44caff682",
+        "docs_src/query_params_str_validations/tutorial007.py": "65d35de0513ea2496d2c94e888ad2d485b64a61d2ba2a4305ddae07ed05b75d3",
+        "docs_src/query_params_str_validations/tutorial008.py": "efe9cb879bec24f4974bc2425d51d0b238eb2c2d169aaf592cc2c0fab28cc809",
+        "docs_src/query_params_str_validations/tutorial009.py": "c5784d6d8a6fc843766f07b0496f1371cf634d7e1da5592a46a6ab3574b89407",
+        "docs_src/query_params_str_validations/tutorial010.py": "98f87d87aa95b1847a9cc666fee57959a57ccce974c272bec2a136fd51a8652c"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/query-params-str-validations.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/query-params-str-validations.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.110.0/tutorial/body-multiple-params.md",
+      "sha256": "8190c9a82af53b1ab35a41376c30a87bb640746bb6bf966a9b899378ed400a69",
+      "upstream_sha256": "3cb0cf4fe936ac66808bd6c80282f7b2629731576a4753b8bb58ed0ce76280e6",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/body_multiple_params/tutorial001_an_py310.py": "a4dd2eb635a96f02fdc3d0e86df6b4b21340173f2ac997547d9665428ebcbe95",
+        "docs_src/body_multiple_params/tutorial001_an_py39.py": "6533b2a24634a1308c853217279d152fcc4b78b955c29a1e85d79d317adca85f",
+        "docs_src/body_multiple_params/tutorial001_an.py": "ebeae579419bf99f538cb498c40c97c9e8efd9eed0a7e82b8e39b94eaf2359c7",
+        "docs_src/body_multiple_params/tutorial001_py310.py": "66fc1374ce3e06d9e379d0c870eddac3f3d53734271f484f8d267b538ed2fbb7",
+        "docs_src/body_multiple_params/tutorial001.py": "026ee0a84157474d95050f1d14f7474875d1037540ab6a2a5b41046266212376",
+        "docs_src/body_multiple_params/tutorial002_py310.py": "dbe98c9ac3ad52e12b7f71a7ed7b925648e62e7b0934d21aac237f3f1d212816",
+        "docs_src/body_multiple_params/tutorial002.py": "fb0032059673c77bfbfa8eb34447ef326f7ca4d3b2606155b2bce3ba103d49ec",
+        "docs_src/body_multiple_params/tutorial003_an_py310.py": "cc19bc26b69965dc72c97abe5128f7f903073bff2d82cd6146446f4821a11f59",
+        "docs_src/body_multiple_params/tutorial003_an_py39.py": "cef05cf5501678b5c521ff690e1af4d6311e64571185ab928a4ec86e641e5df7",
+        "docs_src/body_multiple_params/tutorial003_an.py": "174fe1bda5a98fafaf35b38270342a150aef6cec0739b66f973a3775988d8887",
+        "docs_src/body_multiple_params/tutorial003_py310.py": "5b2de0233f05436eb8134e91eaf10a36028ba56d82a83388c6fe019ea26d55ff",
+        "docs_src/body_multiple_params/tutorial003.py": "aa581f106751d49ddd54cf10978a84683ebd63ef0479d820ea8f53f8fafe7263",
+        "docs_src/body_multiple_params/tutorial004_an_py310.py": "2f4e34a76b52675e59fa8a0198d9ba5c2b1291e124c4b1c8c6d1da0c8fbf3d8f",
+        "docs_src/body_multiple_params/tutorial004_an_py39.py": "04b2d63cc1588ec43181b73b63de0c375294bf0f5ec5f2451a7fea319cdd169c",
+        "docs_src/body_multiple_params/tutorial004_an.py": "3b7e5aebfaac80cf157a68e36ed93415f8b4876f8b2a6449b386148ea35285ac",
+        "docs_src/body_multiple_params/tutorial004_py310.py": "277330efb0843b6111ae955e897e9f0104126e0c283fb813b169c9b3f24fe8e4",
+        "docs_src/body_multiple_params/tutorial004.py": "fb4a34c37e58961b8c3100c0c6756208cea208f6ba60adec64f70b9d4ad0852f",
+        "docs_src/body_multiple_params/tutorial005_an_py310.py": "a1b219436f9042cf3685e4a7c923138e7ace69143b87af96a450bd241e09443b",
+        "docs_src/body_multiple_params/tutorial005_an_py39.py": "6174fae374ee1c88b5775deafc782ecb47c0156aa6ac1601baf8584b6d8d38d1",
+        "docs_src/body_multiple_params/tutorial005_an.py": "9d6f6ad4166d7e17ba4ef563228a68a92742e6bbddf1f49d4fbdc4ae1ee80dd6",
+        "docs_src/body_multiple_params/tutorial005_py310.py": "fca40a5b2e4b7d312ed2465f509e81e687ed75ec4717490b87d7146bf0e96694",
+        "docs_src/body_multiple_params/tutorial005.py": "3236f4d113cc2c0e23609e4e7caf5303d5503aa3d08956086b97a2d6a142aa47"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/body-multiple-params.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/body-multiple-params.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.110.0/tutorial/body-fields.md",
+      "sha256": "daa95d35bdde104d79394ab8bb55b749afc290ebbc0ee868881a06af3e493d2e",
+      "upstream_sha256": "c9c97a09e3e37e573f4fd7804d3adae09405051298e16f17bf872b8ccdaefe9b",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/body_fields/tutorial001_an_py310.py": "56bc9126f371dc8f6781410733452d13392551da6908eb50dffb38a80e6154aa",
+        "docs_src/body_fields/tutorial001_an_py39.py": "84d9abb24ddebae94a5faeb2b1357a590a47c103e4e2c390e0420e8b9f1209be",
+        "docs_src/body_fields/tutorial001_an.py": "1503fc7e739324b8048ccd3dbdc0d75456caa605c3671657c5feb3a7221db0da",
+        "docs_src/body_fields/tutorial001_py310.py": "e19ecd88a9127dc8b95cf8307d499919c1d585c594b99960615a609f5643065c",
+        "docs_src/body_fields/tutorial001.py": "de8865cbab592d6630900a09c509ad3546cd7834cda09e7e169ccb999c016cd4"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/body-fields.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/body-fields.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.110.0/tutorial/body-nested-models.md",
+      "sha256": "287b356c76f90d54474a7ac1a985c939aa0e12381fc03cfabf9e22930ccd2d3d",
+      "upstream_sha256": "a42bb3bd04f2c955063703f52f44c6ae24bbea2dc21ba35912880ab86ee3bbba",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/body_nested_models/tutorial001_py310.py": "2f24ba4132e09b43e6956517ec9d2da13bfc6d950a3db9d023d5de4455dcd467",
+        "docs_src/body_nested_models/tutorial001.py": "004b222bace0ed18d98c56c68cba77b3afe497d5873970ebba0c8bd183068d8a",
+        "docs_src/body_nested_models/tutorial002.py": "c3a0ad53ffd1d82eed94c63ef7e3f3435e39a4789289029aaa42ba29613bb264",
+        "docs_src/body_nested_models/tutorial002_py310.py": "d11582a1e9997ebe670e925c260c00ef8304b04bcf0ac75e969ea08ba610476c",
+        "docs_src/body_nested_models/tutorial002_py39.py": "502eab2bb0f3f1ca92fe7d71e84e12144fd76ad5e73401fc09349cf9338a2813",
+        "docs_src/body_nested_models/tutorial003_py310.py": "0ea95f9d014b22c7c9f3a9de5234ed7f6d1e9e4c670e034e9de8acca0f2a790c",
+        "docs_src/body_nested_models/tutorial003_py39.py": "92e73ce54bd37daaba92c87903e457b60baef5737cf7b085032feea42112ba82",
+        "docs_src/body_nested_models/tutorial003.py": "6cd4eb79bdd6deba10ff318a94247de851bd1e1c34c601a797e343076bc92989",
+        "docs_src/body_nested_models/tutorial004_py310.py": "bb8b73fc9a5509f97cea1055ac6c48078f696fd43d37bf2e955ee91f5c40eef0",
+        "docs_src/body_nested_models/tutorial004_py39.py": "2a00f690f10ae1da94c46679b23a927ee08bc48282d3303a96c6ad43367c78e6",
+        "docs_src/body_nested_models/tutorial004.py": "9a7e133dbd8dcbb8962667c5038cbe27b3e85e1bcce1c76463a138dd2eed6f4b",
+        "docs_src/body_nested_models/tutorial005_py310.py": "c994b6ecf60776bb705b250c756850191c36f5d34a347e2cdb9d8c8e01ddcbae",
+        "docs_src/body_nested_models/tutorial005_py39.py": "a7517c923b7c9959776bbf773d20e37bc1c98f40977ebfb0c63f659297e39b50",
+        "docs_src/body_nested_models/tutorial005.py": "b8ed66f5c9a48a4656b6c41265bd78f4c6f03897be502f4b777c3b807f1ba2b5",
+        "docs_src/body_nested_models/tutorial006_py310.py": "c560343e03b8d1f51036be63047b5cd77569b89e377b042623c2c1482dd80311",
+        "docs_src/body_nested_models/tutorial006_py39.py": "d52b23af10ffa66fd16255d58d364dcbac0e66079360dc5fe0375789b5551be9",
+        "docs_src/body_nested_models/tutorial006.py": "fac3d29e9b39846d99ba9e51fa832b84b40d1993c2aab2cb29aa26d79cf77729",
+        "docs_src/body_nested_models/tutorial007_py310.py": "e150518d47637a092a0bacfca26591fa3130ef9181ed8067d34ae40b3cb502a5",
+        "docs_src/body_nested_models/tutorial007_py39.py": "b5997dfbbe01d34aae140feaca396fd6545b8b29813120e061018b49a9b3c0af",
+        "docs_src/body_nested_models/tutorial007.py": "dba029b445762b0a20ccf01fb81857425ea60f9c467907b0d8fde746554182b9",
+        "docs_src/body_nested_models/tutorial008_py39.py": "cab9a942d5265955449d3973321cacce8141b18abbacc2e95141b57510b76063",
+        "docs_src/body_nested_models/tutorial008.py": "de870c73394bd48c1ea5f7352898978effaf01f9924998d856be74b40068e2b1",
+        "docs_src/body_nested_models/tutorial009_py39.py": "71da8f8bfda33df8d9253041fb6964cd02d1e678e352329a01d89e5b52094fd7",
+        "docs_src/body_nested_models/tutorial009.py": "3c620cee875712ca857f4c4ac278b170222847d901dc678876f729cdd278c1ed"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/body-nested-models.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/body-nested-models.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.110.0/tutorial/response-status-code.md",
+      "sha256": "db6b2d28daa874cf93027e235bc1027968585a7229b92356ce46058ed38dbeeb",
+      "upstream_sha256": "01d7e54fa64c0dadfcd61d181601361fe1569cb521fa235fb5be4e5659f0e8f8",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/response_status_code/tutorial001.py": "0315c8641f1ceeb35e89813bb09edb1d236c458c6c3f096184f5b3c2e0db044b",
+        "docs_src/response_status_code/tutorial002.py": "b24731e628edfb200844448186a7b5ca6a8a72d49f00da253226b87e18a5383f"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/response-status-code.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/response-status-code.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.110.0/advanced/response-headers.md",
+      "sha256": "2678f1b910087a82863c2ac7f7f9dd9194da732efae9ad2e63837dbbd767a82b",
+      "upstream_sha256": "4763f41b643d031abbbec91b46f52cd2b2dac0c8f648d977320b86f65413ee31",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/response_headers/tutorial002.py": "7cf8b0ea27ada146dc03730990016a611e7170867e73d60f25a1b66625c46216",
+        "docs_src/response_headers/tutorial001.py": "5c6bd5e2ddca15c83f03cec57fab08ea6b6d45c6763314e20a9076448bf5b9cf"
+      },
+      "upstream_path": "docs/zh/docs/advanced/response-headers.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/advanced/response-headers.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.110.0/tutorial/security/first-steps.md",
+      "sha256": "37b72a52a0d765680aec67f0800a1f431dcbe0a7a01e5a61dd93768c1648490c",
+      "upstream_sha256": "13487800294c1bacbaf56d12389f9530d14570d02599ffe49f9163a5d1a3d913",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/security/tutorial001_an_py39.py": "5ab2af6e39293cbd409b6d9531e7ebb58f9c426d2f6de4f29bde298aeae4893d",
+        "docs_src/security/tutorial001_an.py": "e8a06cc8dd20dfdbd1526254687cee05ca37218f45a4e55fa6ccbe63d93d776a",
+        "docs_src/security/tutorial001.py": "2982d6ebeb11a3d83de3fb5735306151341b1a34cae8aaede5580ede9f733f5a"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/security/first-steps.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/security/first-steps.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.110.0/tutorial/dependencies/classes-as-dependencies.md",
+      "sha256": "e2f238fee4062dc51817be91ba95dfd800af5edd1b23455b4a9135e61fed62c7",
+      "upstream_sha256": "991c73b76f79256c812b0df251f0528956a52efacdffc742b492db3d898d7b8a",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/dependencies/tutorial001_py310.py": "48493e7d3c3838c944778581a9c3b6d4f96b2d9e7d1dfaf45f71ebc1e6dec55a",
+        "docs_src/dependencies/tutorial001.py": "6e2ca2bbdb6ca348a09e9fbbb91afc8af0da3c08290196374ea51f9244fbda6c",
+        "docs_src/dependencies/tutorial002_py310.py": "e5173852eaca110e165c2a1a6106f140237c4eba491e2d90c4ba308855f93ae7",
+        "docs_src/dependencies/tutorial002.py": "62f8f7ea364850584c880460c1001ec5406b49a981b5d82a89ddfd26afc7660b",
+        "docs_src/dependencies/tutorial003_py310.py": "d361ce8cb763fce12ed2ac6d2532f14dad57ee5eaa16dd8fd11afd05dbc2917e",
+        "docs_src/dependencies/tutorial003.py": "036e224b69ebc501d9f5edf88cb6f3510b7aad77fb119af68fc4a5f986c0f0b6",
+        "docs_src/dependencies/tutorial004_py310.py": "65a89b57cba4773dc12db444851ed94b29320f5ad346c05d8ac9d576e62a9fbe",
+        "docs_src/dependencies/tutorial004.py": "6f41f3db9328af5ae1107f1c048a5d149c63226314ab8e38ad599074172b0596"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/dependencies/classes-as-dependencies.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/dependencies/classes-as-dependencies.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.110.0/tutorial/bigger-applications.md",
+      "sha256": "9901cc151a22084db8dd7fb229db0310af5a585d13d856df0242ae34a631177a",
+      "upstream_sha256": "40c4a62e9752653b6ad1b5c7a358a8ad20782d47ae6f4be29899395e469451fb",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/bigger_applications/app/routers/users.py": "b2276e608ff0937a12e74103ef2966cd468b1e156675a4b936babbba7d9d3756",
+        "docs_src/bigger_applications/app/dependencies.py": "3176bffb6175b389162fc2c8ed760f70ccd8a79509c9ba9361af22b4d6474ed9",
+        "docs_src/bigger_applications/app/routers/items.py": "b5fd6677ef47e3861eb39135015702b4a9f452a47cd5e6f0ebecd7b1d7ea55bb",
+        "docs_src/bigger_applications/app/main.py": "8df1c8f236376374a2cc065fe08ca2d8888b0a3b3bfe916e4f5d35e75b6f22c8",
+        "docs_src/bigger_applications/app/internal/admin.py": "2c81315bfe86c99ab3481f74420d561cf9d9a59c340db702ec6e1bf6ab6806c1"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/bigger-applications.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/tutorial/bigger-applications.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.110.0/advanced/response-directly.md",
+      "sha256": "c17a424c4f8a3641dbf68e348ecc1436cb9a5a1b4f22f12578417db570eba129",
+      "upstream_sha256": "90552febaff1a8b62e95a949dea6f2df3dd64453dabdf62dc8db2de9be41454b",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {
+        "docs_src/response_directly/tutorial001.py": "08f8e5727348a7eefd9213525fa6d6ce9e6b47b23169a6573fa82a22555d3eda",
+        "docs_src/response_directly/tutorial002.py": "3f8847fe8bb068a4f0875c547c17f558459ae22f46e04f669659514d206bb73d"
+      },
+      "upstream_path": "docs/zh/docs/advanced/response-directly.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/advanced/response-directly.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.110.0/deployment/https.md",
+      "sha256": "264a3e8e87103e64d04e05a7fd941214c22d5558150203f5e35c914eb918eb97",
+      "upstream_sha256": "264a3e8e87103e64d04e05a7fd941214c22d5558150203f5e35c914eb918eb97",
+      "product": "fastapi",
+      "version": "0.110.0",
+      "language": "zh",
+      "source_revision": "e40747f10ae911910e9cb9a9684576f3b21304c9",
+      "included_files": {},
+      "upstream_path": "docs/zh/docs/deployment/https.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/e40747f10ae911910e9cb9a9684576f3b21304c9/docs/zh/docs/deployment/https.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/first-steps.md",
+      "sha256": "973087b7d63d5546ac85dc92c171ee157faf1aa8d41869d6193ac786dc7b2969",
+      "upstream_sha256": "ba16b5665c61573ad2de0f3d38020e19d600f595c530a5836bb5f8f624fc6277",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/first_steps/tutorial001.py": "88c744bf8154cc2a96793f9df1058431588029f7422ee0bcb62b74130a801650",
+        "docs_src/first_steps/tutorial002.py": "fcf695469747a98628dd4ffe2df8e6a60fe715aba4e8e351c88b9fb5582fe6d1",
+        "docs_src/first_steps/tutorial003.py": "b0ba3b1d47204510640516d3808558eb6fa65f15cc027dd86db2e236eea57375"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/first-steps.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/first-steps.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/path-params-numeric-validations.md",
+      "sha256": "ef2016335caeed9a728ac21ab3c319a9716af581de2b28c17da10998cdfdd670",
+      "upstream_sha256": "41202b6eb536b809c6f057539cdc90cdbac119526e0065989065ff42fa1dc26a",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/path_params_numeric_validations/tutorial001_an_py310.py": "0d12ce071f0bcc1973064bcf7a95caa90f4547c59f6827d74688a24d78544d51",
+        "docs_src/path_params_numeric_validations/tutorial001_an_py39.py": "d13f579455ee77137946d1a435ef5c3677572fc439f1e1d45dd123bdff76dc8a",
+        "docs_src/path_params_numeric_validations/tutorial001_an.py": "9f1abd3bed173d97727fededa27a17d66de30dd4a609badc5c8efe43170f708f",
+        "docs_src/path_params_numeric_validations/tutorial001_py310.py": "ce23e93167c1d5eb7ebac94bca05400ed4afa68b8e0e1cd096cd11b9319ca6ce",
+        "docs_src/path_params_numeric_validations/tutorial001.py": "a2d0c3eef716435d6ea26871f1fd51f8496baebd8fbdda0bd895cf1d3ecc46e5",
+        "docs_src/path_params_numeric_validations/tutorial002.py": "7a11d3256e6140daf836ede85da6a6ba70e87f556da04d6d6a0d077f260ac37e",
+        "docs_src/path_params_numeric_validations/tutorial003.py": "a3f144f675f2ab365b51911abd76255c2b9f78b08b374705aaf7813fd5ba1c99",
+        "docs_src/path_params_numeric_validations/tutorial004.py": "a8941b5cbe0afbe5f38a0ce3c1c007a070b4fd81718e0bb292e215b2e9053ddf",
+        "docs_src/path_params_numeric_validations/tutorial005.py": "f04c821c27f018d6e87d7b23aff2706a0f03315a99c5c8974c536dbd18f5d834",
+        "docs_src/path_params_numeric_validations/tutorial006.py": "2db35e6dfae885eb557b7347becf3a02dbe203a2ef33226b4adb80fea337b08d"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/path-params-numeric-validations.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/path-params-numeric-validations.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/query-params-str-validations.md",
+      "sha256": "b07110ba7cbe03c3d30a876f42eba2e37609d6084446db9192098002d80eaa91",
+      "upstream_sha256": "3b7cae2ce85b7f2f5374f82aafc218ee64141a8fd97cabbad14cb48a0d26edaf",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/query_params_str_validations/tutorial001_py310.py": "2b7731e82fe407fc7671fbe318c7b34e8ee4845641059605984d12d952d9bf92",
+        "docs_src/query_params_str_validations/tutorial001.py": "e1eb8cb3484ef72f195987512216055faf9963d232ba88f8aeda3f3b306142dc",
+        "docs_src/query_params_str_validations/tutorial002.py": "4a6bcf4b1a0661740d290690d3c1437a9f310c41462526b4861b48f8c57b3d13",
+        "docs_src/query_params_str_validations/tutorial003.py": "85cb9ecbcf809152812c2acb6978e207cd4b53a91ec57ae3ad0bd380fcc66693",
+        "docs_src/query_params_str_validations/tutorial004.py": "2ade709d206f749d98f28630c12836b0621ad7f6d22b39d4123fbc5f44d052b4",
+        "docs_src/query_params_str_validations/tutorial005.py": "e26433821eb629149b5199cda7cfb67c88f11123fe7d27880670a4f5a8194c16",
+        "docs_src/query_params_str_validations/tutorial006.py": "683f2564fe38de353ab03720ec2fbd3f4d132bac9c98c0bb68c118cc0370537e",
+        "docs_src/query_params_str_validations/tutorial006b.py": "850750f09ead1413b17178883d2ecf3ba724647c2ac4f059f0f25f41a9e62e93",
+        "docs_src/query_params_str_validations/tutorial006c.py": "b56f324acdc260b09a05d5f4d04d73b4055ef3f512adf8b40e6d7b9205491f52",
+        "docs_src/query_params_str_validations/tutorial006d.py": "352fa14e407eac9e037979d1b19dc58dac7c4d50ffdcae40650d1efd14d77c62",
+        "docs_src/query_params_str_validations/tutorial011.py": "a7d66172632a9cdc35869fe66fa330786b2a624cc66d892a6e2e6da06ab25fee",
+        "docs_src/query_params_str_validations/tutorial012.py": "49660502fa86df003ff7513a782f25b1de95bd076d19ee5d2cbc1097f6d88d8d",
+        "docs_src/query_params_str_validations/tutorial013.py": "019fa9f61aca81d3e15b7d9fff040f8416ececf97a7732b1ad83d4a44caff682",
+        "docs_src/query_params_str_validations/tutorial007.py": "2fb1ceada3a22fda8d7a6c9571c83d79c032d20434b22c83897f80b79565c636",
+        "docs_src/query_params_str_validations/tutorial008.py": "efe9cb879bec24f4974bc2425d51d0b238eb2c2d169aaf592cc2c0fab28cc809",
+        "docs_src/query_params_str_validations/tutorial009.py": "c5784d6d8a6fc843766f07b0496f1371cf634d7e1da5592a46a6ab3574b89407",
+        "docs_src/query_params_str_validations/tutorial010.py": "98f87d87aa95b1847a9cc666fee57959a57ccce974c272bec2a136fd51a8652c"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/query-params-str-validations.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/query-params-str-validations.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/body-multiple-params.md",
+      "sha256": "5bb637a731b310f5fb33fbded6bb98309d6d004d3fb6185fc63e868e75aed4e8",
+      "upstream_sha256": "4630c945b4ede7bf5e1e6e03af580c0a449bf78fc7ff282b175fbfebb986f0aa",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/body_multiple_params/tutorial001_an_py310.py": "a4dd2eb635a96f02fdc3d0e86df6b4b21340173f2ac997547d9665428ebcbe95",
+        "docs_src/body_multiple_params/tutorial001_an_py39.py": "6533b2a24634a1308c853217279d152fcc4b78b955c29a1e85d79d317adca85f",
+        "docs_src/body_multiple_params/tutorial001_an.py": "ebeae579419bf99f538cb498c40c97c9e8efd9eed0a7e82b8e39b94eaf2359c7",
+        "docs_src/body_multiple_params/tutorial001_py310.py": "66fc1374ce3e06d9e379d0c870eddac3f3d53734271f484f8d267b538ed2fbb7",
+        "docs_src/body_multiple_params/tutorial001.py": "026ee0a84157474d95050f1d14f7474875d1037540ab6a2a5b41046266212376",
+        "docs_src/body_multiple_params/tutorial002_py310.py": "dbe98c9ac3ad52e12b7f71a7ed7b925648e62e7b0934d21aac237f3f1d212816",
+        "docs_src/body_multiple_params/tutorial002.py": "fb0032059673c77bfbfa8eb34447ef326f7ca4d3b2606155b2bce3ba103d49ec",
+        "docs_src/body_multiple_params/tutorial003_an_py310.py": "cc19bc26b69965dc72c97abe5128f7f903073bff2d82cd6146446f4821a11f59",
+        "docs_src/body_multiple_params/tutorial003_an_py39.py": "cef05cf5501678b5c521ff690e1af4d6311e64571185ab928a4ec86e641e5df7",
+        "docs_src/body_multiple_params/tutorial003_an.py": "174fe1bda5a98fafaf35b38270342a150aef6cec0739b66f973a3775988d8887",
+        "docs_src/body_multiple_params/tutorial003_py310.py": "5b2de0233f05436eb8134e91eaf10a36028ba56d82a83388c6fe019ea26d55ff",
+        "docs_src/body_multiple_params/tutorial003.py": "aa581f106751d49ddd54cf10978a84683ebd63ef0479d820ea8f53f8fafe7263",
+        "docs_src/body_multiple_params/tutorial004_an_py310.py": "2f4e34a76b52675e59fa8a0198d9ba5c2b1291e124c4b1c8c6d1da0c8fbf3d8f",
+        "docs_src/body_multiple_params/tutorial004_an_py39.py": "04b2d63cc1588ec43181b73b63de0c375294bf0f5ec5f2451a7fea319cdd169c",
+        "docs_src/body_multiple_params/tutorial004_an.py": "3b7e5aebfaac80cf157a68e36ed93415f8b4876f8b2a6449b386148ea35285ac",
+        "docs_src/body_multiple_params/tutorial004_py310.py": "277330efb0843b6111ae955e897e9f0104126e0c283fb813b169c9b3f24fe8e4",
+        "docs_src/body_multiple_params/tutorial004.py": "fb4a34c37e58961b8c3100c0c6756208cea208f6ba60adec64f70b9d4ad0852f",
+        "docs_src/body_multiple_params/tutorial005_an_py310.py": "a1b219436f9042cf3685e4a7c923138e7ace69143b87af96a450bd241e09443b",
+        "docs_src/body_multiple_params/tutorial005_an_py39.py": "6174fae374ee1c88b5775deafc782ecb47c0156aa6ac1601baf8584b6d8d38d1",
+        "docs_src/body_multiple_params/tutorial005_an.py": "9d6f6ad4166d7e17ba4ef563228a68a92742e6bbddf1f49d4fbdc4ae1ee80dd6",
+        "docs_src/body_multiple_params/tutorial005_py310.py": "fca40a5b2e4b7d312ed2465f509e81e687ed75ec4717490b87d7146bf0e96694",
+        "docs_src/body_multiple_params/tutorial005.py": "3236f4d113cc2c0e23609e4e7caf5303d5503aa3d08956086b97a2d6a142aa47"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/body-multiple-params.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/body-multiple-params.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/body-fields.md",
+      "sha256": "a678910ded07c5555185af5d04042698c031adc223297aed08901f7d7a17a14b",
+      "upstream_sha256": "57629102b3d74b7734fd4040fa9275425da172d29a373cdaf26a383b9f42f1c5",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/body_fields/tutorial001_an_py310.py": "56bc9126f371dc8f6781410733452d13392551da6908eb50dffb38a80e6154aa",
+        "docs_src/body_fields/tutorial001_an_py39.py": "84d9abb24ddebae94a5faeb2b1357a590a47c103e4e2c390e0420e8b9f1209be",
+        "docs_src/body_fields/tutorial001_an.py": "1503fc7e739324b8048ccd3dbdc0d75456caa605c3671657c5feb3a7221db0da",
+        "docs_src/body_fields/tutorial001_py310.py": "e19ecd88a9127dc8b95cf8307d499919c1d585c594b99960615a609f5643065c",
+        "docs_src/body_fields/tutorial001.py": "de8865cbab592d6630900a09c509ad3546cd7834cda09e7e169ccb999c016cd4"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/body-fields.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/body-fields.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/body-nested-models.md",
+      "sha256": "5ff2201e6822cb224beeff6f9cb84111aeb09e5841a6332e2bd88430b36e5954",
+      "upstream_sha256": "1d86a50ebd760a9c064fd7aa06e629b08c06e75d64649e2825a974737e8beaab",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/body_nested_models/tutorial001_py310.py": "2f24ba4132e09b43e6956517ec9d2da13bfc6d950a3db9d023d5de4455dcd467",
+        "docs_src/body_nested_models/tutorial001.py": "004b222bace0ed18d98c56c68cba77b3afe497d5873970ebba0c8bd183068d8a",
+        "docs_src/body_nested_models/tutorial002.py": "c3a0ad53ffd1d82eed94c63ef7e3f3435e39a4789289029aaa42ba29613bb264",
+        "docs_src/body_nested_models/tutorial002_py310.py": "d11582a1e9997ebe670e925c260c00ef8304b04bcf0ac75e969ea08ba610476c",
+        "docs_src/body_nested_models/tutorial002_py39.py": "502eab2bb0f3f1ca92fe7d71e84e12144fd76ad5e73401fc09349cf9338a2813",
+        "docs_src/body_nested_models/tutorial003_py310.py": "0ea95f9d014b22c7c9f3a9de5234ed7f6d1e9e4c670e034e9de8acca0f2a790c",
+        "docs_src/body_nested_models/tutorial003_py39.py": "92e73ce54bd37daaba92c87903e457b60baef5737cf7b085032feea42112ba82",
+        "docs_src/body_nested_models/tutorial003.py": "6cd4eb79bdd6deba10ff318a94247de851bd1e1c34c601a797e343076bc92989",
+        "docs_src/body_nested_models/tutorial004_py310.py": "bb8b73fc9a5509f97cea1055ac6c48078f696fd43d37bf2e955ee91f5c40eef0",
+        "docs_src/body_nested_models/tutorial004_py39.py": "2a00f690f10ae1da94c46679b23a927ee08bc48282d3303a96c6ad43367c78e6",
+        "docs_src/body_nested_models/tutorial004.py": "9a7e133dbd8dcbb8962667c5038cbe27b3e85e1bcce1c76463a138dd2eed6f4b",
+        "docs_src/body_nested_models/tutorial005_py310.py": "c994b6ecf60776bb705b250c756850191c36f5d34a347e2cdb9d8c8e01ddcbae",
+        "docs_src/body_nested_models/tutorial005_py39.py": "a7517c923b7c9959776bbf773d20e37bc1c98f40977ebfb0c63f659297e39b50",
+        "docs_src/body_nested_models/tutorial005.py": "b8ed66f5c9a48a4656b6c41265bd78f4c6f03897be502f4b777c3b807f1ba2b5",
+        "docs_src/body_nested_models/tutorial006_py310.py": "c560343e03b8d1f51036be63047b5cd77569b89e377b042623c2c1482dd80311",
+        "docs_src/body_nested_models/tutorial006_py39.py": "d52b23af10ffa66fd16255d58d364dcbac0e66079360dc5fe0375789b5551be9",
+        "docs_src/body_nested_models/tutorial006.py": "fac3d29e9b39846d99ba9e51fa832b84b40d1993c2aab2cb29aa26d79cf77729",
+        "docs_src/body_nested_models/tutorial007_py310.py": "e150518d47637a092a0bacfca26591fa3130ef9181ed8067d34ae40b3cb502a5",
+        "docs_src/body_nested_models/tutorial007_py39.py": "b5997dfbbe01d34aae140feaca396fd6545b8b29813120e061018b49a9b3c0af",
+        "docs_src/body_nested_models/tutorial007.py": "dba029b445762b0a20ccf01fb81857425ea60f9c467907b0d8fde746554182b9",
+        "docs_src/body_nested_models/tutorial008_py39.py": "cab9a942d5265955449d3973321cacce8141b18abbacc2e95141b57510b76063",
+        "docs_src/body_nested_models/tutorial008.py": "de870c73394bd48c1ea5f7352898978effaf01f9924998d856be74b40068e2b1",
+        "docs_src/body_nested_models/tutorial009_py39.py": "71da8f8bfda33df8d9253041fb6964cd02d1e678e352329a01d89e5b52094fd7",
+        "docs_src/body_nested_models/tutorial009.py": "3c620cee875712ca857f4c4ac278b170222847d901dc678876f729cdd278c1ed"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/body-nested-models.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/body-nested-models.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/response-status-code.md",
+      "sha256": "85fa5e6991cc17dd0cd0ccb7aefae2337d999f815c9c3cad54c48cfbf6aa3016",
+      "upstream_sha256": "7197a532e54c15881349a1ea8c65ca3a3df5e46f19a1ff49c628f76551afb8e6",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/response_status_code/tutorial001.py": "0315c8641f1ceeb35e89813bb09edb1d236c458c6c3f096184f5b3c2e0db044b",
+        "docs_src/response_status_code/tutorial002.py": "b24731e628edfb200844448186a7b5ca6a8a72d49f00da253226b87e18a5383f"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/response-status-code.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/response-status-code.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.115.0/advanced/response-headers.md",
+      "sha256": "8b5a056bee3785f73b35ff8c8024ef98eb2f168ea0e01f4cb7e953cf5b0ca86b",
+      "upstream_sha256": "5e4f37cb842174857fc1a6950a1bd65e93d3e59afd2ca7816eeca64b0a3caab9",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/response_headers/tutorial002.py": "7cf8b0ea27ada146dc03730990016a611e7170867e73d60f25a1b66625c46216",
+        "docs_src/response_headers/tutorial001.py": "5c6bd5e2ddca15c83f03cec57fab08ea6b6d45c6763314e20a9076448bf5b9cf"
+      },
+      "upstream_path": "docs/zh/docs/advanced/response-headers.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/advanced/response-headers.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/security/first-steps.md",
+      "sha256": "225e4a6a31d82ae7de8429b1fff61c56fa542815feab82f0d17f0e767f4f50c0",
+      "upstream_sha256": "d84ea52a0e96cb2589c06d61dee75d57c3a07fec57104983862b69333a6f956a",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/security/tutorial001_an_py39.py": "5ab2af6e39293cbd409b6d9531e7ebb58f9c426d2f6de4f29bde298aeae4893d",
+        "docs_src/security/tutorial001_an.py": "e8a06cc8dd20dfdbd1526254687cee05ca37218f45a4e55fa6ccbe63d93d776a",
+        "docs_src/security/tutorial001.py": "2982d6ebeb11a3d83de3fb5735306151341b1a34cae8aaede5580ede9f733f5a"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/security/first-steps.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/security/first-steps.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/dependencies/classes-as-dependencies.md",
+      "sha256": "b43a1829c1d56f03c1d37275c949a716dd955ec91ace1de0bf97a3b6f35ae43c",
+      "upstream_sha256": "42fab35260b6df018c50edbf52f17449310d8fd31c4877ae7b75e0eab5a19066",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/dependencies/tutorial001_py310.py": "48493e7d3c3838c944778581a9c3b6d4f96b2d9e7d1dfaf45f71ebc1e6dec55a",
+        "docs_src/dependencies/tutorial001.py": "6e2ca2bbdb6ca348a09e9fbbb91afc8af0da3c08290196374ea51f9244fbda6c",
+        "docs_src/dependencies/tutorial002_py310.py": "e5173852eaca110e165c2a1a6106f140237c4eba491e2d90c4ba308855f93ae7",
+        "docs_src/dependencies/tutorial002.py": "62f8f7ea364850584c880460c1001ec5406b49a981b5d82a89ddfd26afc7660b",
+        "docs_src/dependencies/tutorial003_py310.py": "d361ce8cb763fce12ed2ac6d2532f14dad57ee5eaa16dd8fd11afd05dbc2917e",
+        "docs_src/dependencies/tutorial003.py": "036e224b69ebc501d9f5edf88cb6f3510b7aad77fb119af68fc4a5f986c0f0b6",
+        "docs_src/dependencies/tutorial004_py310.py": "65a89b57cba4773dc12db444851ed94b29320f5ad346c05d8ac9d576e62a9fbe",
+        "docs_src/dependencies/tutorial004.py": "6f41f3db9328af5ae1107f1c048a5d149c63226314ab8e38ad599074172b0596"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/dependencies/classes-as-dependencies.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/dependencies/classes-as-dependencies.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.115.0/tutorial/bigger-applications.md",
+      "sha256": "d2e72d5f99bb218c3ab0a4450aa8773c7da13d6060dc29d3eefc4d6093ea71c7",
+      "upstream_sha256": "f4d4a7b433c39149363213998d5c2dc80a7b9da9bdd5797a3073ff152a5deb40",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/bigger_applications/app/routers/users.py": "b2276e608ff0937a12e74103ef2966cd468b1e156675a4b936babbba7d9d3756",
+        "docs_src/bigger_applications/app/dependencies.py": "3176bffb6175b389162fc2c8ed760f70ccd8a79509c9ba9361af22b4d6474ed9",
+        "docs_src/bigger_applications/app/routers/items.py": "b5fd6677ef47e3861eb39135015702b4a9f452a47cd5e6f0ebecd7b1d7ea55bb",
+        "docs_src/bigger_applications/app/main.py": "8df1c8f236376374a2cc065fe08ca2d8888b0a3b3bfe916e4f5d35e75b6f22c8",
+        "docs_src/bigger_applications/app/internal/admin.py": "2c81315bfe86c99ab3481f74420d561cf9d9a59c340db702ec6e1bf6ab6806c1"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/bigger-applications.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/bigger-applications.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.115.0/advanced/response-directly.md",
+      "sha256": "9750abefa7c2774ad45e420e0a13329880f8b6dbd10e8cf171f3fd3b7597ad9b",
+      "upstream_sha256": "ab61446648903d88c96a7400cf3ae216be727352b163431879e9d42d366a4d4a",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {
+        "docs_src/response_directly/tutorial001.py": "08f8e5727348a7eefd9213525fa6d6ce9e6b47b23169a6573fa82a22555d3eda",
+        "docs_src/response_directly/tutorial002.py": "3f8847fe8bb068a4f0875c547c17f558459ae22f46e04f669659514d206bb73d"
+      },
+      "upstream_path": "docs/zh/docs/advanced/response-directly.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/advanced/response-directly.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.115.0/deployment/https.md",
+      "sha256": "a784100459f5eb281a4d65b2047818b8faeb63c6905ed1aca525f480ab62159e",
+      "upstream_sha256": "a784100459f5eb281a4d65b2047818b8faeb63c6905ed1aca525f480ab62159e",
+      "product": "fastapi",
+      "version": "0.115.0",
+      "language": "zh",
+      "source_revision": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+      "included_files": {},
+      "upstream_path": "docs/zh/docs/deployment/https.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/deployment/https.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.117.1/tutorial/cors.md",
+      "sha256": "dbefa452ba085290a1595e965c5df5c7946c4c38927be5f853a237e61c789754",
+      "upstream_sha256": "176ab1305b6601c0022e1e3b8bf27c487ddea79c689821928e37b5230895ff84",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "zh",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {
+        "docs_src/cors/tutorial001.py": "145cde24734c8bb5e11184c97596449162e234f5cd770f79e959976bd61877b2"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/cors.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/zh/docs/tutorial/cors.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.117.1/tutorial/background-tasks.md",
+      "sha256": "0dde9582a1c4b267671d8546ee28982632216a209d1ea1655c73c80abdba72e5",
+      "upstream_sha256": "019da6afe0a9899a69d8f46bbfd0e3afe9ed96ed8094df4b445470574584e866",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "zh",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {
+        "docs_src/background_tasks/tutorial001.py": "8218ad01272cffb42643773619fe7025bee2d3a826361fe9db4f7cf5db8a8308",
+        "docs_src/background_tasks/tutorial002_an_py310.py": "9550189a7e3385a09d46cf8b636514a610845f4c32ce06ee03d1735999bc2272",
+        "docs_src/background_tasks/tutorial002_an_py39.py": "ace7f2be2feae0739c65a9bae2d0fcd571dda0e8a5822a05d95e92e81671683a",
+        "docs_src/background_tasks/tutorial002_an.py": "906cb9d9ad3b08c500dc32937269156bda59f4a3138d3e6f19b827eeb5cee9af",
+        "docs_src/background_tasks/tutorial002_py310.py": "5a6034b96b936c9d507f5ac38e7fec9e2b1c4ef4624b9a836efd345535ff6bc9",
+        "docs_src/background_tasks/tutorial002.py": "b058b54a2472977c3d7832c90a3dcc95d68bc37989e53f0f75cdae0dde3875d5"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/background-tasks.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/zh/docs/tutorial/background-tasks.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.117.1/tutorial/handling-errors.md",
+      "sha256": "e3420f2a530156d294a65ffb086f3156e05c327bb5b9438c7fb512141f473f71",
+      "upstream_sha256": "11bb0999a7d835718dd9ffcc3bfd09de9938c33be5ce0db72235f4a593565d88",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "zh",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {
+        "docs_src/handling_errors/tutorial001.py": "ae11c344b30574d3ef126de0d05a96b6c9d2466fc7c566e4e8bf989704807b5c",
+        "docs_src/handling_errors/tutorial002.py": "c022ef435507bef0a0dcb8c889b8c1a9d0abf48da9b83cb5f626ac5c9c3fd38d",
+        "docs_src/handling_errors/tutorial003.py": "6d9cc868c5b98d899b1e199a7ee4ad0f0e914a56a6b265e88e635c05afb9e722",
+        "docs_src/handling_errors/tutorial004.py": "8f8e310c110f97d855cd2fa7aed634a6fd5d69f28cd952d2b6180a5754a49b00",
+        "docs_src/handling_errors/tutorial005.py": "1bcb5bf2f454c78eb11fea05198da4e0a174c1aebffec21cc321399b9f2d3a41",
+        "docs_src/handling_errors/tutorial006.py": "ce86939ebe2b508226de8f01d760dd8e0c34ed6238b526306257c49eb274aa01"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/handling-errors.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/zh/docs/tutorial/handling-errors.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.117.1/tutorial/middleware.md",
+      "sha256": "e88e9ba0f424af0b10c235b86f3fb872e84805e0ddcbd07aeeb4b34aca665b04",
+      "upstream_sha256": "313b923fad44e0325cd5aa030476230adcdccc63b8c729cbfe069a5a06725cf9",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "zh",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {
+        "docs_src/middleware/tutorial001.py": "bf7786e78360628c04482e348ae8b749e54dff17b8448f6ec8971470d38e3800"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/middleware.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/zh/docs/tutorial/middleware.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.117.1/tutorial/body.md",
+      "sha256": "38a2968c6b507207e8744d406d7974952f8b914371e7916cebfda1c225695548",
+      "upstream_sha256": "52e165e28df61ade73230aa1ba16aaa37911e60969dc18a607b1379d734b658d",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "zh",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {
+        "docs_src/body/tutorial001_py310.py": "e481030f5b9ceaddc5e1ab2cd7bb36ef415799d457e54fa89f58b93510166a3a",
+        "docs_src/body/tutorial002_py310.py": "71db4a39efc5397590011ea1e8409a7760ba1a7a8d17a0763d60c9d695849fd1",
+        "docs_src/body/tutorial003_py310.py": "af21d8ede3844d1756e51f38dcb3fec485e9134ece80ff12927f5de2226f62a7",
+        "docs_src/body/tutorial004_py310.py": "293f9e2dae1a7f9ec39381eb4dcea85da7ca0aaea943acd390440cbefd7ca00f"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/body.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/zh/docs/tutorial/body.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.117.1/tutorial/query-params.md",
+      "sha256": "cf637e6a1959d6e683fd707d179a0fe707f8b8eb0282b230c2da861b5d8e4760",
+      "upstream_sha256": "4f6f8e60d46b83765b842e20af9d43936bb88223a1f4c6413d2eba2f480a3cc1",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "zh",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {
+        "docs_src/query_params/tutorial001.py": "6adfaedf0f557cb2ebe4b75b805c7f6c783c61e50845572f4020e888dac69489",
+        "docs_src/query_params/tutorial002_py310.py": "17d2182e85ea040919e7b965c428147f30a203f9c7d6e9d1da0bd55ae502f88b",
+        "docs_src/query_params/tutorial003_py310.py": "a2db585926ed6c203565561ae8e1bbf74b5e27d78cf50a2c58f139085957e2d8",
+        "docs_src/query_params/tutorial004_py310.py": "105c31a085865fd99bb5336c5e0168dbced8eed9ddf0f37f89cdfe5e8a657697",
+        "docs_src/query_params/tutorial005.py": "c532cc66d7a9b90cf79773b7fcbdbe306a88353aac72bc72ffd7bc990d91c25f",
+        "docs_src/query_params/tutorial006_py310.py": "d39ad4b41b19a6af1528e46eccac3c149d6128e98a2cb935575cf85142c10c9a"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/query-params.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/zh/docs/tutorial/query-params.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.117.1/tutorial/path-params.md",
+      "sha256": "aca27eb870955f51ea6e0b84cb6708d09332697856e114bfc2c161f938a80728",
+      "upstream_sha256": "7a1e6cf533b172c05019b46ed84a0fb60fccd3d6fe04c19aafea8bdbbfb58405",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "zh",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {
+        "docs_src/path_params/tutorial001.py": "c10c9be93c07a592e1bc473ff53027152459d6565043d9fef5548089752fd0e2",
+        "docs_src/path_params/tutorial002.py": "e315342e8a391de45042201b39fd985c65f9107559581e2516b06f97e433e0f4",
+        "docs_src/path_params/tutorial003.py": "8e61b9cf938034484ada46a920f68e7ac54e28e9fc1b5305e591cd88247bdca2",
+        "docs_src/path_params/tutorial005.py": "1c68f2c5549486ef0da4c198e5068e0a25227b0e87e53237aba9bd89b3ce6de8",
+        "docs_src/path_params/tutorial004.py": "7d51acce2e571de480e402ae7cc1f3e383e3751f4a661becddd0001c0469fd71"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/path-params.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/zh/docs/tutorial/path-params.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.117.1/tutorial/request-forms-and-files.md",
+      "sha256": "f6db36ff3c997844d44497a2550b1fa10dd9d3e39770e8372e9a870700dd2ff6",
+      "upstream_sha256": "2b73d99ebe64dc69eeb619fb04c7e71751d202251a3d248f61ac545bd11587e3",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "zh",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {
+        "docs_src/request_forms_and_files/tutorial001.py": "4ad31d9a5ff9ad625ed175cb9259d4e50c76dfd7bb186a8fea2858b33e50e1e7"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/request-forms-and-files.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/zh/docs/tutorial/request-forms-and-files.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.117.1/deployment/server-workers.md",
+      "sha256": "302433f4dcf3e6dc037c3c1264bf49e7c1e4ad494e69b72f34afd044ae1cf071",
+      "upstream_sha256": "302433f4dcf3e6dc037c3c1264bf49e7c1e4ad494e69b72f34afd044ae1cf071",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "zh",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {},
+      "upstream_path": "docs/zh/docs/deployment/server-workers.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/zh/docs/deployment/server-workers.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.117.1/tutorial/first-steps.md",
+      "sha256": "1e28c5e96d49b182de272e7914e094d3af25a42c33abcc8b61c8298dbc572f16",
+      "upstream_sha256": "8caefcf5182fbff787c750ab9d3426bc973929161069f36500cdccf0c5e9e7a6",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "zh",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {
+        "docs_src/first_steps/tutorial001.py": "88c744bf8154cc2a96793f9df1058431588029f7422ee0bcb62b74130a801650",
+        "docs_src/first_steps/tutorial003.py": "b0ba3b1d47204510640516d3808558eb6fa65f15cc027dd86db2e236eea57375"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/first-steps.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/zh/docs/tutorial/first-steps.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.117.1/tutorial/path-params-numeric-validations.md",
+      "sha256": "c356541c49f6278d8da5034587165ff4c2730e3d3c93a1584661a48436f6768a",
+      "upstream_sha256": "a59932092ad047da9adae62bb444d38befe1528480200ecc952188f829ca7b4d",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "zh",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {
+        "docs_src/path_params_numeric_validations/tutorial001_an_py310.py": "0d12ce071f0bcc1973064bcf7a95caa90f4547c59f6827d74688a24d78544d51",
+        "docs_src/path_params_numeric_validations/tutorial002.py": "7a11d3256e6140daf836ede85da6a6ba70e87f556da04d6d6a0d077f260ac37e",
+        "docs_src/path_params_numeric_validations/tutorial003.py": "a3f144f675f2ab365b51911abd76255c2b9f78b08b374705aaf7813fd5ba1c99",
+        "docs_src/path_params_numeric_validations/tutorial004.py": "a8941b5cbe0afbe5f38a0ce3c1c007a070b4fd81718e0bb292e215b2e9053ddf",
+        "docs_src/path_params_numeric_validations/tutorial005.py": "f04c821c27f018d6e87d7b23aff2706a0f03315a99c5c8974c536dbd18f5d834",
+        "docs_src/path_params_numeric_validations/tutorial006.py": "2db35e6dfae885eb557b7347becf3a02dbe203a2ef33226b4adb80fea337b08d"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/path-params-numeric-validations.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/zh/docs/tutorial/path-params-numeric-validations.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.117.1/tutorial/query-params-str-validations.md",
+      "sha256": "9f7f1d65b6a2e7af0be8b096e4628ffcf651995bd66b93d18349f7e67ccac0c9",
+      "upstream_sha256": "247bf46459c7f52d3b94efed3245af967bb624d89bc462d0f1a859fe1b7c4436",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "zh",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {
+        "docs_src/query_params_str_validations/tutorial001_py310.py": "2b7731e82fe407fc7671fbe318c7b34e8ee4845641059605984d12d952d9bf92",
+        "docs_src/query_params_str_validations/tutorial002.py": "4a6bcf4b1a0661740d290690d3c1437a9f310c41462526b4861b48f8c57b3d13",
+        "docs_src/query_params_str_validations/tutorial003.py": "85cb9ecbcf809152812c2acb6978e207cd4b53a91ec57ae3ad0bd380fcc66693",
+        "docs_src/query_params_str_validations/tutorial004.py": "2ade709d206f749d98f28630c12836b0621ad7f6d22b39d4123fbc5f44d052b4",
+        "docs_src/query_params_str_validations/tutorial005.py": "e26433821eb629149b5199cda7cfb67c88f11123fe7d27880670a4f5a8194c16",
+        "docs_src/query_params_str_validations/tutorial006.py": "683f2564fe38de353ab03720ec2fbd3f4d132bac9c98c0bb68c118cc0370537e",
+        "docs_src/query_params_str_validations/tutorial006c.py": "bb2208f328a230fe284404d3ebad364addab45800767aeed8dbd3e5de4e313a9",
+        "docs_src/query_params_str_validations/tutorial011.py": "a7d66172632a9cdc35869fe66fa330786b2a624cc66d892a6e2e6da06ab25fee",
+        "docs_src/query_params_str_validations/tutorial012.py": "49660502fa86df003ff7513a782f25b1de95bd076d19ee5d2cbc1097f6d88d8d",
+        "docs_src/query_params_str_validations/tutorial013.py": "019fa9f61aca81d3e15b7d9fff040f8416ececf97a7732b1ad83d4a44caff682",
+        "docs_src/query_params_str_validations/tutorial007.py": "2fb1ceada3a22fda8d7a6c9571c83d79c032d20434b22c83897f80b79565c636",
+        "docs_src/query_params_str_validations/tutorial008.py": "efe9cb879bec24f4974bc2425d51d0b238eb2c2d169aaf592cc2c0fab28cc809",
+        "docs_src/query_params_str_validations/tutorial009.py": "c5784d6d8a6fc843766f07b0496f1371cf634d7e1da5592a46a6ab3574b89407",
+        "docs_src/query_params_str_validations/tutorial010.py": "98f87d87aa95b1847a9cc666fee57959a57ccce974c272bec2a136fd51a8652c"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/query-params-str-validations.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/zh/docs/tutorial/query-params-str-validations.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.117.1/tutorial/body-multiple-params.md",
+      "sha256": "a06060eb3b33898c08fa2a926260bf3c83e93578dc0e3dbc07498bbb4c8e43be",
+      "upstream_sha256": "b3b7073f78979902a062816c912fc680d50975b8533fdcdd370e72ddc6d203bf",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "zh",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {
+        "docs_src/body_multiple_params/tutorial001_an_py310.py": "a4dd2eb635a96f02fdc3d0e86df6b4b21340173f2ac997547d9665428ebcbe95",
+        "docs_src/body_multiple_params/tutorial002_py310.py": "dbe98c9ac3ad52e12b7f71a7ed7b925648e62e7b0934d21aac237f3f1d212816",
+        "docs_src/body_multiple_params/tutorial003_an_py310.py": "cc19bc26b69965dc72c97abe5128f7f903073bff2d82cd6146446f4821a11f59",
+        "docs_src/body_multiple_params/tutorial004_an_py310.py": "2f4e34a76b52675e59fa8a0198d9ba5c2b1291e124c4b1c8c6d1da0c8fbf3d8f",
+        "docs_src/body_multiple_params/tutorial005_an_py310.py": "a1b219436f9042cf3685e4a7c923138e7ace69143b87af96a450bd241e09443b"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/body-multiple-params.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/zh/docs/tutorial/body-multiple-params.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.117.1/tutorial/body-fields.md",
+      "sha256": "60563aef7d7c603fd492972e8711e2fdcb02737c8a04eda1965e5e19f06ee282",
+      "upstream_sha256": "b06561ddce312d33a6624959a2b560386240ec4a0bee29c0eae07d191c0c9d82",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "zh",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {
+        "docs_src/body_fields/tutorial001_an_py310.py": "56bc9126f371dc8f6781410733452d13392551da6908eb50dffb38a80e6154aa"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/body-fields.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/zh/docs/tutorial/body-fields.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.117.1/tutorial/body-nested-models.md",
+      "sha256": "2d749f231e3637fa35bc00afbcb0320a58b253eaae469f9dc13742b9207d100a",
+      "upstream_sha256": "15bb4fd4127b449351e7ab7f8e9e6dbd806168a1fa8638988c781f027cff6fd2",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "zh",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {
+        "docs_src/body_nested_models/tutorial001_py310.py": "2f24ba4132e09b43e6956517ec9d2da13bfc6d950a3db9d023d5de4455dcd467",
+        "docs_src/body_nested_models/tutorial002.py": "c3a0ad53ffd1d82eed94c63ef7e3f3435e39a4789289029aaa42ba29613bb264",
+        "docs_src/body_nested_models/tutorial002_py310.py": "d11582a1e9997ebe670e925c260c00ef8304b04bcf0ac75e969ea08ba610476c",
+        "docs_src/body_nested_models/tutorial003_py310.py": "0ea95f9d014b22c7c9f3a9de5234ed7f6d1e9e4c670e034e9de8acca0f2a790c",
+        "docs_src/body_nested_models/tutorial004_py310.py": "bb8b73fc9a5509f97cea1055ac6c48078f696fd43d37bf2e955ee91f5c40eef0",
+        "docs_src/body_nested_models/tutorial005_py310.py": "c994b6ecf60776bb705b250c756850191c36f5d34a347e2cdb9d8c8e01ddcbae",
+        "docs_src/body_nested_models/tutorial006_py310.py": "c560343e03b8d1f51036be63047b5cd77569b89e377b042623c2c1482dd80311",
+        "docs_src/body_nested_models/tutorial007_py310.py": "e150518d47637a092a0bacfca26591fa3130ef9181ed8067d34ae40b3cb502a5",
+        "docs_src/body_nested_models/tutorial008_py39.py": "cab9a942d5265955449d3973321cacce8141b18abbacc2e95141b57510b76063",
+        "docs_src/body_nested_models/tutorial009_py39.py": "71da8f8bfda33df8d9253041fb6964cd02d1e678e352329a01d89e5b52094fd7"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/body-nested-models.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/zh/docs/tutorial/body-nested-models.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.117.1/tutorial/response-status-code.md",
+      "sha256": "b295802614f32acc552f78b4968596e08de36190130743ec398563c17e146ae5",
+      "upstream_sha256": "6dfda84f349f63495ce4b459fd40e60e168240559c1ec403b7c92d06986083ef",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "zh",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {
+        "docs_src/response_status_code/tutorial001.py": "0315c8641f1ceeb35e89813bb09edb1d236c458c6c3f096184f5b3c2e0db044b",
+        "docs_src/response_status_code/tutorial002.py": "b24731e628edfb200844448186a7b5ca6a8a72d49f00da253226b87e18a5383f"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/response-status-code.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/zh/docs/tutorial/response-status-code.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.117.1/advanced/response-headers.md",
+      "sha256": "fd6dbf96f9e0376097bed52634fed8646e7bd4cfb0316dcf33bc6f065e9e2d59",
+      "upstream_sha256": "845090f0da62df2a301f688866819a131ea905d17c2f28314ce2ba94fbcf589f",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "zh",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {
+        "docs_src/response_headers/tutorial002.py": "7cf8b0ea27ada146dc03730990016a611e7170867e73d60f25a1b66625c46216",
+        "docs_src/response_headers/tutorial001.py": "5c6bd5e2ddca15c83f03cec57fab08ea6b6d45c6763314e20a9076448bf5b9cf"
+      },
+      "upstream_path": "docs/zh/docs/advanced/response-headers.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/zh/docs/advanced/response-headers.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.117.1/tutorial/security/first-steps.md",
+      "sha256": "8f2c92bfb654136cdb2079f6eb9b7c6cb3acf7728bf86f25a0a3b3d3e7da8a1d",
+      "upstream_sha256": "9eb5bcadc77e008d03434f9f2b124b05df3babf6f4521c202889db25a116ffaa",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "zh",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {
+        "docs_src/security/tutorial001_an_py39.py": "5ab2af6e39293cbd409b6d9531e7ebb58f9c426d2f6de4f29bde298aeae4893d",
+        "docs_src/security/tutorial001.py": "2982d6ebeb11a3d83de3fb5735306151341b1a34cae8aaede5580ede9f733f5a"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/security/first-steps.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/zh/docs/tutorial/security/first-steps.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.117.1/tutorial/dependencies/classes-as-dependencies.md",
+      "sha256": "e399ef933c75e5039a4099fd1708f9657d3408295e3a1ecec58f9a22d9de1eb2",
+      "upstream_sha256": "a94f1c679d97f78a3897c477369141ceefb297bbabcce47f34db2441cbe6bba5",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "zh",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {
+        "docs_src/dependencies/tutorial001_py310.py": "48493e7d3c3838c944778581a9c3b6d4f96b2d9e7d1dfaf45f71ebc1e6dec55a",
+        "docs_src/dependencies/tutorial002_py310.py": "e5173852eaca110e165c2a1a6106f140237c4eba491e2d90c4ba308855f93ae7",
+        "docs_src/dependencies/tutorial003_py310.py": "d361ce8cb763fce12ed2ac6d2532f14dad57ee5eaa16dd8fd11afd05dbc2917e",
+        "docs_src/dependencies/tutorial004_py310.py": "65a89b57cba4773dc12db444851ed94b29320f5ad346c05d8ac9d576e62a9fbe"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/dependencies/classes-as-dependencies.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/zh/docs/tutorial/dependencies/classes-as-dependencies.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.117.1/tutorial/bigger-applications.md",
+      "sha256": "9fe4bb63745784799128c948082bcb58ff4d65c99467bbc1a69cfe4cfa709eca",
+      "upstream_sha256": "07a030f1da19a850fa62538921baa401f82621060f2e62823378ef235fe3ef52",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "zh",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {
+        "docs_src/bigger_applications/app/routers/users.py": "b2276e608ff0937a12e74103ef2966cd468b1e156675a4b936babbba7d9d3756",
+        "docs_src/bigger_applications/app/dependencies.py": "3176bffb6175b389162fc2c8ed760f70ccd8a79509c9ba9361af22b4d6474ed9",
+        "docs_src/bigger_applications/app/routers/items.py": "b5fd6677ef47e3861eb39135015702b4a9f452a47cd5e6f0ebecd7b1d7ea55bb",
+        "docs_src/bigger_applications/app/main.py": "8df1c8f236376374a2cc065fe08ca2d8888b0a3b3bfe916e4f5d35e75b6f22c8",
+        "docs_src/bigger_applications/app/internal/admin.py": "2c81315bfe86c99ab3481f74420d561cf9d9a59c340db702ec6e1bf6ab6806c1"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/bigger-applications.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/zh/docs/tutorial/bigger-applications.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.117.1/advanced/response-directly.md",
+      "sha256": "3daa7927ee085cb893918595be557b4339dc887b2235a05651fce7438871ff91",
+      "upstream_sha256": "1ce48e515035f089d1996f5418e32df5ecb2177578141a4500e7172cf0f5c8e6",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "zh",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {
+        "docs_src/response_directly/tutorial001.py": "08f8e5727348a7eefd9213525fa6d6ce9e6b47b23169a6573fa82a22555d3eda",
+        "docs_src/response_directly/tutorial002.py": "3f8847fe8bb068a4f0875c547c17f558459ae22f46e04f669659514d206bb73d"
+      },
+      "upstream_path": "docs/zh/docs/advanced/response-directly.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/zh/docs/advanced/response-directly.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.117.1/deployment/https.md",
+      "sha256": "c7b186e564867dd1a22e20e6bc8e22a01a2269591ad52dc4f11021029d557c50",
+      "upstream_sha256": "c7b186e564867dd1a22e20e6bc8e22a01a2269591ad52dc4f11021029d557c50",
+      "product": "fastapi",
+      "version": "0.117.1",
+      "language": "zh",
+      "source_revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "included_files": {},
+      "upstream_path": "docs/zh/docs/deployment/https.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2/docs/zh/docs/deployment/https.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.118.0/tutorial/cors.md",
+      "sha256": "dbefa452ba085290a1595e965c5df5c7946c4c38927be5f853a237e61c789754",
+      "upstream_sha256": "176ab1305b6601c0022e1e3b8bf27c487ddea79c689821928e37b5230895ff84",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "zh",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {
+        "docs_src/cors/tutorial001.py": "145cde24734c8bb5e11184c97596449162e234f5cd770f79e959976bd61877b2"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/cors.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/zh/docs/tutorial/cors.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.118.0/tutorial/background-tasks.md",
+      "sha256": "0dde9582a1c4b267671d8546ee28982632216a209d1ea1655c73c80abdba72e5",
+      "upstream_sha256": "019da6afe0a9899a69d8f46bbfd0e3afe9ed96ed8094df4b445470574584e866",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "zh",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {
+        "docs_src/background_tasks/tutorial001.py": "8218ad01272cffb42643773619fe7025bee2d3a826361fe9db4f7cf5db8a8308",
+        "docs_src/background_tasks/tutorial002_an_py310.py": "9550189a7e3385a09d46cf8b636514a610845f4c32ce06ee03d1735999bc2272",
+        "docs_src/background_tasks/tutorial002_an_py39.py": "ace7f2be2feae0739c65a9bae2d0fcd571dda0e8a5822a05d95e92e81671683a",
+        "docs_src/background_tasks/tutorial002_an.py": "906cb9d9ad3b08c500dc32937269156bda59f4a3138d3e6f19b827eeb5cee9af",
+        "docs_src/background_tasks/tutorial002_py310.py": "5a6034b96b936c9d507f5ac38e7fec9e2b1c4ef4624b9a836efd345535ff6bc9",
+        "docs_src/background_tasks/tutorial002.py": "b058b54a2472977c3d7832c90a3dcc95d68bc37989e53f0f75cdae0dde3875d5"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/background-tasks.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/zh/docs/tutorial/background-tasks.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.118.0/tutorial/handling-errors.md",
+      "sha256": "e3420f2a530156d294a65ffb086f3156e05c327bb5b9438c7fb512141f473f71",
+      "upstream_sha256": "11bb0999a7d835718dd9ffcc3bfd09de9938c33be5ce0db72235f4a593565d88",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "zh",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {
+        "docs_src/handling_errors/tutorial001.py": "ae11c344b30574d3ef126de0d05a96b6c9d2466fc7c566e4e8bf989704807b5c",
+        "docs_src/handling_errors/tutorial002.py": "c022ef435507bef0a0dcb8c889b8c1a9d0abf48da9b83cb5f626ac5c9c3fd38d",
+        "docs_src/handling_errors/tutorial003.py": "6d9cc868c5b98d899b1e199a7ee4ad0f0e914a56a6b265e88e635c05afb9e722",
+        "docs_src/handling_errors/tutorial004.py": "8f8e310c110f97d855cd2fa7aed634a6fd5d69f28cd952d2b6180a5754a49b00",
+        "docs_src/handling_errors/tutorial005.py": "1bcb5bf2f454c78eb11fea05198da4e0a174c1aebffec21cc321399b9f2d3a41",
+        "docs_src/handling_errors/tutorial006.py": "ce86939ebe2b508226de8f01d760dd8e0c34ed6238b526306257c49eb274aa01"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/handling-errors.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/zh/docs/tutorial/handling-errors.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.118.0/tutorial/middleware.md",
+      "sha256": "e88e9ba0f424af0b10c235b86f3fb872e84805e0ddcbd07aeeb4b34aca665b04",
+      "upstream_sha256": "313b923fad44e0325cd5aa030476230adcdccc63b8c729cbfe069a5a06725cf9",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "zh",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {
+        "docs_src/middleware/tutorial001.py": "bf7786e78360628c04482e348ae8b749e54dff17b8448f6ec8971470d38e3800"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/middleware.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/zh/docs/tutorial/middleware.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.118.0/tutorial/body.md",
+      "sha256": "38a2968c6b507207e8744d406d7974952f8b914371e7916cebfda1c225695548",
+      "upstream_sha256": "52e165e28df61ade73230aa1ba16aaa37911e60969dc18a607b1379d734b658d",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "zh",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {
+        "docs_src/body/tutorial001_py310.py": "e481030f5b9ceaddc5e1ab2cd7bb36ef415799d457e54fa89f58b93510166a3a",
+        "docs_src/body/tutorial002_py310.py": "71db4a39efc5397590011ea1e8409a7760ba1a7a8d17a0763d60c9d695849fd1",
+        "docs_src/body/tutorial003_py310.py": "af21d8ede3844d1756e51f38dcb3fec485e9134ece80ff12927f5de2226f62a7",
+        "docs_src/body/tutorial004_py310.py": "293f9e2dae1a7f9ec39381eb4dcea85da7ca0aaea943acd390440cbefd7ca00f"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/body.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/zh/docs/tutorial/body.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.118.0/tutorial/query-params.md",
+      "sha256": "cf637e6a1959d6e683fd707d179a0fe707f8b8eb0282b230c2da861b5d8e4760",
+      "upstream_sha256": "4f6f8e60d46b83765b842e20af9d43936bb88223a1f4c6413d2eba2f480a3cc1",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "zh",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {
+        "docs_src/query_params/tutorial001.py": "6adfaedf0f557cb2ebe4b75b805c7f6c783c61e50845572f4020e888dac69489",
+        "docs_src/query_params/tutorial002_py310.py": "17d2182e85ea040919e7b965c428147f30a203f9c7d6e9d1da0bd55ae502f88b",
+        "docs_src/query_params/tutorial003_py310.py": "a2db585926ed6c203565561ae8e1bbf74b5e27d78cf50a2c58f139085957e2d8",
+        "docs_src/query_params/tutorial004_py310.py": "105c31a085865fd99bb5336c5e0168dbced8eed9ddf0f37f89cdfe5e8a657697",
+        "docs_src/query_params/tutorial005.py": "c532cc66d7a9b90cf79773b7fcbdbe306a88353aac72bc72ffd7bc990d91c25f",
+        "docs_src/query_params/tutorial006_py310.py": "d39ad4b41b19a6af1528e46eccac3c149d6128e98a2cb935575cf85142c10c9a"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/query-params.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/zh/docs/tutorial/query-params.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.118.0/tutorial/path-params.md",
+      "sha256": "aca27eb870955f51ea6e0b84cb6708d09332697856e114bfc2c161f938a80728",
+      "upstream_sha256": "7a1e6cf533b172c05019b46ed84a0fb60fccd3d6fe04c19aafea8bdbbfb58405",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "zh",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {
+        "docs_src/path_params/tutorial001.py": "c10c9be93c07a592e1bc473ff53027152459d6565043d9fef5548089752fd0e2",
+        "docs_src/path_params/tutorial002.py": "e315342e8a391de45042201b39fd985c65f9107559581e2516b06f97e433e0f4",
+        "docs_src/path_params/tutorial003.py": "8e61b9cf938034484ada46a920f68e7ac54e28e9fc1b5305e591cd88247bdca2",
+        "docs_src/path_params/tutorial005.py": "1c68f2c5549486ef0da4c198e5068e0a25227b0e87e53237aba9bd89b3ce6de8",
+        "docs_src/path_params/tutorial004.py": "7d51acce2e571de480e402ae7cc1f3e383e3751f4a661becddd0001c0469fd71"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/path-params.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/zh/docs/tutorial/path-params.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.118.0/tutorial/response-model.md",
+      "sha256": "dcdf1100b2f6a640acb91df6bce5927964303955b2a0e42f20c16d035153a9d1",
+      "upstream_sha256": "ce4e88b881ad155d87f49b90c091b1e055025ad280cf1d0d09e9b9f6303d3de5",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "zh",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {
+        "docs_src/response_model/tutorial001_py310.py": "780e13196289168227c3a5b59c063e9637e796c7285347c4d875a5c956f3f599",
+        "docs_src/response_model/tutorial002.py": "ba3110b896d48276863edae1e81c73b535125a668ff6c2052f4bc4fc8269e898",
+        "docs_src/response_model/tutorial003_py310.py": "f0f863999159135b89dcbbc063e57e1c3c693e53c5cae2cfb0f540873525f3ec",
+        "docs_src/response_model/tutorial004.py": "76ba5ec7bd28653c5549bb0fd26a376bb9789dd1cf69a87c827259c2090f491e",
+        "docs_src/response_model/tutorial005.py": "1ddc227a6153599104c4a5b6f3b55ca0efdb245e0428f0d25eabd0ad97e29c45",
+        "docs_src/response_model/tutorial006.py": "85a25ed4d2d59477463231bf80c6916530968ff9c5bb99c069b41d4208a6f55f"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/response-model.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/zh/docs/tutorial/response-model.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.118.0/tutorial/request-files.md",
+      "sha256": "580272c69d4f004b6f68e4809fee843a90db4d7d829d3b6dd884d8e0c01d821c",
+      "upstream_sha256": "22d60ddb5f2739f534a6d9fde1519d623574532a2f96ef3e6724104dc3dacab3",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "zh",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {
+        "docs_src/request_files/tutorial001.py": "6054527e53c62a9ecaeae39a335acf144040d8e6ba9ee1c2fcd0291a41d6cca6",
+        "docs_src/request_files/tutorial001_02_py310.py": "64d83c4899f9b2d15d33551e62d5fa154995c355fff2884690591b35dcc6eaa5",
+        "docs_src/request_files/tutorial001_03.py": "6e054f7f7bedeb06e366cf6b0dd2834acda38d5b1c002eeb6fed0d5ea248edb3",
+        "docs_src/request_files/tutorial002_py39.py": "989895ac7d5e93dac0b108bb7311e5f74e5d76ecf50b3dac89ecd3078ca0cf50",
+        "docs_src/request_files/tutorial003_py39.py": "7cf24e56bc59319a89bf0bdcff21cc464d488785a634350aa0e59c2d32e1311d"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/request-files.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/zh/docs/tutorial/request-files.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.118.0/tutorial/request-forms-and-files.md",
+      "sha256": "f6db36ff3c997844d44497a2550b1fa10dd9d3e39770e8372e9a870700dd2ff6",
+      "upstream_sha256": "2b73d99ebe64dc69eeb619fb04c7e71751d202251a3d248f61ac545bd11587e3",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "zh",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {
+        "docs_src/request_forms_and_files/tutorial001.py": "4ad31d9a5ff9ad625ed175cb9259d4e50c76dfd7bb186a8fea2858b33e50e1e7"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/request-forms-and-files.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/zh/docs/tutorial/request-forms-and-files.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.118.0/tutorial/static-files.md",
+      "sha256": "cecc992407753505c0497adf0e9269f9407d6a42ce108280ae6fab8f297ad6d9",
+      "upstream_sha256": "1bffaf27551b16e16b4ceb78d06893b017558e9e48f882c06daca749e00662c6",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "zh",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {
+        "docs_src/static_files/tutorial001.py": "968815810bb48e51e25bb62fdb07ce3a54aab1dfe14aa838edec4e4a5b244186"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/static-files.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/zh/docs/tutorial/static-files.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.118.0/tutorial/dependencies/index.md",
+      "sha256": "8b75221eaa34dc918a5f353245d040d8dac53cf62237b86feeef97aaf85bb661",
+      "upstream_sha256": "579e00bf100e73289a6b1af0c882605968de2d4c3452dffea21a6cd88cb1046b",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "zh",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {
+        "docs_src/dependencies/tutorial001.py": "6e2ca2bbdb6ca348a09e9fbbb91afc8af0da3c08290196374ea51f9244fbda6c"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/dependencies/index.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/zh/docs/tutorial/dependencies/index.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.118.0/tutorial/dependencies/dependencies-with-yield.md",
+      "sha256": "c34a504aa64bcbc19674ed5a7c47d158d03648ecf32a8aa876cecee7014b7e7f",
+      "upstream_sha256": "7e7e5c9211c78d987c2400c756cbd3f3172991b52f47d3ef2725cde54c2be9a5",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "zh",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {
+        "docs_src/dependencies/tutorial007.py": "f73b07eb2d9caa2225227e8d57fc348f3912a1640ff9dcf3d9f68b3eae8f6508",
+        "docs_src/dependencies/tutorial008_an_py39.py": "439bdc0dd6bdaa08a4d428f41fcfc45d350fc96cd29d451a60c3f7f80b7c365d",
+        "docs_src/dependencies/tutorial008b_an_py39.py": "a401e288a548d12ac72b307f54dc792413896b70db731dec49d65fb08fc6369d",
+        "docs_src/dependencies/tutorial008c_an_py39.py": "6e0ea198f11f19c2812d040d7757e486497f771ec5d0fa9ce03551c879298fe8",
+        "docs_src/dependencies/tutorial008d_an_py39.py": "3b49b4fb2321efaf78def86ca4c11ff6c8aff4690fdaf66953bec49adc90c294",
+        "docs_src/dependencies/tutorial010.py": "ff0c310d621034082022bfee2a5cafa552dc5528422aaa30be109ed4dd40c676"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/dependencies/dependencies-with-yield.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/zh/docs/tutorial/dependencies/dependencies-with-yield.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.118.0/advanced/behind-a-proxy.md",
+      "sha256": "ff9b50d10474e691dd05fa43bca34099a8746b408f167e124b14b24d409cc30c",
+      "upstream_sha256": "e64343455145cb303f550c807e229fde57e44d01c0b54a099a25321a7abfc940",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "zh",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {
+        "docs_src/behind_a_proxy/tutorial001.py": "801a2f91be33c28c39eb2413abce0d0236eaffd8830abc758cbb389ea14bbe35",
+        "docs_src/behind_a_proxy/tutorial002.py": "3605c987044b55a696860b1625420935af3f54837ae4aded4ea7b3b066a8c0e6",
+        "docs_src/behind_a_proxy/tutorial003.py": "817921af608c6a2c4a9d9e660296d74f99052c94ef0c90e4ebffdce75a590e40",
+        "docs_src/behind_a_proxy/tutorial004.py": "0719f8625b70ec8c4d645b1231944e21a515001792fc0807d27be707d3790fbb"
+      },
+      "upstream_path": "docs/zh/docs/advanced/behind-a-proxy.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/zh/docs/advanced/behind-a-proxy.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.118.0/advanced/events.md",
+      "sha256": "8cfe4d5b495a37ad6d2a0f92465b09cc9b0d3533f3cc0f3d76a94e8867805e23",
+      "upstream_sha256": "a5c4aa78a51425c4c71f405b4e06d3c7bacd41a52812fb2c904dd387c54020ad",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "zh",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {
+        "docs_src/events/tutorial003.py": "9eea93386ade43893270e8fbd00bd2da053ea4e1e4eea9e35c65d849e8eaaaf0",
+        "docs_src/events/tutorial001.py": "604cbccedd27a9b4923c143b21df0d2bcf7e74635ee76af610c555c7244cc9c0",
+        "docs_src/events/tutorial002.py": "2fcaf57d6821142045a7e66ced2591164d83983286e5339ee30d51efc0dc7386"
+      },
+      "upstream_path": "docs/zh/docs/advanced/events.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/zh/docs/advanced/events.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.118.0/deployment/docker.md",
+      "sha256": "2fdef3adc1e959f51bd7f6ef039b7b31aa260ddf7abadd826ef33f31bce979e0",
+      "upstream_sha256": "2fdef3adc1e959f51bd7f6ef039b7b31aa260ddf7abadd826ef33f31bce979e0",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "zh",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {},
+      "upstream_path": "docs/zh/docs/deployment/docker.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/zh/docs/deployment/docker.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.118.0/deployment/server-workers.md",
+      "sha256": "302433f4dcf3e6dc037c3c1264bf49e7c1e4ad494e69b72f34afd044ae1cf071",
+      "upstream_sha256": "302433f4dcf3e6dc037c3c1264bf49e7c1e4ad494e69b72f34afd044ae1cf071",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "zh",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {},
+      "upstream_path": "docs/zh/docs/deployment/server-workers.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/zh/docs/deployment/server-workers.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.118.0/tutorial/first-steps.md",
+      "sha256": "1e28c5e96d49b182de272e7914e094d3af25a42c33abcc8b61c8298dbc572f16",
+      "upstream_sha256": "8caefcf5182fbff787c750ab9d3426bc973929161069f36500cdccf0c5e9e7a6",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "zh",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {
+        "docs_src/first_steps/tutorial001.py": "88c744bf8154cc2a96793f9df1058431588029f7422ee0bcb62b74130a801650",
+        "docs_src/first_steps/tutorial003.py": "b0ba3b1d47204510640516d3808558eb6fa65f15cc027dd86db2e236eea57375"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/first-steps.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/zh/docs/tutorial/first-steps.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.118.0/tutorial/body-multiple-params.md",
+      "sha256": "a06060eb3b33898c08fa2a926260bf3c83e93578dc0e3dbc07498bbb4c8e43be",
+      "upstream_sha256": "b3b7073f78979902a062816c912fc680d50975b8533fdcdd370e72ddc6d203bf",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "zh",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {
+        "docs_src/body_multiple_params/tutorial001_an_py310.py": "a4dd2eb635a96f02fdc3d0e86df6b4b21340173f2ac997547d9665428ebcbe95",
+        "docs_src/body_multiple_params/tutorial002_py310.py": "dbe98c9ac3ad52e12b7f71a7ed7b925648e62e7b0934d21aac237f3f1d212816",
+        "docs_src/body_multiple_params/tutorial003_an_py310.py": "cc19bc26b69965dc72c97abe5128f7f903073bff2d82cd6146446f4821a11f59",
+        "docs_src/body_multiple_params/tutorial004_an_py310.py": "2f4e34a76b52675e59fa8a0198d9ba5c2b1291e124c4b1c8c6d1da0c8fbf3d8f",
+        "docs_src/body_multiple_params/tutorial005_an_py310.py": "a1b219436f9042cf3685e4a7c923138e7ace69143b87af96a450bd241e09443b"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/body-multiple-params.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/zh/docs/tutorial/body-multiple-params.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    },
+    {
+      "source": "fastapi/0.118.0/tutorial/body-fields.md",
+      "sha256": "60563aef7d7c603fd492972e8711e2fdcb02737c8a04eda1965e5e19f06ee282",
+      "upstream_sha256": "b06561ddce312d33a6624959a2b560386240ec4a0bee29c0eae07d191c0c9d82",
+      "product": "fastapi",
+      "version": "0.118.0",
+      "language": "zh",
+      "source_revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "included_files": {
+        "docs_src/body_fields/tutorial001_an_py310.py": "56bc9126f371dc8f6781410733452d13392551da6908eb50dffb38a80e6154aa"
+      },
+      "upstream_path": "docs/zh/docs/tutorial/body-fields.md",
+      "upstream_url": "https://raw.githubusercontent.com/fastapi/fastapi/333f1ba737be6507fc707278f6b69cf1f81efdc1/docs/zh/docs/tutorial/body-fields.md",
+      "license": "MIT",
+      "acquisition": "fetched_from_pinned_raw"
+    }
+  ],
+  "skipped": [
+    {
+      "version": "0.117.1",
+      "page": "tutorial/response-model.md",
+      "reason": "include expansion failed: <urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "version": "0.117.1",
+      "page": "tutorial/request-files.md",
+      "reason": "include expansion failed: <urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "version": "0.117.1",
+      "page": "tutorial/static-files.md",
+      "reason": "include expansion failed: <urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "version": "0.117.1",
+      "page": "tutorial/dependencies/index.md",
+      "reason": "upstream fetch failed: <urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "version": "0.117.1",
+      "page": "tutorial/dependencies/dependencies-with-yield.md",
+      "reason": "upstream fetch failed: <urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "version": "0.117.1",
+      "page": "advanced/behind-a-proxy.md",
+      "reason": "upstream fetch failed: <urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "version": "0.117.1",
+      "page": "advanced/events.md",
+      "reason": "upstream fetch failed: <urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "version": "0.117.1",
+      "page": "deployment/docker.md",
+      "reason": "upstream fetch failed: <urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "version": "0.118.0",
+      "page": "tutorial/path-params-numeric-validations.md",
+      "reason": "include expansion failed: <urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "version": "0.118.0",
+      "page": "tutorial/query-params-str-validations.md",
+      "reason": "include expansion failed: <urlopen error curl exit=56, HTTP=000>"
+    },
+    {
+      "version": "0.118.0",
+      "page": "tutorial/body-nested-models.md",
+      "reason": "upstream fetch failed: <urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "version": "0.118.0",
+      "page": "tutorial/response-status-code.md",
+      "reason": "upstream fetch failed: <urlopen error curl exit=28, HTTP=000>"
+    },
+    {
+      "version": "0.118.0",
+      "page": "advanced/response-headers.md",
+      "reason": "upstream fetch failed: <urlopen error curl exit=28, HTTP=000>"
+    },
+    {
+      "version": "0.118.0",
+      "page": "tutorial/security/first-steps.md",
+      "reason": "include expansion failed: <urlopen error curl exit=56, HTTP=000>"
+    },
+    {
+      "version": "0.118.0",
+      "page": "tutorial/dependencies/classes-as-dependencies.md",
+      "reason": "upstream fetch failed: <urlopen error curl exit=28, HTTP=000>"
+    },
+    {
+      "version": "0.118.0",
+      "page": "tutorial/bigger-applications.md",
+      "reason": "upstream fetch failed: <urlopen error curl exit=28, HTTP=000>"
+    },
+    {
+      "version": "0.118.0",
+      "page": "advanced/response-directly.md",
+      "reason": "upstream fetch failed: <urlopen error curl exit=28, HTTP=000>"
+    },
+    {
+      "version": "0.118.0",
+      "page": "deployment/https.md",
+      "reason": "upstream fetch failed: <urlopen error curl exit=28, HTTP=000>"
+    }
+  ],
+  "network_failures": [
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs/zh/docs/advanced/response-directly.md",
+      "attempt": 1,
+      "reason": "<urlopen error curl exit=56, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs/zh/docs/advanced/response-directly.md",
+      "attempt": 2,
+      "reason": "<urlopen error curl exit=28, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs/zh/docs/advanced/response-directly.md",
+      "attempt": 3,
+      "reason": "<urlopen error curl exit=28, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs/zh/docs/advanced/response-headers.md",
+      "attempt": 1,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs/zh/docs/advanced/response-headers.md",
+      "attempt": 2,
+      "reason": "<urlopen error curl exit=56, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs/zh/docs/advanced/response-headers.md",
+      "attempt": 3,
+      "reason": "<urlopen error curl exit=28, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs/zh/docs/deployment/https.md",
+      "attempt": 1,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs/zh/docs/deployment/https.md",
+      "attempt": 2,
+      "reason": "<urlopen error curl exit=28, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs/zh/docs/deployment/https.md",
+      "attempt": 3,
+      "reason": "<urlopen error curl exit=28, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs/zh/docs/tutorial/bigger-applications.md",
+      "attempt": 1,
+      "reason": "<urlopen error curl exit=28, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs/zh/docs/tutorial/bigger-applications.md",
+      "attempt": 2,
+      "reason": "<urlopen error curl exit=28, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs/zh/docs/tutorial/bigger-applications.md",
+      "attempt": 3,
+      "reason": "<urlopen error curl exit=28, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs/zh/docs/tutorial/body-nested-models.md",
+      "attempt": 1,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs/zh/docs/tutorial/body-nested-models.md",
+      "attempt": 2,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs/zh/docs/tutorial/body-nested-models.md",
+      "attempt": 3,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs/zh/docs/tutorial/dependencies/classes-as-dependencies.md",
+      "attempt": 1,
+      "reason": "<urlopen error curl exit=28, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs/zh/docs/tutorial/dependencies/classes-as-dependencies.md",
+      "attempt": 2,
+      "reason": "<urlopen error curl exit=28, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs/zh/docs/tutorial/dependencies/classes-as-dependencies.md",
+      "attempt": 3,
+      "reason": "<urlopen error curl exit=28, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs/zh/docs/tutorial/response-status-code.md",
+      "attempt": 1,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs/zh/docs/tutorial/response-status-code.md",
+      "attempt": 2,
+      "reason": "<urlopen error curl exit=56, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs/zh/docs/tutorial/response-status-code.md",
+      "attempt": 3,
+      "reason": "<urlopen error curl exit=28, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs_src/body_multiple_params/tutorial003_an_py310.py",
+      "attempt": 1,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs_src/body_multiple_params/tutorial003_an_py310.py",
+      "attempt": 2,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs_src/path_params_numeric_validations/tutorial004.py",
+      "attempt": 1,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs_src/path_params_numeric_validations/tutorial004.py",
+      "attempt": 2,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs_src/path_params_numeric_validations/tutorial004.py",
+      "attempt": 3,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs_src/query_params_str_validations/tutorial005.py",
+      "attempt": 1,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs_src/query_params_str_validations/tutorial005.py",
+      "attempt": 2,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs_src/query_params_str_validations/tutorial012.py",
+      "attempt": 1,
+      "reason": "<urlopen error curl exit=56, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs_src/query_params_str_validations/tutorial012.py",
+      "attempt": 2,
+      "reason": "<urlopen error curl exit=56, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs_src/query_params_str_validations/tutorial012.py",
+      "attempt": 3,
+      "reason": "<urlopen error curl exit=56, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs_src/security/tutorial001.py",
+      "attempt": 1,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs_src/security/tutorial001.py",
+      "attempt": 2,
+      "reason": "<urlopen error curl exit=56, HTTP=000>"
+    },
+    {
+      "revision": "333f1ba737be6507fc707278f6b69cf1f81efdc1",
+      "path": "docs_src/security/tutorial001.py",
+      "attempt": 3,
+      "reason": "<urlopen error curl exit=56, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs/zh/docs/advanced/behind-a-proxy.md",
+      "attempt": 1,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs/zh/docs/advanced/behind-a-proxy.md",
+      "attempt": 2,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs/zh/docs/advanced/behind-a-proxy.md",
+      "attempt": 3,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs/zh/docs/advanced/events.md",
+      "attempt": 1,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs/zh/docs/advanced/events.md",
+      "attempt": 2,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs/zh/docs/advanced/events.md",
+      "attempt": 3,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs/zh/docs/deployment/docker.md",
+      "attempt": 1,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs/zh/docs/deployment/docker.md",
+      "attempt": 2,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs/zh/docs/deployment/docker.md",
+      "attempt": 3,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs/zh/docs/tutorial/dependencies/dependencies-with-yield.md",
+      "attempt": 1,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs/zh/docs/tutorial/dependencies/dependencies-with-yield.md",
+      "attempt": 2,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs/zh/docs/tutorial/dependencies/dependencies-with-yield.md",
+      "attempt": 3,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs/zh/docs/tutorial/dependencies/index.md",
+      "attempt": 1,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs/zh/docs/tutorial/dependencies/index.md",
+      "attempt": 2,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs/zh/docs/tutorial/dependencies/index.md",
+      "attempt": 3,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs_src/request_files/tutorial003_py39.py",
+      "attempt": 1,
+      "reason": "<urlopen error curl exit=56, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs_src/request_files/tutorial003_py39.py",
+      "attempt": 2,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs_src/request_files/tutorial003_py39.py",
+      "attempt": 3,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs_src/response_model/tutorial006.py",
+      "attempt": 1,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs_src/response_model/tutorial006.py",
+      "attempt": 2,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs_src/response_model/tutorial006.py",
+      "attempt": 3,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs_src/static_files/tutorial001.py",
+      "attempt": 1,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs_src/static_files/tutorial001.py",
+      "attempt": 2,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    },
+    {
+      "revision": "784f06cb9b7cc63f6a0cb2bc9cf238473eef93e2",
+      "path": "docs_src/static_files/tutorial001.py",
+      "attempt": 3,
+      "reason": "<urlopen error curl exit=35, HTTP=000>"
+    }
+  ]
+}

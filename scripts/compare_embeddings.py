@@ -109,7 +109,8 @@ def render_markdown(report: dict, raw_sha: str) -> str:
     lines = [
         "# 本地语义 Embedding 检索开发对照",
         "",
-        "固定开发候选，未生成答案；标注仍待人工审核，覆盖不是答案正确率。保留测试集未运行。",
+        f"固定开发问题，已记录人工确认{report['dataset']['human_verified_count']}/"
+        f"{report['dataset']['case_count']}题；未生成答案，覆盖不是答案正确率。保留测试集未运行。",
         "",
         f"原始JSON SHA256：`{raw_sha}`",
         "",
@@ -190,12 +191,14 @@ def render_markdown(report: dict, raw_sha: str) -> str:
 
 
 def main() -> None:
+    wall_started = perf_counter()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--documents", type=Path, default=Path("evaluation/support_corpus"))
     parser.add_argument(
         "--questions", type=Path, default=Path("evaluation/questions.support.candidate.jsonl")
     )
     parser.add_argument("--split", choices=["development"], default="development")
+    parser.add_argument("--require-reviewed", action="store_true")
     parser.add_argument("--model-dir", type=Path, default=E5_DIRECTORY)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--run-dir", type=Path, required=True)
@@ -220,6 +223,8 @@ def main() -> None:
     cases = [c for c in load_evaluation_cases(args.questions) if c.split == "development"]
     if not cases:
         parser.error("开发集为空")
+    if args.require_reviewed and any(case.review_status != "human_verified" for case in cases):
+        parser.error("--require-reviewed 要求全部开发问题已完成人工确认")
     validate_evidence(cases, args.documents)
     settings = Settings(
         embedding_provider="local_e5",
@@ -381,8 +386,23 @@ def main() -> None:
         chunk_size=500,
         chunk_overlap=80,
     )
+    manifest_path = args.documents / "manifest.json"
+    if manifest_path.is_file():
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        report["dataset"].update(
+            version_counts=dict(
+                sorted(Counter(d["version"] for d in manifest["documents"]).items())
+            ),
+            corpus_sha256=report["provenance"]["corpus_sha256"],
+            skipped=manifest.get("skipped", []),
+            reused_document_count=manifest.get("baseline", {}).get("reused_document_count", 0),
+        )
+        report["provenance"]["corpus_manifest_sha256"] = hashlib.sha256(
+            manifest_path.read_bytes()
+        ).hexdigest()
     report["configuration"].update(
         comparison_design="fixed_development_retrieval_only",
+        require_reviewed=args.require_reviewed,
         rrf_k=60,
         rrf_weights=[1, 1],
         repeats=args.repeats,
@@ -417,6 +437,7 @@ def main() -> None:
             "answer_generation_count": 0,
             "test_case_count": 0,
             "trial_count": len(trials),
+            "wall_seconds_before_report_write": perf_counter() - wall_started,
             "ranking_changed_trial_count": sum(not t["same_ranking_as_first"] for t in trials),
             "case_review_status_counts": dict(Counter(c.review_status for c in cases)),
             "trials_sha256": hashlib.sha256(

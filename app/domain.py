@@ -28,6 +28,8 @@ class SearchHit:
     score: float
     dense_rank: int | None = None
     sparse_rank: int | None = None
+    rerank_score: float | None = None
+    rerank_rank: int | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -40,5 +42,10 @@ class SearchHit:
             "score": round(self.score, 6),
             "dense_rank": self.dense_rank,
             "sparse_rank": self.sparse_rank,
+            **(
+                {"rerank_score": self.rerank_score, "rerank_rank": self.rerank_rank}
+                if self.rerank_score is not None
+                else {}
+            ),
             "metadata": self.chunk.metadata,
         }

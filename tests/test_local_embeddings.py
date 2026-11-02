@@ -22,6 +22,36 @@ from app.local_embeddings import (
 from scripts.compare_embeddings import transitions
 
 
+def test_comparison_requires_review_before_model_loading(tmp_path):
+    output = tmp_path / "report.json"
+    run_dir = tmp_path / "run"
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-X",
+            "utf8",
+            "-m",
+            "scripts.compare_embeddings",
+            "--require-reviewed",
+            "--model-dir",
+            str(tmp_path / "absent-model"),
+            "--output",
+            str(output),
+            "--run-dir",
+            str(run_dir),
+        ],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=False,
+    )
+    assert result.returncode == 2
+    assert "全部开发问题已完成人工确认" in result.stderr
+    assert "Loading pinned local E5" not in result.stdout
+    assert not output.exists()
+    assert not run_dir.exists()
+
+
 def test_comparison_cli_rejects_held_out_split_before_model_loading():
     result = subprocess.run(
         [
