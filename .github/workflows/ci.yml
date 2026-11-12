@@ -36,7 +36,7 @@ jobs:
       CHUNKING_STRATEGY: sections
       DATA_DIR: work/ci-index
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
@@ -75,7 +75,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
       - name: Build and wait for demo readiness
         run: docker compose up --build --wait --wait-timeout 60
       - name: Verify container HTTP behavior

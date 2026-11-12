@@ -257,6 +257,10 @@ def test_rejects_held_out_or_unreviewed_questions(tmp_path, split, review_status
         load_reviewed_development_cases(q_file)
 
 
+@pytest.mark.skipif(
+    not (DEFAULT_OLD_HUMAN_REVIEWS.exists() and DEFAULT_V012_DIR.exists()),
+    reason="Requires local calibration artifacts in work/",
+)
 def test_real_calibration_dataset_counts_and_separation():
     items = build_calibration_dataset(
         old_report_path=DEFAULT_OLD_REPORT,
@@ -335,6 +339,10 @@ def test_calibration_confusion_and_group_summary():
     assert group_summary["disagreements"] == []
 
 
+@pytest.mark.skipif(
+    not (DEFAULT_OLD_HUMAN_REVIEWS.exists() and DEFAULT_V012_DIR.exists()),
+    reason="Requires local calibration artifacts in work/",
+)
 def test_offline_end_to_end_prepare_execute_calibrate_and_report(tmp_path, monkeypatch):
     monkeypatch.setattr("openai.OpenAI", FakeOpenAIClient)
 
