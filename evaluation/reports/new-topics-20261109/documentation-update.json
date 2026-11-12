@@ -1,0 +1,7 @@
+{
+  "evaluation/README.md": {
+    "before_sha256": "fb8be702cd744d740b885ed27f16fa58dca5c4b567eea5ca36705a7e2ef3cf7d",
+    "after_sha256": "1e6d414394a04b009e407d85a7991806418cb5e7f19bf2ed5b519b5f91b6d64f",
+    "reason": "本轮相关评测说明同步，非历史冻结证据；原字节已备份。"
+  }
+}

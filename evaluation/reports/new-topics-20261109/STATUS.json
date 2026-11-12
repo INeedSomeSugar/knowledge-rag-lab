@@ -1,0 +1,49 @@
+{
+  "at": "2026-11-09T10:17:40.130967+00:00",
+  "phase": "completed",
+  "assistant_reviewed": 12,
+  "human_verified": 12,
+  "reviewer": "JQH",
+  "candidate_revision": "20261109-r1",
+  "new_topic_trials": 36,
+  "independent_coverage_checks": 72,
+  "summary": {
+    "none": {
+      "n_scored": 12,
+      "top_complete": 9,
+      "context_complete": 11,
+      "bge_calls": 0,
+      "scored_pairs": 0,
+      "p50_ms": 43.82045002421364,
+      "p95_ms": 47.867255003075115,
+      "mean_ms": 43.93485834104164
+    },
+    "all": {
+      "n_scored": 12,
+      "top_complete": 11,
+      "context_complete": 12,
+      "bge_calls": 12,
+      "scored_pairs": 600,
+      "p50_ms": 7389.792199974181,
+      "p95_ms": 7892.436225002166,
+      "mean_ms": 7418.158183339983
+    },
+    "adaptive": {
+      "n_scored": 12,
+      "top_complete": 10,
+      "context_complete": 12,
+      "bge_calls": 4,
+      "scored_pairs": 200,
+      "p50_ms": 49.04139999416657,
+      "p95_ms": 7777.960250005708,
+      "mean_ms": 2497.7446083309283
+    }
+  },
+  "protocol_sha256": "83f67ae88f88c5d9b4fce14e8383c798f59aa4220162c30685fd035e309ddf60",
+  "raw_trials_sha256": "82f9c739dd0a055b751121662194cd5fc8efd5d733cafd4005ba3d69dd9a372a",
+  "source_of_human_decision": "human-decision-source.json",
+  "api_calls": 0,
+  "answer_generation": 0,
+  "original_held_out_8_executions": 0,
+  "note": "audit.json and analysis-pending are immutable preparation snapshots; current state is here"
+}

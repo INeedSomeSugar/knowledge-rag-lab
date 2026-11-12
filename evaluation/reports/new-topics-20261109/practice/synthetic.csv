@@ -1,0 +1,8 @@
+id,strategy,status,bge_called
+synthetic-1,none,completed,False
+synthetic-1,all,completed,True
+synthetic-1,adaptive,completed,True
+synthetic-2,none,completed,False
+synthetic-2,all,completed,True
+synthetic-2,adaptive,completed,False
+synthetic-3,none,awaiting_human,

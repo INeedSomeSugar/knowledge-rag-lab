@@ -1,3 +1,10 @@
+"""HTTP 层契约：导入、检索、问答三条主路径与参数边界。
+
+重点保护“接口返回的结构就是前端与评测依赖的结构”：命中里带来源与标题元数据，
+问答里带可回指的 citations；上传非法类型必须在进入解析前被拒。
+版本作用域测试确保 product/version 会一路传到检索过滤，而不是只在响应里回显。
+"""
+
 from pathlib import Path
 
 from fastapi.testclient import TestClient

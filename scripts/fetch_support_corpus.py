@@ -1,4 +1,11 @@
-"""Fetch a small, pinned, licensed FastAPI documentation corpus (no model calls)."""
+"""Fetch a small, pinned, licensed FastAPI documentation corpus (no model calls).
+
+来源固定到具体提交（``REVISIONS``），页面清单写死在 ``PAGES``，不遍历仓库、不接受
+任意 URL。这样语料可复现：同一提交 + 同一清单得到同一批字节。
+
+抓取后会把页面里的 include 指令展开成实际内容，并写出 ``manifest.json`` 记录
+上游地址、提交、许可证与逐文件 SHA256；后续加载器按 manifest 校验，防止“文件被换过”。
+"""
 
 from __future__ import annotations
 
@@ -40,6 +47,7 @@ def digest(data: bytes) -> str:
 
 
 def fetch(revision: str, path: str) -> bytes:
+    """按固定提交取原始文件；路径必须相对且不能含 ``..``，防止越界读取。"""
     parts = PurePosixPath(path).parts
     if ".." in parts or path.startswith("/"):
         raise ValueError("Unsafe upstream path")

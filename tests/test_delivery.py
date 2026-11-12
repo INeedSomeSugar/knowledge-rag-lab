@@ -1,3 +1,10 @@
+"""交付面：就绪检查、请求编号关联、日志脱敏与错误响应。
+
+验证的是运维可观测性而非业务逻辑：``/ready`` 不触发模型请求；并发请求的
+``X-Request-ID`` 与 trace 一一对应；日志不含问题正文、请求头与未匹配路径；
+未处理异常返回通用文案但保留可追踪编号。
+"""
+
 from concurrent.futures import ThreadPoolExecutor
 import json
 import logging

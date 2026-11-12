@@ -1,4 +1,13 @@
-"""Build and verify an ephemeral loopback demo container, retaining reproducible evidence."""
+"""Build and verify an ephemeral loopback demo container, retaining reproducible evidence.
+
+每次验证使用独立的 compose 项目名、随机端口与独立工作目录，结束后按项目名清理，
+因此不会碰用户已有的容器或数据卷。检查项覆盖：Linux 引擎、镜像可构建、只读根文件系统、
+非 root 用户、健康检查、环境变量不含 API Key、依赖一致性、HTTP 业务探针与临时项目清理。
+这是交付验证，不是性能压测。
+
+所有检查项与失败原因写入 JSON 报告；报告路径必须新建，失败也保留，便于判断
+“这次是代码问题还是环境问题”。
+"""
 
 from __future__ import annotations
 
@@ -18,6 +27,11 @@ from scripts.benchmark_http import request_json, run_workload, write_report
 
 
 def verify(output: Path, existing_image: str | None = None) -> dict:
+    """构建并验证临时容器，返回检查明细。
+
+    ``existing_image`` 仅用于“复用已构建镜像”的复验；即便复用，项目名与端口仍每次不同，
+    避免与上一次运行互相干扰。
+    """
     if output.exists():
         raise ValueError("report already exists; use a new path")
     root = Path(__file__).resolve().parents[1]

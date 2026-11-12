@@ -1,4 +1,18 @@
-"""End-to-end stdio verification of the Knowledge RAG Lab MCP server using the MCP Python SDK."""
+"""End-to-end stdio verification of the Knowledge RAG Lab MCP server using the MCP Python SDK.
+
+验证方式：真实拉起一个 ``python -m app.mcp_server --demo --bootstrap`` 子进程，
+通过 SDK 完成 initialize、列工具/资源模板、调用工具、读资源。
+
+覆盖的契约：
+
+- ``list_catalog`` 能返回产品版本目录、文档数、分块数与索引修订号；
+- ``search_docs`` 在指定 product+version 下返回带字符范围与 ``rag://chunk/{id}``
+  资源地址的分块；
+- ``ask_docs`` 在未指定版本时返回澄清结果，指定版本后返回带引用的回答；
+- 按 ``resource_uri`` 能回读分块原文，且 ID 与检索结果一致。
+
+零密钥、零付费调用；结果写入 ``--output`` 指定的 JSON。
+"""
 
 from __future__ import annotations
 

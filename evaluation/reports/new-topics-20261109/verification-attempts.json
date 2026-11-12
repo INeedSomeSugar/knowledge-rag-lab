@@ -1,0 +1,25 @@
+[
+  {
+    "at": "2026-11-09T10:06:51.165132+00:00",
+    "status": "failed_then_scoped",
+    "check": "original protection inventory",
+    "changed_file": "evaluation/README.md",
+    "reason": "current evaluation README was intentionally updated; original inventory retained; exact before/after hashes and baseline copy recorded separately"
+  },
+  {
+    "status": "failed_then_fixed",
+    "check": "delivery analysis helper first invocation",
+    "message": "ModuleNotFoundError: scripts.report_new_topics",
+    "remediation": "explicit repository root on sys.path for artifact-local helper; subsequent invocation succeeded; retrieval execution was not repeated"
+  },
+  {
+    "recorded_at": "2026-11-09T10:23:48.842118+00:00",
+    "status": "failed_then_fixed",
+    "check": "initial ruff check",
+    "findings": [
+      "unused dataclasses.asdict in validation entrypoint",
+      "unused pathlib.Path in report writer"
+    ],
+    "remediation": "removed unused imports before freezing; all final lint checks passed"
+  }
+]

@@ -1,4 +1,17 @@
-"""Freeze and run a bounded, reviewed-development generation/verification comparison."""
+"""Freeze and run a bounded, reviewed-development generation/verification comparison.
+
+实验回答两个问题：
+
+1. **检索对答案的影响**：同一生成模型下，BM25 与 E5 Hybrid 两臂的答案是否不同；
+2. **核验是否有效**：在三道已知易错的题上注入“忠实引文 + 错误结论”的变异草稿，
+   看支持关系核验能否拦下（``CONTROLS`` / ``MUTATIONS``）。
+
+关键设计：变异只改结论文本，保留原逐字引文，因此答案仍能通过“引用存在性”校验，
+必须靠二次核验才能发现——这正好把两道闸门区分开。若变异稿在引用校验阶段就被拒，
+说明测试没有测到想测的东西，脚本会直接报错。
+
+只允许人工核验过的开发题；协议、候选与源码在 ``prepare`` 阶段冻结。
+"""
 
 from __future__ import annotations
 
@@ -75,6 +88,11 @@ def hits_from_response(response: dict) -> list[SearchHit]:
 
 
 def control_draft(response: dict, case_id: str, mutated: bool):
+    """构造“引用合法但结论错误”的草稿，用于验证核验闸门。
+
+    ``mutated=False`` 返回原草稿，用作对照；``mutated=True`` 只替换第一条结论文本，
+    引文保持不变。若替换后连引用校验都过不了，说明该题不适合做核验测试，直接报错。
+    """
     claims = deepcopy(response["claims"])
     if mutated:
         claims[0]["text"] = MUTATIONS[case_id]
@@ -97,6 +115,16 @@ def reviewed_cases(path: Path):
 
 
 def prepare(args) -> None:
+    """冻结选题、协议与输入哈希。
+
+    选题规则（在代码里固定，避免事后挑选）：
+
+    - ``focus``：两臂证据覆盖不同、或 Hybrid 仍未完整覆盖的题，全部纳入；
+    - ``stable``：按类别各取一道两臂一致的题，最多两道，用于对照“本来就不该有差异”；
+    - 三道不可回答题：固定加入，用于观察拒答行为。
+
+    这样得到的是“已知有差异 + 已知无差异 + 应拒答”三类混合，而不是只挑有效果的题。
+    """
     cases = reviewed_cases(args.questions)
     validate_evidence(cases, args.documents)
     semantic = json.loads(args.semantic_report.read_text(encoding="utf-8"))
@@ -265,6 +293,11 @@ class BoundedDeepSeek(DeepSeekGenerator):
 
 
 def aggregate(cases, details):
+    """把已执行结果重新喂给行为统计，不重新检索或生成。
+
+    用迭代器按顺序配对，是为了复用 ``evaluate_answer_behavior`` 的分组与比率逻辑，
+    同时保证“统计的响应”与“实际落盘的响应”是同一份对象。
+    """
     items = iter(details)
     summary = evaluate_answer_behavior(cases, lambda *a, **kw: next(items)["response"], 5)
     summary["model_calls"] = summarize_model_calls(summary["details"])
@@ -272,6 +305,12 @@ def aggregate(cases, details):
 
 
 def execute(args) -> None:
+    """按冻结协议执行真实生成；目录只允许首次运行，费用不可回滚。
+
+    执行前逐项比对源码指纹、输入哈希与语料哈希，任一变化都要求重新 ``prepare``。
+    写入 ``execution.started.json`` 是为了留下“这里曾经开跑”的证据，避免把两次付费
+    运行的结果混在同一目录。
+    """
     out = args.output.resolve()
     protocol = json.loads((out / "protocol.json").read_text(encoding="utf-8"))
     if protocol["code_sha256"] != code_fingerprint():

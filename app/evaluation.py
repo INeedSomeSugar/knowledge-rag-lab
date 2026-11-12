@@ -1,3 +1,15 @@
+"""检索与行为评测：指标实现、数据校验与逐题明细。
+
+两类指标必须分清，报告里也不能混写：
+
+- **文档级**：hit / recall / MRR / nDCG，只看命中的 ``source`` 是否在标注集合里；
+- **证据级**：``evidence_covered`` 要求标注区间被检索结果**完整覆盖**，同文件里
+  命中了错误段落不算。后者更接近“能不能据此作答”，也是本项目主推的口径。
+
+评测集加载阶段做严格校验（字段类型、证据区间、状态一致性、划分不串组），
+原因是错误标注会让指标看起来变好或变坏，但无法从结果反推是数据问题。
+"""
+
 from __future__ import annotations
 
 import json
@@ -13,6 +25,18 @@ from app.domain import Chunk, SearchHit
 
 @dataclass(frozen=True, slots=True)
 class EvaluationCase:
+    """一道评测题及其全部标注。
+
+    字段语义：
+
+    - ``reference_answer``：人工参考答案，只有 ``human_verified`` 的题才有；
+    - ``evidence``：原文锚点（source + 字符区间 + 逐字 quote），用于证据级指标；
+    - ``expected_status``：期望行为，允许 ``answered`` / ``insufficient_evidence`` /
+      ``needs_clarification``，用于行为匹配率；
+    - ``split``：``development`` 可反复调试，``test`` 保留到最后，脚本层有硬保护；
+    - ``group_id``：同源问题的折叠分组，阈值选择按组切分以避免泄漏。
+    """
+
     question: str
     relevant_sources: frozenset[str]
     case_id: str = ""
@@ -28,6 +52,12 @@ class EvaluationCase:
 
     @classmethod
     def from_dict(cls, value: dict[str, object], *, line_number: int) -> "EvaluationCase":
+        """从一行 JSON 构造并校验；错误信息带行号，便于定位坏样本。
+
+        这些校验不是形式主义：``should_answer`` 与 ``relevant_sources`` 矛盾、
+        ``expected_status`` 与 ``should_answer`` 不一致、证据区间非法，都会让
+        后续指标失去意义，且很难从聚合数字看出来。
+        """
         question = str(value.get("question", "")).strip()
         if not question:
             raise ValueError(f"评测集第 {line_number} 行缺少 question")
@@ -79,6 +109,7 @@ class EvaluationCase:
         if value.get("review_status", "unreviewed") not in {"unreviewed", "human_verified"}:
             raise ValueError("review_status 不合法")
         if value.get("review_status") == "human_verified":
+            # 人工核验不能只有状态标记：必须留下核验人、时间与参考答案，便于追溯。
             if not all(
                 isinstance(value.get(key), str) and value[key].strip()
                 for key in ("reviewed_by", "reviewed_at", "reference_answer")
@@ -106,6 +137,11 @@ class EvaluationCase:
 
 
 def load_evaluation_cases(path: Path) -> list[EvaluationCase]:
+    """逐行读取 JSONL；空行跳过，重复 ID 与跨划分同组都直接报错。
+
+    “同组不能跨 development/test”是防泄漏约束：同一主题的多个问法若一半在开发集、
+    一半在测试集，调参就会变相看到测试内容。
+    """
     cases: list[EvaluationCase] = []
     seen_ids: set[str] = set()
     for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
@@ -134,7 +170,12 @@ def load_evaluation_cases(path: Path) -> list[EvaluationCase]:
 
 
 def evidence_covered(anchor: dict[str, object], hits: list[SearchHit]) -> bool:
-    """Full union coverage of a gold span; wrong paragraphs in the same file do not count."""
+    """Full union coverage of a gold span; wrong paragraphs in the same file do not count.
+
+    实现是区间并集判定：把所有与金标区间相交的命中裁到金标范围内，按起点排序后
+    推进游标；只有当游标无空隙地走到终点才算覆盖。允许由多个分块共同拼出证据，
+    这正是 ``merged_neighbors`` 策略要解决的问题。
+    """
     start, end = int(anchor["start_char"]), int(anchor["end_char"])
     intervals = sorted(
         (max(start, hit.chunk.start_char), min(end, hit.chunk.end_char))
@@ -152,6 +193,7 @@ def evidence_covered(anchor: dict[str, object], hits: list[SearchHit]) -> bool:
 
 
 def _ndcg_at_k(retrieved: list[str], relevant: frozenset[str], top_k: int) -> float:
+    """按 source 去重的 nDCG@k；同一文件的多个分块不重复得分。"""
     seen_relevant: set[str] = set()
     dcg = 0.0
     for rank, source in enumerate(retrieved[:top_k], start=1):
@@ -168,6 +210,11 @@ def evaluate_retrieval(
     search: Callable[[str, int], list[SearchHit]],
     top_k: int = 5,
 ) -> dict[str, object]:
+    """对单一检索策略计算文档级与证据级指标，并保留逐题明细。
+
+    只统计“可回答且有来源标注”的题；不可回答题（澄清/拒答）不参与检索指标，
+    但仍计入 ``case_count``，使跳过数量可见而不是被悄悄丢弃。
+    """
     if not cases:
         raise ValueError("评测集不能为空")
     if top_k < 1:
@@ -209,6 +256,7 @@ def evaluate_retrieval(
         recalls.append(recall)
         reciprocal_ranks.append(reciprocal_rank)
         ndcgs.append(ndcg)
+        # 证据级指标只在标注了 evidence 的题上计算；没有标注的题不按 0 计。
         covered = sum(evidence_covered(anchor, hits) for anchor in case.evidence)
         if case.evidence:
             evidence_recalls.append(covered / len(case.evidence))
@@ -246,6 +294,7 @@ def evaluate_retrieval(
         f"hit_rate@{top_k}": hit_rate,
         f"recall@{top_k}": round(mean(recalls), 4),
         f"mrr@{top_k}": mrr,
+        # 同时给带后缀与不带后缀的键，兼容不同版本的报告读取方。
         "mrr": mrr,
         f"ndcg@{top_k}": round(mean(ndcgs), 4),
         "details": details,
@@ -260,6 +309,11 @@ def evaluate_strategies(
     searchers: dict[str, Callable[[str, int], list[SearchHit]]],
     top_ks: list[int],
 ) -> dict[str, dict[str, dict[str, object]]]:
+    """一次检索、多个 top_k 复用结果，避免重复计算向量与 BM25 打分。
+
+    缓存键包含过滤条件：同一问题在不同版本下必须各自检索，否则会把跨版本结果
+    当成同一次检索。取 ``max(top_ks)`` 作为实际检索深度，再按各 k 截断。
+    """
     if not searchers:
         raise ValueError("至少需要一种检索策略")
     normalized_top_ks = sorted(set(top_ks))
@@ -287,9 +341,16 @@ def evaluate_strategies(
 def evaluate_answer_behavior(
     cases: list[EvaluationCase], answer: Callable, top_k: int
 ) -> dict[str, object]:
+    """按期望状态分组统计系统行为，并单独报告上下文证据覆盖。
+
+    这里**不**计算答案正确率（``answer_correctness`` 恒为 ``None``）：状态正确
+    不等于内容正确，内容正确性需要人工或独立 Judge 评分。报告里保留这个空字段，
+    是为了避免下游误把 ``answer_rate`` 当成准确率。
+    """
     details = []
     for case in cases:
         response = answer(case.question, top_k, filters=case.filters)
+        # 把响应里的 context 字典还原成 SearchHit，以便复用区间覆盖判定。
         context_hits = [
             SearchHit(
                 Chunk(
@@ -328,6 +389,7 @@ def evaluate_answer_behavior(
     clarification = [item for item in details if item["expected_status"] == "needs_clarification"]
 
     def rate(items: list[dict], status: str) -> float | None:
+        # 空分组返回 None 而不是 0：没有样本时“全错”和“无数据”必须可区分。
         return (
             round(sum(item["response"]["status"] == status for item in items) / len(items), 4)
             if items

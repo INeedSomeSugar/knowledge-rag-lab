@@ -1,4 +1,12 @@
-"""Optional evidence ranking over an already filtered, fixed BM25 candidate pool."""
+"""Optional evidence ranking over an already filtered, fixed BM25 candidate pool.
+
+这是“用生成模型做重排”的轻量方案：把候选连同编号交给模型，只要求返回一个完整
+排列，不要求它作答。相比交叉编码器，它不需要额外权重，但延迟与费用高、顺序稳定性
+依赖模型；因此本项目把它作为可选实验路径，默认仍使用 ``none`` 或本地 BGE。
+
+任何解析失败都回退到原顺序并记录 ``fallback_original_order``：重排是增强项，
+不应该让一次格式抖动把整条问答变成错误。
+"""
 
 import json
 
@@ -16,6 +24,11 @@ ranking 必须是所有输入编号的完整排列，不得遗漏、重复或新
 def rerank(
     query: str, candidates: list[SearchHit], generator: OpenAICompatibleGenerator
 ) -> tuple[list[SearchHit], dict]:
+    """要求模型输出候选编号的完整排列，并校验其合法性。
+
+    校验点：长度一致、元素为整数、集合恰好等于 ``1..n``。只校验“是不是排列”，
+    不校验“排得对不对”——后者只能靠离线评测，不能让模型自证。
+    """
     if len({hit.chunk.id for hit in candidates}) != len(candidates):
         raise ValueError("重排候选存在重复分块")
     payload = {
@@ -35,6 +48,7 @@ def rerank(
         "input": payload,
         "status": "skipped",
         "raw_response": None,
+        # 默认恒等排列：即使模型没被调用，也能从 trace 看出“顺序未变”。
         "ranking": list(range(1, len(candidates) + 1)),
     }
     if len(candidates) < 2:

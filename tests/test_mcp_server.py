@@ -1,3 +1,10 @@
+"""MCP 服务端：工具/资源契约、版本澄清与参数错误映射。
+
+MCP 客户端看到的是另一套消费面，但语义必须与 HTTP 一致：同一索引、同一作用域校验、
+同一状态码（``needs_clarification`` 等）。参数非法应转成工具错误，而不是让异常穿透
+协议层导致连接中断。
+"""
+
 from __future__ import annotations
 
 from collections.abc import Coroutine

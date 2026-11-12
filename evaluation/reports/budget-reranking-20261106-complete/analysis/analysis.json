@@ -1,0 +1,146 @@
+{
+  "created_at": "2026-11-06T11:51:16.719810+00:00",
+  "n": 41,
+  "scope": "development retrieval evidence only; selected on these cases",
+  "summary": {
+    "none": {
+      "n": 41,
+      "top_complete": 35,
+      "context_complete": 35,
+      "triggered_queries": 0
+    },
+    "all": {
+      "n": 41,
+      "top_complete": 36,
+      "context_complete": 37,
+      "triggered_queries": 41
+    },
+    "adaptive": {
+      "n": 41,
+      "top_complete": 37,
+      "context_complete": 37,
+      "triggered_queries": 16
+    }
+  },
+  "timing": {
+    "none": {
+      "n": 123,
+      "p50_ms": 60.302000001684064,
+      "p95_ms": 106.06158999908075,
+      "mean_ms": 75.00085040672688,
+      "actual_calls": 0,
+      "scored_pairs": 0
+    },
+    "all": {
+      "n": 123,
+      "p50_ms": 7638.881999999285,
+      "p95_ms": 13246.168189998572,
+      "mean_ms": 9737.721676422825,
+      "actual_calls": 123,
+      "scored_pairs": 6150
+    },
+    "adaptive": {
+      "n": 123,
+      "p50_ms": 98.21970000120928,
+      "p95_ms": 12940.292079998108,
+      "mean_ms": 3833.293516259993,
+      "actual_calls": 48,
+      "scored_pairs": 2400
+    }
+  },
+  "call_saving_rate": 0.6097560975609756,
+  "latency_reduction_vs_all": {
+    "p50_ms": 0.987142136768022,
+    "p95_ms": 0.023091667387359238,
+    "mean_ms": 0.6063459561037523
+  },
+  "queries_with_context_gain_if_reranked": [
+    "support-029",
+    "support-034"
+  ],
+  "adaptive_calls_with_no_context_gain": [
+    "support-006",
+    "support-007",
+    "support-010",
+    "support-011",
+    "support-012",
+    "support-013",
+    "support-015",
+    "support-020",
+    "support-022",
+    "support-023",
+    "support-025",
+    "support-028",
+    "support-035",
+    "support-038"
+  ],
+  "validation": {
+    "scope": "Ready within reviewed scope; Share with caveats",
+    "independent_coverage_checks": 738,
+    "trial_matrix_complete": true,
+    "protected_inputs": {
+      "checked": 787,
+      "changed": []
+    },
+    "timing_independently_recomputed": true,
+    "human_answer_quality_evaluated": false
+  },
+  "inputs_sha256": {
+    "real.json": "7e5f8d6ce779b8f9c51559fb6494afa8cd329aae1c07e72cde7ed26aff9b2240",
+    "real.trials.jsonl": "8138d481bbdcaf0c6b96556717390e2de2f312949d282c00ea7cb9270e707571",
+    "selection.json": "d7bbaf536e42502ed2c81f682db4d149b0b0889f101c54d653be048b6c1edcb1",
+    "replay.json": "4eb382d424b296546e7521eac62eee8ae50fb78ecd8a8cb3bc7cb79a275cc352",
+    "group-validation.json": "8d3a92d7a2a7a8d74912c6e9442f9aa7f978e601f2e59ccb8cee1e8108b037e4"
+  },
+  "generator_sha256": "eed23c21d8900b2fcc6dfba322e626362d052e146075d4d417daa681b6441d44",
+  "measurement_recovery": {
+    "created_at": "2026-11-06T11:10:46.038675+00:00",
+    "mode": "immutable_prefix_plus_missing_keys",
+    "original_output": "evaluation\\reports\\budget-reranking-20261106-real3",
+    "original_runtime": "work\\experiments\\budget-reranking-20261106-real3",
+    "partial_trials": 167,
+    "partial_sha256": "70948cf2e7c65873fab9e8082cffa6f0c03a0fbb2f672bc6dbd51f9e7bff69ad",
+    "source_pid_absent": true,
+    "selected_policy_sha256": "d7bbaf536e42502ed2c81f682db4d149b0b0889f101c54d653be048b6c1edcb1",
+    "retuned": false,
+    "cause": "process absent after tool reset; exit/cause unverified",
+    "amendment_sha256": "558f9e1f132cc235fbcc323ac0517893392b75fb2e085293b35fe750a1682efd",
+    "generator_sha256": "6c8c3ae46b7f56bb7adb43eeed0d71a9100ab934e07b844f204adb1debabe2ad"
+  },
+  "segment_timing": {
+    "0": {
+      "none": {
+        "n": 56,
+        "p50_ms": 96.26529999877675,
+        "p95_ms": 108.57725000096252
+      },
+      "all": {
+        "n": 56,
+        "p50_ms": 12798.744699999588,
+        "p95_ms": 13375.817875000394
+      },
+      "adaptive": {
+        "n": 55,
+        "p50_ms": 104.63929999968968,
+        "p95_ms": 13325.815620001595
+      }
+    },
+    "1": {
+      "none": {
+        "n": 67,
+        "p50_ms": 57.37260000023525,
+        "p95_ms": 60.33281000018178
+      },
+      "all": {
+        "n": 67,
+        "p50_ms": 7302.35950000133,
+        "p95_ms": 7652.702660000431
+      },
+      "adaptive": {
+        "n": 68,
+        "p50_ms": 58.87079999956768,
+        "p95_ms": 7647.61293500087
+      }
+    }
+  }
+}

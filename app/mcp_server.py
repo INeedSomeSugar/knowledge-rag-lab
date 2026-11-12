@@ -1,4 +1,17 @@
-"""Model Context Protocol (MCP) server exposing Knowledge RAG Lab tools and resources."""
+"""Model Context Protocol (MCP) server exposing Knowledge RAG Lab tools and resources.
+
+设计取向：MCP 层只做“协议适配”，不实现第二套检索逻辑。工具直接调用
+``RAGService``，因此 HTTP API、脚本评测与 MCP 客户端看到的是同一份索引、
+同一套作用域校验与同一种状态语义。
+
+暴露面刻意收窄：
+
+- 三个工具：``list_catalog`` / ``search_docs`` / ``ask_docs``；
+- 两个资源模板：``rag://chunk/{id}`` 与 ``rag://document/{id}``，用于按引用回读原文；
+- 工具返回结构里带 ``resource_uri``，让客户端可以“先看摘要，再取原文”。
+
+传输默认 ``stdio``，日志全部走 stderr；stdout 必须只承载协议帧，否则客户端会解析失败。
+"""
 
 from __future__ import annotations
 
@@ -34,7 +47,12 @@ SERVER_INSTRUCTIONS = (
 
 
 def settings_from_env() -> Settings:
-    """Build Settings from current environment variables (respecting runtime overrides)."""
+    """Build Settings from current environment variables (respecting runtime overrides).
+
+    与 ``Settings()`` 的差别：这里显式重新读取环境变量，因此 ``--demo`` 在 ``main``
+    里写入的 ``os.environ`` 能生效。直接 ``Settings()`` 会使用类定义时求值的默认值，
+    看不到进程启动后新增的变量。
+    """
     return Settings(
         embedding_provider=os.getenv("EMBEDDING_PROVIDER", "hashing"),
         embedding_model=os.getenv("EMBEDDING_MODEL", "BAAI/bge-m3"),
@@ -81,7 +99,11 @@ def settings_from_env() -> Settings:
 
 
 def bootstrap_corpus(service: RAGService, documents_dir: Path) -> list[dict[str, object]]:
-    """Ingest a corpus directory into the service using the existing provenance-checked loader."""
+    """Ingest a corpus directory into the service using the existing provenance-checked loader.
+
+    复用 ``read_documents`` 而不是自己遍历文件：manifest 哈希校验、路径越界检查与
+    重复来源检查都在那一层完成，MCP 启动导入与评测脚本因此有相同的数据准入标准。
+    """
     if not documents_dir.is_dir():
         raise ValueError(f"语料目录不存在：{documents_dir}")
     docs = list(read_documents(documents_dir))
@@ -98,6 +120,7 @@ def bootstrap_corpus(service: RAGService, documents_dir: Path) -> list[dict[str,
 
 
 def _clean_filters(product: str | None, version: str | None) -> dict[str, str]:
+    """校验并规范化可选过滤参数；空白字符串视为调用错误而不是“不过滤”。"""
     filters: dict[str, str] = {}
     if product is not None:
         cleaned_product = product.strip()
@@ -123,7 +146,11 @@ def create_mcp_server(
     host: str = "127.0.0.1",
     port: int = 8000,
 ) -> FastMCP:
-    """Create a FastMCP server bound to an existing or newly constructed RAGService."""
+    """Create a FastMCP server bound to an existing or newly constructed RAGService.
+
+    传入 ``service`` 时不会新建索引，便于测试注入固定语料；不传时按 ``settings``
+    构建，与 HTTP 服务走完全相同的工厂路径。
+    """
     resolved_settings = settings or settings_from_env()
     rag_service = service or create_service(resolved_settings)
 
@@ -143,6 +170,7 @@ def create_mcp_server(
         ),
     )
     def list_catalog() -> dict[str, Any]:
+        """目录 + 索引状态；客户端据此决定是否需要先澄清版本。"""
         documents = rag_service.list_documents()
         chunks = rag_service.retriever.dense.chunks
         return {
@@ -199,6 +227,8 @@ def create_mcp_server(
         ] = 5,
     ) -> dict[str, Any]:
         cleaned_query = query.strip()
+        # 参数已在 Field 层做过长度约束，这里再查一次是因为 MCP 客户端可能绕过 schema
+        # 直接传参；工具边界必须自我防御。
         if not cleaned_query:
             raise ToolError("查询内容不能为空（query 必须包含非空白字符）。")
         if len(cleaned_query) > 4000:
@@ -214,6 +244,7 @@ def create_mcp_server(
                 filters=filters or None,
             )
         except ValueError as exc:
+            # 参数类错误原样返回，便于客户端修正；其余异常只回类型与消息，不暴露堆栈。
             raise ToolError(str(exc)) from exc
         except Exception as exc:
             raise ToolError(f"检索执行失败：{type(exc).__name__}: {exc}") from exc
@@ -221,6 +252,8 @@ def create_mcp_server(
         formatted_hits: list[dict[str, Any]] = []
         for rank, hit in enumerate(hits, start=1):
             meta = hit.chunk.metadata
+            # 字段刻意冗余：既给嵌套 char_range，也给扁平 start_char/end_char，
+            # 因为不同客户端对嵌套结构的支持程度不一致。
             entry: dict[str, Any] = {
                 "rank": rank,
                 "chunk_id": hit.chunk.id,
@@ -348,6 +381,8 @@ def create_mcp_server(
             )
 
         raw_trace = raw.get("trace", {})
+        # 精简 trace：去掉 reranking 明细、逐块分数与上下文全文，只保留定位一次请求
+        # 所需的字段，避免工具响应超出客户端上下文窗口。
         short_trace = {
             "request_id": raw_trace.get("request_id"),
             "index_revision": raw_trace.get("index_revision"),
@@ -381,6 +416,7 @@ def create_mcp_server(
         mime_type="application/json",
     )
     def read_chunk(chunk_id: str) -> str:
+        """按 ID 精确回读单个分块；线性扫描在千级分块下足够快且无需额外索引。"""
         target = chunk_id.strip()
         for chunk in rag_service.retriever.dense.chunks:
             if chunk.id == target:
@@ -394,6 +430,7 @@ def create_mcp_server(
         mime_type="application/json",
     )
     def read_document(document_id: str) -> str:
+        """按原始顺序返回整篇文档，供客户端在引用处“展开上下文”。"""
         target = document_id.strip()
         matched = [
             chunk
@@ -453,6 +490,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> None:
+    """命令行入口：解析参数 → 应用环境覆盖 → 构建服务 → 可选导入语料 → 启动传输。"""
     parser = build_arg_parser()
     args = parser.parse_args(argv)
     if not 1 <= args.port <= 65535:
@@ -472,6 +510,8 @@ def main(argv: list[str] | None = None) -> None:
         "yes",
     }
     if demo_enabled:
+        # 演示配置：Hashing + 抽取式 + BM25 + sections，全部零密钥、零下载。
+        # 这里用 setdefault 而非直接赋值，允许调用方预先覆盖单个变量。
         os.environ["EMBEDDING_PROVIDER"] = "hashing"
         os.environ["LLM_PROVIDER"] = "extractive"
         os.environ.setdefault("DATA_DIR", "data/demo-index")
@@ -490,6 +530,7 @@ def main(argv: list[str] | None = None) -> None:
         "true",
         "yes",
     }
+    # 仅在“显式要求导入”或“演示模式且索引为空”时导入，避免每次启动重复建索引。
     if should_bootstrap or (
         demo_enabled and not service.retriever.dense.chunks and args.documents.is_dir()
     ):

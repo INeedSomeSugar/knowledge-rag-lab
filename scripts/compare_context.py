@@ -1,4 +1,12 @@
-"""Compare whole-window vs merged context with a shared retrieval result for every pair."""
+"""Compare whole-window vs merged context with a shared retrieval result for every pair.
+
+实验设计：同一题、同一策略只检索一次，把这份结果同时交给 ``neighbors`` 与
+``merged_neighbors``，并在多个字符预算下重复。因此表格里的“受益 / 退化”是严格
+配对的差值，不含检索随机性。
+
+报告只描述标注证据覆盖与正文字符消耗，不涉及真实模型回答质量；“相同字符上限”
+也不代表实际字符或 token 相等——合并策略会用更少字符装入更多原文。
+"""
 
 import argparse
 import json
@@ -14,6 +22,7 @@ from scripts.evaluate import (
 
 
 def render_markdown(report: dict) -> str:
+    """渲染配对表与逐题变化；只列 gained / lost，不隐藏退化行。"""
     c = report["configuration"]
     lines = ["# 上下文合并配对开发实验", "",
              "只描述标注证据覆盖及正文字符消耗，不代表真实模型回答质量。", "",
@@ -57,6 +66,11 @@ def render_markdown(report: dict) -> str:
 
 
 def main() -> None:
+    """构建检索器 → 配对比较多种预算 → 写 JSON/Markdown。
+
+    默认强制 Hashing 向量，只有显式 ``--configured-embeddings`` 才会加载真实模型：
+    上下文策略实验不应因为换了向量模型而引入额外变量或费用。
+    """
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--documents", type=Path, default=Path("evaluation/support_corpus"))
     parser.add_argument("--questions", type=Path,

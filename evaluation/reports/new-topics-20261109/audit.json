@@ -1,0 +1,28 @@
+{
+  "created_at": "2026-11-09T09:48:40.199413+00:00",
+  "status": "awaiting_human",
+  "candidates": 12,
+  "groups": 6,
+  "assistant_reviewed": 12,
+  "human_verified": 0,
+  "documents": 102,
+  "chunks": 2212,
+  "versions": [
+    "0.110.0",
+    "0.115.0",
+    "0.117.1",
+    "0.118.0"
+  ],
+  "corpus_expansion": false,
+  "corpus_sha256": "2f73e7810812e12eaef55c94277ae8913c99e6b14092ac123b1a3c45175c8475",
+  "questions_file_sha256": "5bad393aef9da6f9c86611504d60c969db6794f88acf9b6d44b6fcd9e7d19f5d",
+  "development_questions": "work/human-review/20261028/review-corrections-20261028T075633Z/questions.current.jsonl",
+  "development_sha256": "9042dbb526ffb53e7ead9c5f5f1487b6f394c7eb48d0065cf306712d5b2e0d84",
+  "original_questions_sha256": "3c751714b6c25f2f45a11e7bb5632c381ea7ca2645ee67d2042a597e6d3eac81",
+  "all_evidence_present": true,
+  "exact_duplicate_count": 0,
+  "original_held_out_question_texts_read": 0,
+  "retrieval_executions": 0,
+  "answer_accuracy": null,
+  "source_text_note": "review snapshots equal loader-normalized text (.strip); raw corpus bytes and parsed snapshot hashes are different by design"
+}

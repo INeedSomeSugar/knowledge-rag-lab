@@ -1,0 +1,5783 @@
+{
+  "created_at": "2026-11-06T11:23:27.223144+00:00",
+  "scope": "real_local_cpu_retrieval_only_development",
+  "configuration": {
+    "experiment": "budget-reranking-20261106",
+    "documents": "evaluation/support_corpus_large",
+    "questions": "work/human-review/20261028/review-corrections-20261028T075633Z/questions.current.jsonl",
+    "replay_report": "evaluation/reports/corpus-large-v013.cross-encoder.json",
+    "replay_trials": "evaluation/reports/corpus-large-v013.cross-encoder.trials.jsonl",
+    "plan": "evaluation/budget_reranking/plan-20261106.md",
+    "split": "development",
+    "candidate_k": 50,
+    "top_k": 5,
+    "context_char_budget": 8000,
+    "context_policy": "neighbors",
+    "chunk_size": 500,
+    "chunk_overlap": 80,
+    "rrf_k": 60,
+    "overlap_thresholds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "margin_thresholds": [
+      0,
+      0.002,
+      0.005,
+      0.01,
+      0.02,
+      0.05,
+      1.01
+    ],
+    "budget_rates": [
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "target_trigger_rate": 0.5,
+    "group_folds": 5,
+    "repeats": 3,
+    "cpu_threads": 4,
+    "device": "cpu",
+    "seed": 20261106
+  },
+  "selected_policy": {
+    "family": "overlap",
+    "threshold": 2
+  },
+  "selection_sha256": "d7bbaf536e42502ed2c81f682db4d149b0b0889f101c54d653be048b6c1edcb1",
+  "environment": {
+    "platform": "Windows-11-10.0.26300-SP0",
+    "python": "3.12.14",
+    "logical_cpus": 16,
+    "physical_cpus": 8,
+    "ram_total_bytes": 16979623936,
+    "available_ram_before": 5027520512,
+    "background_cpu_percent_before": 28.0,
+    "device": "cpu",
+    "cuda_used": false,
+    "cpu_threads": 4
+  },
+  "startup": {
+    "e5_load_verify_ms": 5553.550900000118,
+    "cold_build_ms": 62688.52499999775,
+    "document_cache": {
+      "cache_hits": 0,
+      "deduplicated_texts": 788,
+      "embedded_texts": 1424
+    },
+    "bge_load_verify_ms": 2166.0895999993954,
+    "warmup": [
+      {
+        "strategy": "none",
+        "elapsed_ms": 61.76259999847389
+      },
+      {
+        "strategy": "all",
+        "elapsed_ms": 7586.3398000001325
+      },
+      {
+        "strategy": "adaptive",
+        "elapsed_ms": 56.280500000866596
+      }
+    ]
+  },
+  "embedding": {
+    "provider": "local_e5",
+    "model": "intfloat/multilingual-e5-small",
+    "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+    "license": "mit",
+    "model_card": "https://huggingface.co/intfloat/multilingual-e5-small/blob/614241f622f53c4eeff9890bdc4f31cfecc418b3/README.md",
+    "dimension": 384,
+    "max_length": 512,
+    "document_prefix": "passage: ",
+    "query_prefix": "query: ",
+    "text_processing": "original adapter input; native pinned tokenizer normalization",
+    "pooling": "attention-mask mean including special tokens",
+    "normalization": "L2, p=2, dim=1",
+    "truncation": "right, includes prefix/special tokens",
+    "dtype": "float32",
+    "device": "cpu",
+    "cpu_threads": 4,
+    "batch_size": 8,
+    "attention": "eager",
+    "trust_remote_code": false,
+    "torch": "2.9.1+cpu",
+    "transformers": "4.57.6",
+    "tokenizers": "0.22.2",
+    "files": {
+      "config.json": {
+        "sha256": "69137736cab8b8903a07fe8afaafdda25aac55415a12a55d1bffa9f581abf959",
+        "bytes": 655
+      },
+      "model.safetensors": {
+        "sha256": "1a55775f53449dac10a2bcbc312469fac40b96d53198c407081a831f81c98477",
+        "bytes": 470641600
+      },
+      "tokenizer.json": {
+        "sha256": "0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39",
+        "bytes": 17082730
+      },
+      "tokenizer_config.json": {
+        "sha256": "a1d6bc8734a6f635dc158508bef000f8e2e5a759c7d92f984b2c86e5ff53425b",
+        "bytes": 443
+      },
+      "special_tokens_map.json": {
+        "sha256": "d05497f1da52c5e09554c0cd874037a083e1dc1b9cfd48034d1c717f1afc07a7",
+        "bytes": 167
+      },
+      "sentencepiece.bpe.model": {
+        "sha256": "cfc8146abe2a0488e9e2a0c56de7952f7c11ab059eca145a0a727afce0db2865",
+        "bytes": 5069051
+      },
+      "README.md": {
+        "sha256": "0038de97aee16258cecbad7ffda4b4febd6953e747a00e0ddbc8e6ed241e9c1c",
+        "bytes": 497538
+      }
+    },
+    "implementation": "local-e5-v1"
+  },
+  "reranker": {
+    "provider": "bge_cross_encoder",
+    "model": "BAAI/bge-reranker-base",
+    "revision": "2cfc18c9415c912f9d8155881c133215df768a70",
+    "device": "cpu",
+    "dtype": "float32",
+    "max_length": 512,
+    "batch_size": 8,
+    "cpu_threads": 4,
+    "score": "raw single-label logit; not probability",
+    "truncation": "longest_first/right over query-document pair",
+    "torch": "2.9.1+cpu",
+    "transformers": "4.57.6",
+    "files": {
+      "config.json": {
+        "sha256": "289adf7ada1eb6b4afa7589a48a032d45a076cf2e46dcdb3b4cabc33be14f708",
+        "bytes": 799
+      },
+      "model.safetensors": {
+        "sha256": "ced967c45fd1902eb92716c9ceeca7c95a936770ea9db611f5a841b926e33fbd",
+        "bytes": 1112206140
+      },
+      "tokenizer.json": {
+        "sha256": "9eb652ac4e40cc093272bbbe0f55d521cf67570060227109b5cdc20945a4489e",
+        "bytes": 17098107
+      },
+      "tokenizer_config.json": {
+        "sha256": "a1d6bc8734a6f635dc158508bef000f8e2e5a759c7d92f984b2c86e5ff53425b",
+        "bytes": 443
+      },
+      "special_tokens_map.json": {
+        "sha256": "d5469a60db23249c7f8945013d78df30b44b6bf686c6bb4740f4223f77b1b535",
+        "bytes": 279
+      },
+      "sentencepiece.bpe.model": {
+        "sha256": "cfc8146abe2a0488e9e2a0c56de7952f7c11ab059eca145a0a727afce0db2865",
+        "bytes": 5069051
+      },
+      "README.md": {
+        "sha256": "b4223c8c1e95538f8c79168afc501f8b2da06c63221f013b79b28af78b59366d",
+        "bytes": 34111
+      }
+    }
+  },
+  "summary": {
+    "none": {
+      "n": 41,
+      "top_complete": 35,
+      "context_complete": 35,
+      "triggered_queries": 0
+    },
+    "all": {
+      "n": 41,
+      "top_complete": 36,
+      "context_complete": 37,
+      "triggered_queries": 41
+    },
+    "adaptive": {
+      "n": 41,
+      "top_complete": 37,
+      "context_complete": 37,
+      "triggered_queries": 16
+    }
+  },
+  "timing": {
+    "none": {
+      "n": 123,
+      "timings": {
+        "total_ms": {
+          "p50": 60.302000001684064,
+          "p95": 106.06158999908075,
+          "mean": 75.00085040672688,
+          "sum": 9225.104600027407
+        },
+        "retrieval_ms": {
+          "p50": 57.590099997469224,
+          "p95": 101.94501000041782,
+          "mean": 71.6534756098051,
+          "sum": 8813.377500006027
+        },
+        "gate_ms": {
+          "p50": 0.0,
+          "p95": 0.0,
+          "mean": 0.0,
+          "sum": 0.0
+        },
+        "rerank_ms": {
+          "p50": 0.0,
+          "p95": 0.0,
+          "mean": 0.0,
+          "sum": 0.0
+        },
+        "context_ms": {
+          "p50": 2.761899999313755,
+          "p95": 5.264879998867399,
+          "mean": 3.341857723711197,
+          "sum": 411.0485000164772
+        }
+      },
+      "actual_calls": 0,
+      "scored_pairs": 0,
+      "by_repeat": {
+        "0": {
+          "p50": 96.56670000185841,
+          "p95": 107.81779999888386
+        },
+        "1": {
+          "p50": 57.993600003101164,
+          "p95": 106.06199999892851
+        },
+        "2": {
+          "p50": 57.47419999897829,
+          "p95": 60.33649999881163
+        }
+      }
+    },
+    "all": {
+      "n": 123,
+      "timings": {
+        "total_ms": {
+          "p50": 7638.881999999285,
+          "p95": 13246.16818999857,
+          "mean": 9737.721676422825,
+          "sum": 1197739.7662000076
+        },
+        "retrieval_ms": {
+          "p50": 59.089499998663086,
+          "p95": 100.78340999716602,
+          "mean": 72.05989837423591,
+          "sum": 8863.367500031018
+        },
+        "gate_ms": {
+          "p50": 0.0,
+          "p95": 0.0,
+          "mean": 0.0,
+          "sum": 0.0
+        },
+        "rerank_ms": {
+          "p50": 7583.179199998995,
+          "p95": 13144.926170000326,
+          "mean": 9662.134586178818,
+          "sum": 1188442.5540999947
+        },
+        "context_ms": {
+          "p50": 3.003499998158077,
+          "p95": 5.081799997424239,
+          "mean": 3.462559349554055,
+          "sum": 425.8947999951488
+        }
+      },
+      "actual_calls": 123,
+      "scored_pairs": 6150,
+      "by_repeat": {
+        "0": {
+          "p50": 12815.687399997842,
+          "p95": 13357.234999999491
+        },
+        "1": {
+          "p50": 7478.31810000207,
+          "p95": 13302.178700003424
+        },
+        "2": {
+          "p50": 7328.207999998995,
+          "p95": 7601.378499999555
+        }
+      }
+    },
+    "adaptive": {
+      "n": 123,
+      "timings": {
+        "total_ms": {
+          "p50": 98.21970000120928,
+          "p95": 12940.292079998108,
+          "mean": 3833.293516259993,
+          "sum": 471495.1024999791
+        },
+        "retrieval_ms": {
+          "p50": 57.26139999751467,
+          "p95": 102.29111000007833,
+          "mean": 71.53043089419953,
+          "sum": 8798.242999986542
+        },
+        "gate_ms": {
+          "p50": 0.06030000076862052,
+          "p95": 0.13242000059108247,
+          "mean": 0.07701951217609533,
+          "sum": 9.473399997659726
+        },
+        "rerank_ms": {
+          "p50": 0.0,
+          "p95": 12842.952199998763,
+          "mean": 3758.181250406483,
+          "sum": 462256.29379999737
+        },
+        "context_ms": {
+          "p50": 2.991400000610156,
+          "p95": 5.108769998332717,
+          "mean": 3.467357723369846,
+          "sum": 426.4849999744911
+        }
+      },
+      "actual_calls": 48,
+      "scored_pairs": 2400,
+      "by_repeat": {
+        "0": {
+          "p50": 104.2425000014191,
+          "p95": 13282.512000001589
+        },
+        "1": {
+          "p50": 96.97089999826858,
+          "p95": 12659.728200000245
+        },
+        "2": {
+          "p50": 58.845799998380244,
+          "p95": 7590.879700001096
+        }
+      }
+    }
+  },
+  "transitions": {
+    "adaptive_vs_none_top_complete": {
+      "gained": [
+        "support-029",
+        "support-034"
+      ],
+      "lost": []
+    },
+    "adaptive_vs_none_context_complete": {
+      "gained": [
+        "support-029",
+        "support-034"
+      ],
+      "lost": []
+    },
+    "adaptive_vs_all_top_complete": {
+      "gained": [
+        "support-009"
+      ],
+      "lost": []
+    },
+    "adaptive_vs_all_context_complete": {
+      "gained": [],
+      "lost": []
+    }
+  },
+  "cases": [
+    {
+      "id": "support-001",
+      "group_id": "cors",
+      "question": "localhost 的端口不同，浏览器会把它们视为同一个源吗？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.110.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.110.0/tutorial/cors.md",
+          "quote": "源是协议（`http`，`https`）、域（`myapp.com`，`localhost`，`localhost.tiangolo.com`）以及端口（`80`、`443`、`8080`）的组合。",
+          "start_char": 198,
+          "end_char": 297
+        }
+      ],
+      "signals": {
+        "overlap_count": 4,
+        "rrf_margin": 0.12130731840080197,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 99,
+                "total_chars": 99,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    198,
+                    297
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 99,
+                "total_chars": 99,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    198,
+                    297
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 1192
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 99,
+                "total_chars": 99,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    198,
+                    297
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 99,
+                "total_chars": 99,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    198,
+                    297
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2517
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 99,
+                "total_chars": 99,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    198,
+                    297
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 99,
+                "total_chars": 99,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    198,
+                    297
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 1192
+        }
+      }
+    },
+    {
+      "id": "support-002",
+      "group_id": "cors",
+      "question": "前端携带 Cookie 跨域时，allow_origins 可以设为星号吗？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/cors.md",
+          "quote": "* `allow_credentials` - 指示跨域请求支持 cookies。默认是 `False`。另外，允许凭证时 `allow_origins` 不能设定为 `['*']`，必须指定源。",
+          "start_char": 2210,
+          "end_char": 2308
+        }
+      ],
+      "signals": {
+        "overlap_count": 2,
+        "rrf_margin": 0.07924487448886873,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 98,
+                "total_chars": 98,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2210,
+                    2308
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 98,
+                "total_chars": 98,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2210,
+                    2308
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2465
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 98,
+                "total_chars": 98,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2210,
+                    2308
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 98,
+                "total_chars": 98,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2210,
+                    2308
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2100
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 98,
+                "total_chars": 98,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2210,
+                    2308
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 98,
+                "total_chars": 98,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2210,
+                    2308
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2465
+        }
+      }
+    },
+    {
+      "id": "support-003",
+      "group_id": "cors",
+      "question": "CORSMiddleware 默认允许哪些 HTTP 方法？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.110.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.110.0/tutorial/cors.md",
+          "quote": "* `allow_methods` - 一个允许跨域请求的 HTTP 方法列表。默认为 `['GET']`。你可以使用 `['*']` 来允许所有标准方法。",
+          "start_char": 1977,
+          "end_char": 2055
+        }
+      ],
+      "signals": {
+        "overlap_count": 4,
+        "rrf_margin": 0.11144127241688223,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 78,
+                "total_chars": 78,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1977,
+                    2055
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 78,
+                "total_chars": 78,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1977,
+                    2055
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 1910
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 78,
+                "total_chars": 78,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1977,
+                    2055
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 78,
+                "total_chars": 78,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1977,
+                    2055
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2609
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 78,
+                "total_chars": 78,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1977,
+                    2055
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 78,
+                "total_chars": 78,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1977,
+                    2055
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 1910
+        }
+      }
+    },
+    {
+      "id": "support-004",
+      "group_id": "cors",
+      "question": "什么样的 OPTIONS 请求会被识别为 CORS 预检？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/cors.md",
+          "quote": "这是些带有 `Origin` 和 `Access-Control-Request-Method` 请求头的 `OPTIONS` 请求。",
+          "start_char": 2446,
+          "end_char": 2513
+        }
+      ],
+      "signals": {
+        "overlap_count": 2,
+        "rrf_margin": 0.2176948051948052,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 67,
+                "total_chars": 67,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2446,
+                    2513
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 67,
+                "total_chars": 67,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2446,
+                    2513
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2380
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 67,
+                "total_chars": 67,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2446,
+                    2513
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 67,
+                "total_chars": 67,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2446,
+                    2513
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 1546
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 67,
+                "total_chars": 67,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2446,
+                    2513
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 67,
+                "total_chars": 67,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2446,
+                    2513
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2380
+        }
+      }
+    },
+    {
+      "id": "support-005",
+      "group_id": "cors",
+      "question": "CORS 预检响应的浏览器缓存时间默认是多少？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/cors.md",
+          "quote": "* `max_age` - 设定浏览器缓存 CORS 响应的最长时间，单位是秒。默认为 `600`。",
+          "start_char": 2355,
+          "end_char": 2405
+        }
+      ],
+      "signals": {
+        "overlap_count": 2,
+        "rrf_margin": 0.1468531468531469,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 50,
+                "total_chars": 50,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2355,
+                    2405
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 50,
+                "total_chars": 50,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2355,
+                    2405
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 1627
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 50,
+                "total_chars": 50,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2355,
+                    2405
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 50,
+                "total_chars": 50,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2355,
+                    2405
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3301
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 50,
+                "total_chars": 50,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2355,
+                    2405
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 50,
+                "total_chars": 50,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2355,
+                    2405
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 1627
+        }
+      }
+    },
+    {
+      "id": "support-006",
+      "group_id": "cors",
+      "question": "需要匹配一组子域名时，CORS 提供了什么配置项？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/cors.md",
+          "quote": "* `allow_origin_regex` - 一个正则表达式字符串，匹配的源允许跨域请求。",
+          "start_char": 1897,
+          "end_char": 1944
+        }
+      ],
+      "signals": {
+        "overlap_count": 0,
+        "rrf_margin": 0.10414894119871433,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": false,
+          "context_complete": false,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 0,
+                "total_chars": 47,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    1897,
+                    1944
+                  ]
+                ]
+              },
+              "context": {
+                "covered_chars": 0,
+                "total_chars": 47,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    1897,
+                    1944
+                  ]
+                ]
+              }
+            }
+          ],
+          "context_chars": 2043
+        },
+        "all": {
+          "top_complete": false,
+          "context_complete": false,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 0,
+                "total_chars": 47,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    1897,
+                    1944
+                  ]
+                ]
+              },
+              "context": {
+                "covered_chars": 0,
+                "total_chars": 47,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    1897,
+                    1944
+                  ]
+                ]
+              }
+            }
+          ],
+          "context_chars": 1874
+        },
+        "adaptive": {
+          "top_complete": false,
+          "context_complete": false,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 0,
+                "total_chars": 47,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    1897,
+                    1944
+                  ]
+                ]
+              },
+              "context": {
+                "covered_chars": 0,
+                "total_chars": 47,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    1897,
+                    1944
+                  ]
+                ]
+              }
+            }
+          ],
+          "context_chars": 1874
+        }
+      }
+    },
+    {
+      "id": "support-007",
+      "group_id": "background",
+      "question": "BackgroundTasks 什么时候执行，客户端需要等待任务完成吗？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/background-tasks.md",
+          "quote": "你可以定义在返回响应后运行的后台任务。\n\n这对需要在请求之后执行的操作很有用，但客户端不必在接收响应之前等待操作完成。",
+          "start_char": 8,
+          "end_char": 67
+        }
+      ],
+      "signals": {
+        "overlap_count": 1,
+        "rrf_margin": 0.15424937965260554,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 59,
+                "total_chars": 59,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    8,
+                    67
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 59,
+                "total_chars": 59,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    8,
+                    67
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2981
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 59,
+                "total_chars": 59,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    8,
+                    67
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 59,
+                "total_chars": 59,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    8,
+                    67
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2934
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 59,
+                "total_chars": 59,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    8,
+                    67
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 59,
+                "total_chars": 59,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    8,
+                    67
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2934
+        }
+      }
+    },
+    {
+      "id": "support-008",
+      "group_id": "background",
+      "question": "后台任务函数必须写成 async def 吗？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/background-tasks.md",
+          "quote": "它可以是 `async def` 或普通的 `def` 函数，**FastAPI** 知道如何正确处理。",
+          "start_char": 979,
+          "end_char": 1031
+        }
+      ],
+      "signals": {
+        "overlap_count": 2,
+        "rrf_margin": 0.09694106909328691,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 52,
+                "total_chars": 52,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    979,
+                    1031
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 52,
+                "total_chars": 52,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    979,
+                    1031
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2449
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 52,
+                "total_chars": 52,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    979,
+                    1031
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 52,
+                "total_chars": 52,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    979,
+                    1031
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2886
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 52,
+                "total_chars": 52,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    979,
+                    1031
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 52,
+                "total_chars": 52,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    979,
+                    1031
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2449
+        }
+      }
+    },
+    {
+      "id": "support-009",
+      "group_id": "background",
+      "question": "应该用什么方法把任务加入 BackgroundTasks？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.110.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.110.0/tutorial/background-tasks.md",
+          "quote": "`.add_task()` 接收以下参数：\n\n* 在后台运行的任务函数(`write_notification`)。\n* 应按顺序传递给任务函数的任意参数序列(`email`)。\n* 应传递给任务函数的任意关键字参数(`message=\"some notification\"`)。",
+          "start_char": 2273,
+          "end_char": 2413
+        }
+      ],
+      "signals": {
+        "overlap_count": 2,
+        "rrf_margin": 0.08690055484421687,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 140,
+                "total_chars": 140,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2273,
+                    2413
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 140,
+                "total_chars": 140,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2273,
+                    2413
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2547
+        },
+        "all": {
+          "top_complete": false,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 0,
+                "total_chars": 140,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    2273,
+                    2413
+                  ]
+                ]
+              },
+              "context": {
+                "covered_chars": 140,
+                "total_chars": 140,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2273,
+                    2413
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2881
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 140,
+                "total_chars": 140,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2273,
+                    2413
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 140,
+                "total_chars": 140,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2273,
+                    2413
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2547
+        }
+      }
+    },
+    {
+      "id": "support-010",
+      "group_id": "background",
+      "question": "路径函数和多个依赖都声明 BackgroundTasks，会各自独立运行一套对象吗？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/background-tasks.md",
+          "quote": "**FastAPI** 知道在每种情况下该做什么以及如何复用同一对象，因此所有后台任务被合并在一起并且随后在后台运行：",
+          "start_char": 2525,
+          "end_char": 2584
+        }
+      ],
+      "signals": {
+        "overlap_count": 1,
+        "rrf_margin": 0.141479584617992,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 59,
+                "total_chars": 59,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2525,
+                    2584
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 59,
+                "total_chars": 59,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2525,
+                    2584
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3477
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 59,
+                "total_chars": 59,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2525,
+                    2584
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 59,
+                "total_chars": 59,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2525,
+                    2584
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2762
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 59,
+                "total_chars": 59,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2525,
+                    2584
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 59,
+                "total_chars": 59,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2525,
+                    2584
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2762
+        }
+      }
+    },
+    {
+      "id": "support-011",
+      "group_id": "errors",
+      "question": "HTTPException 应该 return 还是 raise？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/handling-errors.md",
+          "quote": "因为是 Python 异常，所以不能 `return`，只能 `raise`。",
+          "start_char": 794,
+          "end_char": 833
+        }
+      ],
+      "signals": {
+        "overlap_count": 1,
+        "rrf_margin": 0.13265116279069766,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 39,
+                "total_chars": 39,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    794,
+                    833
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 39,
+                "total_chars": 39,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    794,
+                    833
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3875
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 39,
+                "total_chars": 39,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    794,
+                    833
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 39,
+                "total_chars": 39,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    794,
+                    833
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 4515
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 39,
+                "total_chars": 39,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    794,
+                    833
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 39,
+                "total_chars": 39,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    794,
+                    833
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 4515
+        }
+      }
+    },
+    {
+      "id": "support-012",
+      "group_id": "errors",
+      "question": "工具函数抛出 HTTPException 后，路径操作中的后续代码还会执行吗？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/handling-errors.md",
+          "quote": "如在调用*路径操作函数*里的工具函数时，触发了 `HTTPException`，FastAPI 就不再继续执行*路径操作函数*中的后续代码，而是立即终止请求，并把 `HTTPException` 的 HTTP 错误发送至客户端。",
+          "start_char": 835,
+          "end_char": 949
+        }
+      ],
+      "signals": {
+        "overlap_count": 1,
+        "rrf_margin": 0.13101043643263768,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 114,
+                "total_chars": 114,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    835,
+                    949
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 114,
+                "total_chars": 114,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    835,
+                    949
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3604
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 114,
+                "total_chars": 114,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    835,
+                    949
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 114,
+                "total_chars": 114,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    835,
+                    949
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3837
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 114,
+                "total_chars": 114,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    835,
+                    949
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 114,
+                "total_chars": 114,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    835,
+                    949
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3837
+        }
+      }
+    },
+    {
+      "id": "support-013",
+      "group_id": "errors",
+      "question": "HTTPException 的 detail 只能是字符串吗？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/handling-errors.md",
+          "quote": "触发 `HTTPException` 时，可以用参数 `detail` 传递任何能转换为 JSON 的值，不仅限于 `str`。\n\n还支持传递 `dict`、`list` 等数据结构。",
+          "start_char": 1707,
+          "end_char": 1799
+        }
+      ],
+      "signals": {
+        "overlap_count": 0,
+        "rrf_margin": 0.11140711140711139,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": false,
+          "context_complete": false,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 0,
+                "total_chars": 92,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    1707,
+                    1799
+                  ]
+                ]
+              },
+              "context": {
+                "covered_chars": 0,
+                "total_chars": 92,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    1707,
+                    1799
+                  ]
+                ]
+              }
+            }
+          ],
+          "context_chars": 3424
+        },
+        "all": {
+          "top_complete": false,
+          "context_complete": false,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 0,
+                "total_chars": 92,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    1707,
+                    1799
+                  ]
+                ]
+              },
+              "context": {
+                "covered_chars": 0,
+                "total_chars": 92,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    1707,
+                    1799
+                  ]
+                ]
+              }
+            }
+          ],
+          "context_chars": 5008
+        },
+        "adaptive": {
+          "top_complete": false,
+          "context_complete": false,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 0,
+                "total_chars": 92,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    1707,
+                    1799
+                  ]
+                ]
+              },
+              "context": {
+                "covered_chars": 0,
+                "total_chars": 92,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    1707,
+                    1799
+                  ]
+                ]
+              }
+            }
+          ],
+          "context_chars": 5008
+        }
+      }
+    },
+    {
+      "id": "support-014",
+      "group_id": "errors",
+      "question": "请求包含无效数据时，FastAPI 内部触发什么异常？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/handling-errors.md",
+          "quote": "请求中包含无效数据时，**FastAPI** 内部会触发 `RequestValidationError`。",
+          "start_char": 3855,
+          "end_char": 3909
+        }
+      ],
+      "signals": {
+        "overlap_count": 3,
+        "rrf_margin": 0.11291667088526439,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 54,
+                "total_chars": 54,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3855,
+                    3909
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 54,
+                "total_chars": 54,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3855,
+                    3909
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2947
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 54,
+                "total_chars": 54,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3855,
+                    3909
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 54,
+                "total_chars": 54,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3855,
+                    3909
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2609
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 54,
+                "total_chars": 54,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3855,
+                    3909
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 54,
+                "total_chars": 54,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3855,
+                    3909
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2947
+        }
+      }
+    },
+    {
+      "id": "support-015",
+      "group_id": "upload",
+      "question": "把上传文件声明成 bytes，是否会把整个文件放入内存？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/request-files.md",
+          "quote": "这种方式把文件的所有内容都存储在内存里，适用于小型文件。",
+          "start_char": 1232,
+          "end_char": 1260
+        }
+      ],
+      "signals": {
+        "overlap_count": 1,
+        "rrf_margin": 0.07054673721340389,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 28,
+                "total_chars": 28,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1232,
+                    1260
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 28,
+                "total_chars": 28,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1232,
+                    1260
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2463
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 28,
+                "total_chars": 28,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1232,
+                    1260
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 28,
+                "total_chars": 28,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1232,
+                    1260
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3768
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 28,
+                "total_chars": 28,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1232,
+                    1260
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 28,
+                "total_chars": 28,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1232,
+                    1260
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3768
+        }
+      }
+    },
+    {
+      "id": "support-016",
+      "group_id": "upload",
+      "question": "上传大文件时 UploadFile 如何避免一直占用全部内存？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.110.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.110.0/tutorial/request-files.md",
+          "quote": "* 使用 `spooled` 文件：\n    * 存储在内存的文件超出最大上限时，FastAPI 会把文件存入磁盘；",
+          "start_char": 1689,
+          "end_char": 1747
+        }
+      ],
+      "signals": {
+        "overlap_count": 2,
+        "rrf_margin": 0.08847248576850106,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 58,
+                "total_chars": 58,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1689,
+                    1747
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 58,
+                "total_chars": 58,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1689,
+                    1747
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2673
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 58,
+                "total_chars": 58,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1689,
+                    1747
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 58,
+                "total_chars": 58,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1689,
+                    1747
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3134
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 58,
+                "total_chars": 58,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1689,
+                    1747
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 58,
+                "total_chars": 58,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1689,
+                    1747
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2673
+        }
+      }
+    },
+    {
+      "id": "support-017",
+      "group_id": "upload",
+      "question": "一个请求能同时用 File 接收文件、用 Body 接收 JSON 吗？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/request-files.md",
+          "quote": "可在一个*路径操作*中声明多个 `File` 和 `Form` 参数，但不能同时声明要接收 JSON 的 `Body` 字段。因为此时请求体的编码是 `multipart/form-data`，不是 `application/json`。",
+          "start_char": 3937,
+          "end_char": 4056
+        }
+      ],
+      "signals": {
+        "overlap_count": 3,
+        "rrf_margin": 0.10105174035095027,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 119,
+                "total_chars": 119,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3937,
+                    4056
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 119,
+                "total_chars": 119,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3937,
+                    4056
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2449
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 119,
+                "total_chars": 119,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3937,
+                    4056
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 119,
+                "total_chars": 119,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3937,
+                    4056
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3308
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 119,
+                "total_chars": 119,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3937,
+                    4056
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 119,
+                "total_chars": 119,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3937,
+                    4056
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2449
+        }
+      }
+    },
+    {
+      "id": "support-018",
+      "group_id": "upload",
+      "question": "UploadFile 读取后要再次从头读取，应该怎么做？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/request-files.md",
+          "quote": "* `seek(offset)`：移动至文件 `offset` （`int`）字节处的位置；\n    * 例如，`await myfile.seek(0) ` 移动到文件开头；\n    * 执行 `await myfile.read()` 后，需再次读取已读取内容时，这种方法特别好用；",
+          "start_char": 2823,
+          "end_char": 2966
+        }
+      ],
+      "signals": {
+        "overlap_count": 2,
+        "rrf_margin": 0.09584980237154148,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 143,
+                "total_chars": 143,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2823,
+                    2966
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 143,
+                "total_chars": 143,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2823,
+                    2966
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3008
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 143,
+                "total_chars": 143,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2823,
+                    2966
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 143,
+                "total_chars": 143,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2823,
+                    2966
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2719
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 143,
+                "total_chars": 143,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2823,
+                    2966
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 143,
+                "total_chars": 143,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2823,
+                    2966
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3008
+        }
+      }
+    },
+    {
+      "id": "support-019",
+      "group_id": "upload",
+      "question": "同一个表单字段上传多个文件，应当怎样声明类型？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/request-files.md",
+          "quote": "上传多个文件时，要声明含 `bytes` 或 `UploadFile` 的列表（`List`）：",
+          "start_char": 5789,
+          "end_char": 5837
+        }
+      ],
+      "signals": {
+        "overlap_count": 3,
+        "rrf_margin": 0.08215022448731962,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 48,
+                "total_chars": 48,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    5789,
+                    5837
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 48,
+                "total_chars": 48,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    5789,
+                    5837
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2502
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 48,
+                "total_chars": 48,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    5789,
+                    5837
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 48,
+                "total_chars": 48,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    5789,
+                    5837
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2502
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 48,
+                "total_chars": 48,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    5789,
+                    5837
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 48,
+                "total_chars": 48,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    5789,
+                    5837
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2502
+        }
+      }
+    },
+    {
+      "id": "support-020",
+      "group_id": "query",
+      "question": "一个普通参数没有出现在路径模板里，会被识别到哪里？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/query-params.md",
+          "quote": "声明的参数不是路径参数时，路径操作函数会把该参数自动解释为**查询**参数。",
+          "start_char": 8,
+          "end_char": 46
+        }
+      ],
+      "signals": {
+        "overlap_count": 0,
+        "rrf_margin": 0.08864280991782836,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": false,
+          "context_complete": false,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 0,
+                "total_chars": 38,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    8,
+                    46
+                  ]
+                ]
+              },
+              "context": {
+                "covered_chars": 0,
+                "total_chars": 38,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    8,
+                    46
+                  ]
+                ]
+              }
+            }
+          ],
+          "context_chars": 3248
+        },
+        "all": {
+          "top_complete": false,
+          "context_complete": false,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 0,
+                "total_chars": 38,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    8,
+                    46
+                  ]
+                ]
+              },
+              "context": {
+                "covered_chars": 0,
+                "total_chars": 38,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    8,
+                    46
+                  ]
+                ]
+              }
+            }
+          ],
+          "context_chars": 4292
+        },
+        "adaptive": {
+          "top_complete": false,
+          "context_complete": false,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 0,
+                "total_chars": 38,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    8,
+                    46
+                  ]
+                ]
+              },
+              "context": {
+                "covered_chars": 0,
+                "total_chars": 38,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    8,
+                    46
+                  ]
+                ]
+              }
+            }
+          ],
+          "context_chars": 4292
+        }
+      }
+    },
+    {
+      "id": "support-021",
+      "group_id": "query",
+      "question": "如何声明一个不需要提供默认业务值的可选查询参数？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.110.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.110.0/tutorial/query-params.md",
+          "quote": "如果你不想添加一个特定的值，而只是想使该参数成为可选的，则将默认值设置为 `None`。",
+          "start_char": 2958,
+          "end_char": 3002
+        }
+      ],
+      "signals": {
+        "overlap_count": 2,
+        "rrf_margin": 0.07983139784946243,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2958,
+                    3002
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2958,
+                    3002
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3524
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2958,
+                    3002
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2958,
+                    3002
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3459
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2958,
+                    3002
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2958,
+                    3002
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3524
+        }
+      }
+    },
+    {
+      "id": "support-022",
+      "group_id": "query",
+      "question": "如何把查询参数设置成必填？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/query-params.md",
+          "quote": "如果要把查询参数设置为**必选**，就不要声明默认值：",
+          "start_char": 4386,
+          "end_char": 4413
+        }
+      ],
+      "signals": {
+        "overlap_count": 1,
+        "rrf_margin": 0.11261277114935662,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 27,
+                "total_chars": 27,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    4386,
+                    4413
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 27,
+                "total_chars": 27,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    4386,
+                    4413
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3796
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 27,
+                "total_chars": 27,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    4386,
+                    4413
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 27,
+                "total_chars": 27,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    4386,
+                    4413
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3818
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 27,
+                "total_chars": 27,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    4386,
+                    4413
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 27,
+                "total_chars": 27,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    4386,
+                    4413
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3818
+        }
+      }
+    },
+    {
+      "id": "support-023",
+      "group_id": "query",
+      "question": "声明多个路径和查询参数时，框架按参数顺序还是参数名识别？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/query-params.md",
+          "quote": "而且声明查询参数的顺序并不重要。\n\nFastAPI 通过参数名进行检测：",
+          "start_char": 3222,
+          "end_char": 3258
+        }
+      ],
+      "signals": {
+        "overlap_count": 1,
+        "rrf_margin": 0.1294534412955466,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 36,
+                "total_chars": 36,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3222,
+                    3258
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 36,
+                "total_chars": 36,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3222,
+                    3258
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3389
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 36,
+                "total_chars": 36,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3222,
+                    3258
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 36,
+                "total_chars": 36,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3222,
+                    3258
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3490
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 36,
+                "total_chars": 36,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3222,
+                    3258
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 36,
+                "total_chars": 36,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3222,
+                    3258
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3490
+        }
+      }
+    },
+    {
+      "id": "support-024",
+      "group_id": "routing",
+      "question": "同时有 /users/me 和 /users/{user_id} 时应该先声明哪个？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.110.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.110.0/tutorial/path-params.md",
+          "quote": "由于*路径操作*是按顺序依次运行的，你需要确保路径 `/users/me` 声明在路径 `/users/{user_id}`之前：",
+          "start_char": 2856,
+          "end_char": 2921
+        }
+      ],
+      "signals": {
+        "overlap_count": 4,
+        "rrf_margin": 0.09250790424570926,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 65,
+                "total_chars": 65,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2856,
+                    2921
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 65,
+                "total_chars": 65,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2856,
+                    2921
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2181
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 65,
+                "total_chars": 65,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2856,
+                    2921
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 65,
+                "total_chars": 65,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2856,
+                    2921
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2937
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 65,
+                "total_chars": 65,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2856,
+                    2921
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 65,
+                "total_chars": 65,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2856,
+                    2921
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2181
+        }
+      }
+    },
+    {
+      "id": "support-025",
+      "group_id": "routing",
+      "question": "路径参数声明为 int 时，传入 foo 为什么报错？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/path-params.md",
+          "quote": "这是因为路径参数 `item_id` 的值 （`\"foo\"`）的类型不是 `int`。",
+          "start_char": 1476,
+          "end_char": 1519
+        }
+      ],
+      "signals": {
+        "overlap_count": 1,
+        "rrf_margin": 0.08782730158730166,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 43,
+                "total_chars": 43,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1476,
+                    1519
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 43,
+                "total_chars": 43,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1476,
+                    1519
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2792
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 43,
+                "total_chars": 43,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1476,
+                    1519
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 43,
+                "total_chars": 43,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1476,
+                    1519
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3695
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 43,
+                "total_chars": 43,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1476,
+                    1519
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 43,
+                "total_chars": 43,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1476,
+                    1519
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3695
+        }
+      }
+    },
+    {
+      "id": "support-026",
+      "group_id": "response",
+      "question": "怎样避免把输入模型里的密码原样返回给客户端？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/response-model.md",
+          "quote": "因此，**FastAPI** 将会负责过滤掉未在输出模型中声明的所有数据（使用 Pydantic）。",
+          "start_char": 6647,
+          "end_char": 6697
+        }
+      ],
+      "signals": {
+        "overlap_count": 3,
+        "rrf_margin": 0.0801587301587303,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": false,
+          "context_complete": false,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 0,
+                "total_chars": 50,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    6647,
+                    6697
+                  ]
+                ]
+              },
+              "context": {
+                "covered_chars": 0,
+                "total_chars": 50,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    6647,
+                    6697
+                  ]
+                ]
+              }
+            }
+          ],
+          "context_chars": 2982
+        },
+        "all": {
+          "top_complete": false,
+          "context_complete": false,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 0,
+                "total_chars": 50,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    6647,
+                    6697
+                  ]
+                ]
+              },
+              "context": {
+                "covered_chars": 0,
+                "total_chars": 50,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    6647,
+                    6697
+                  ]
+                ]
+              }
+            }
+          ],
+          "context_chars": 3473
+        },
+        "adaptive": {
+          "top_complete": false,
+          "context_complete": false,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 0,
+                "total_chars": 50,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    6647,
+                    6697
+                  ]
+                ]
+              },
+              "context": {
+                "covered_chars": 0,
+                "total_chars": 50,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    6647,
+                    6697
+                  ]
+                ]
+              }
+            }
+          ],
+          "context_chars": 2982
+        }
+      }
+    },
+    {
+      "id": "support-027",
+      "group_id": "response",
+      "question": "只想返回显式设置过的字段，应设置哪个响应参数？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/response-model.md",
+          "quote": "使用 `response_model_exclude_unset` 来仅返回显式设定的值。",
+          "start_char": 12316,
+          "end_char": 12361
+        }
+      ],
+      "signals": {
+        "overlap_count": 2,
+        "rrf_margin": 0.12571662571662573,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 45,
+                "total_chars": 45,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    12316,
+                    12361
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 45,
+                "total_chars": 45,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    12316,
+                    12361
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3155
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 45,
+                "total_chars": 45,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    12316,
+                    12361
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 45,
+                "total_chars": 45,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    12316,
+                    12361
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2965
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 45,
+                "total_chars": 45,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    12316,
+                    12361
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 45,
+                "total_chars": 45,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    12316,
+                    12361
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3155
+        }
+      }
+    },
+    {
+      "id": "support-028",
+      "group_id": "response",
+      "question": "response_model_exclude 去掉字段后，OpenAPI Schema 也会去掉吗？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/response-model.md",
+          "quote": "这是因为即使使用 `response_model_include` 或 `response_model_exclude` 来省略某些属性，在应用程序的 OpenAPI 定义（和文档）中生成的 JSON Schema 仍将是完整的模型。",
+          "start_char": 10136,
+          "end_char": 10253
+        }
+      ],
+      "signals": {
+        "overlap_count": 1,
+        "rrf_margin": 0.06562009419152279,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 117,
+                "total_chars": 117,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    10136,
+                    10253
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 117,
+                "total_chars": 117,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    10136,
+                    10253
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3834
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 117,
+                "total_chars": 117,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    10136,
+                    10253
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 117,
+                "total_chars": 117,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    10136,
+                    10253
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3608
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 117,
+                "total_chars": 117,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    10136,
+                    10253
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 117,
+                "total_chars": 117,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    10136,
+                    10253
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3608
+        }
+      }
+    },
+    {
+      "id": "support-029",
+      "group_id": "response",
+      "question": "给响应模型设置 include 或 exclude 时，参数是什么结构？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/response-model.md",
+          "quote": "它们接收一个由属性名称 `str` 组成的 `set` 来包含（忽略其他的）或者排除（包含其他的）这些属性。",
+          "start_char": 9990,
+          "end_char": 10044
+        }
+      ],
+      "signals": {
+        "overlap_count": 1,
+        "rrf_margin": 0.10674872665534813,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": false,
+          "context_complete": false,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 0,
+                "total_chars": 54,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    9990,
+                    10044
+                  ]
+                ]
+              },
+              "context": {
+                "covered_chars": 0,
+                "total_chars": 54,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    9990,
+                    10044
+                  ]
+                ]
+              }
+            }
+          ],
+          "context_chars": 3844
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 54,
+                "total_chars": 54,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    9990,
+                    10044
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 54,
+                "total_chars": 54,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    9990,
+                    10044
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2711
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 54,
+                "total_chars": 54,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    9990,
+                    10044
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 54,
+                "total_chars": 54,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    9990,
+                    10044
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2711
+        }
+      }
+    },
+    {
+      "id": "support-030",
+      "group_id": "middleware",
+      "question": "定义 HTTP 中间件应使用什么装饰器？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/middleware.md",
+          "quote": "要创建中间件你可以在函数的顶部使用装饰器 `@app.middleware(\"http\")`.",
+          "start_char": 383,
+          "end_char": 430
+        }
+      ],
+      "signals": {
+        "overlap_count": 2,
+        "rrf_margin": 0.07099507614794463,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 47,
+                "total_chars": 47,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    383,
+                    430
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 47,
+                "total_chars": 47,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    383,
+                    430
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2599
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 47,
+                "total_chars": 47,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    383,
+                    430
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 47,
+                "total_chars": 47,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    383,
+                    430
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3335
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 47,
+                "total_chars": 47,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    383,
+                    430
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 47,
+                "total_chars": 47,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    383,
+                    430
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2599
+        }
+      }
+    },
+    {
+      "id": "support-031",
+      "group_id": "middleware",
+      "question": "后台任务和中间件的执行顺序是什么？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/middleware.md",
+          "quote": "如果有任何后台任务(稍后记录), 它们将在执行中间件*后*运行.",
+          "start_char": 334,
+          "end_char": 366
+        }
+      ],
+      "signals": {
+        "overlap_count": 3,
+        "rrf_margin": 0.058442323553670385,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 32,
+                "total_chars": 32,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    334,
+                    366
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 32,
+                "total_chars": 32,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    334,
+                    366
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2567
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 32,
+                "total_chars": 32,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    334,
+                    366
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 32,
+                "total_chars": 32,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    334,
+                    366
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2612
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 32,
+                "total_chars": 32,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    334,
+                    366
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 32,
+                "total_chars": 32,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    334,
+                    366
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2567
+        }
+      }
+    },
+    {
+      "id": "support-034",
+      "group_id": "dependencies",
+      "question": "依赖注入需要先建立专门的类并注册吗？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/dependencies/index.md",
+          "quote": "只要把它传递给 `Depends`，**FastAPI** 就知道该如何执行后续操作。",
+          "start_char": 2831,
+          "end_char": 2874
+        }
+      ],
+      "signals": {
+        "overlap_count": 1,
+        "rrf_margin": 0.09895226234952276,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": false,
+          "context_complete": false,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 0,
+                "total_chars": 43,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    2831,
+                    2874
+                  ]
+                ]
+              },
+              "context": {
+                "covered_chars": 0,
+                "total_chars": 43,
+                "ratio": 0.0,
+                "complete": false,
+                "intervals": [],
+                "missing_intervals": [
+                  [
+                    2831,
+                    2874
+                  ]
+                ]
+              }
+            }
+          ],
+          "context_chars": 1951
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 43,
+                "total_chars": 43,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2831,
+                    2874
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 43,
+                "total_chars": 43,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2831,
+                    2874
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 1713
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 43,
+                "total_chars": 43,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2831,
+                    2874
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 43,
+                "total_chars": 43,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2831,
+                    2874
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 1713
+        }
+      }
+    },
+    {
+      "id": "support-035",
+      "group_id": "dependencies",
+      "question": "依赖函数可以使用普通 def 吗？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.110.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.110.0/tutorial/dependencies/index.md",
+          "quote": "即，既可以使用异步的 `async def`，也可以使用普通的 `def` 定义依赖项。",
+          "start_char": 2960,
+          "end_char": 3004
+        }
+      ],
+      "signals": {
+        "overlap_count": 0,
+        "rrf_margin": 0.0814139706447398,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2960,
+                    3004
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2960,
+                    3004
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3485
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2960,
+                    3004
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2960,
+                    3004
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2851
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2960,
+                    3004
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2960,
+                    3004
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2851
+        }
+      }
+    },
+    {
+      "id": "support-036",
+      "group_id": "dependencies",
+      "question": "依赖项的参数和验证要求会进入 OpenAPI 吗？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/dependencies/index.md",
+          "quote": "依赖项及子依赖项的所有请求声明、验证和需求都可以集成至同一个 OpenAPI 概图。",
+          "start_char": 3272,
+          "end_char": 3314
+        }
+      ],
+      "signals": {
+        "overlap_count": 3,
+        "rrf_margin": 0.0747783541183829,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 42,
+                "total_chars": 42,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3272,
+                    3314
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 42,
+                "total_chars": 42,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3272,
+                    3314
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2910
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 42,
+                "total_chars": 42,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3272,
+                    3314
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 42,
+                "total_chars": 42,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3272,
+                    3314
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2121
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 42,
+                "total_chars": 42,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3272,
+                    3314
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 42,
+                "total_chars": 42,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    3272,
+                    3314
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2910
+        }
+      }
+    },
+    {
+      "id": "support-037",
+      "group_id": "yield",
+      "question": "需要在数据库依赖结束后关闭会话时，应该用 yield 还是 return？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/dependencies/dependencies-with-yield.md",
+          "quote": "为此，你需要使用 `yield` 而不是 `return`，然后再编写这些额外的步骤（代码）。",
+          "start_char": 164,
+          "end_char": 211
+        }
+      ],
+      "signals": {
+        "overlap_count": 3,
+        "rrf_margin": 0.1186070686070686,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 47,
+                "total_chars": 47,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    164,
+                    211
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 47,
+                "total_chars": 47,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    164,
+                    211
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2399
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 47,
+                "total_chars": 47,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    164,
+                    211
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 47,
+                "total_chars": 47,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    164,
+                    211
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3435
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 47,
+                "total_chars": 47,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    164,
+                    211
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 47,
+                "total_chars": 47,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    164,
+                    211
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2399
+        }
+      }
+    },
+    {
+      "id": "support-038",
+      "group_id": "yield",
+      "question": "一个依赖函数里可以多次 yield 吗？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/dependencies/dependencies-with-yield.md",
+          "quote": "确保在每个依赖中只使用一次 `yield`。",
+          "start_char": 227,
+          "end_char": 249
+        }
+      ],
+      "signals": {
+        "overlap_count": 0,
+        "rrf_margin": 0.07455572656572362,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 22,
+                "total_chars": 22,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    227,
+                    249
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 22,
+                "total_chars": 22,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    227,
+                    249
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3525
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 22,
+                "total_chars": 22,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    227,
+                    249
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 22,
+                "total_chars": 22,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    227,
+                    249
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 4026
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 22,
+                "total_chars": 22,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    227,
+                    249
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 22,
+                "total_chars": 22,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    227,
+                    249
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 4026
+        }
+      }
+    },
+    {
+      "id": "support-039",
+      "group_id": "yield",
+      "question": "带 yield 的依赖怎样保证异常时也执行退出步骤？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/dependencies/dependencies-with-yield.md",
+          "quote": "同样，你也可以使用 `finally` 来确保退出步骤得到执行，无论是否存在异常。",
+          "start_char": 1481,
+          "end_char": 1522
+        }
+      ],
+      "signals": {
+        "overlap_count": 3,
+        "rrf_margin": 0.09590235396687014,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 41,
+                "total_chars": 41,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1481,
+                    1522
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 41,
+                "total_chars": 41,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1481,
+                    1522
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3584
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 41,
+                "total_chars": 41,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1481,
+                    1522
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 41,
+                "total_chars": 41,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1481,
+                    1522
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2849
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 41,
+                "total_chars": 41,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1481,
+                    1522
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 41,
+                "total_chars": 41,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    1481,
+                    1522
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3584
+        }
+      }
+    },
+    {
+      "id": "support-040",
+      "group_id": "yield",
+      "question": "带 yield 的依赖捕获异常后不再抛出，会有什么问题？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/tutorial/dependencies/dependencies-with-yield.md",
+          "quote": "如果你在包含 `yield` 的依赖项中使用 `except` 捕获了一个异常，然后你没有重新抛出该异常（或抛出一个新异常），与在普通的Python代码中相同，FastAPI不会注意到发生了异常。",
+          "start_char": 8839,
+          "end_char": 8937
+        }
+      ],
+      "signals": {
+        "overlap_count": 4,
+        "rrf_margin": 0.061538461538461535,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 98,
+                "total_chars": 98,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    8839,
+                    8937
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 98,
+                "total_chars": 98,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    8839,
+                    8937
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3348
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 98,
+                "total_chars": 98,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    8839,
+                    8937
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 98,
+                "total_chars": 98,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    8839,
+                    8937
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3055
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 98,
+                "total_chars": 98,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    8839,
+                    8937
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 98,
+                "total_chars": 98,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    8839,
+                    8937
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3348
+        }
+      }
+    },
+    {
+      "id": "support-045",
+      "group_id": "docker",
+      "question": "容器主进程停止后，容器还能保持运行吗？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/deployment/docker.md",
+          "quote": "但是，如果没有**至少一个正在运行的进程**，就不可能有一个正在运行的容器。 如果主进程停止，容器也会停止。",
+          "start_char": 2642,
+          "end_char": 2696
+        }
+      ],
+      "signals": {
+        "overlap_count": 3,
+        "rrf_margin": 0.11575630252100842,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 54,
+                "total_chars": 54,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2642,
+                    2696
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 54,
+                "total_chars": 54,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2642,
+                    2696
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 1555
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 54,
+                "total_chars": 54,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2642,
+                    2696
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 54,
+                "total_chars": 54,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2642,
+                    2696
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 1239
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 54,
+                "total_chars": 54,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2642,
+                    2696
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 54,
+                "total_chars": 54,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    2642,
+                    2696
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 1555
+        }
+      }
+    },
+    {
+      "id": "support-046",
+      "group_id": "docker",
+      "question": "pip 的 --no-cache-dir 是否等于关闭 Docker 构建缓存？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.110.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.110.0/deployment/docker.md",
+          "quote": "`--no-cache-dir` 仅与 `pip` 相关，与 Docker 或容器无关。",
+          "start_char": 4536,
+          "end_char": 4580
+        }
+      ],
+      "signals": {
+        "overlap_count": 2,
+        "rrf_margin": 0.09989924258216952,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    4536,
+                    4580
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    4536,
+                    4580
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2674
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    4536,
+                    4580
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    4536,
+                    4580
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3505
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    4536,
+                    4580
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    4536,
+                    4580
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2674
+        }
+      }
+    },
+    {
+      "id": "support-047",
+      "group_id": "workers",
+      "question": "用 Uvicorn 启动多个工作进程应使用哪个参数？",
+      "filters": {
+        "product": "fastapi",
+        "version": "0.115.0"
+      },
+      "gold_evidence": [
+        {
+          "source": "fastapi/0.115.0/deployment/server-workers.md",
+          "quote": "这里唯一的新选项是 `--workers` 告诉 Uvicorn 启动 4 个工作进程。",
+          "start_char": 5091,
+          "end_char": 5135
+        }
+      ],
+      "signals": {
+        "overlap_count": 2,
+        "rrf_margin": 0.05287347876004581,
+        "candidate_count": 50
+      },
+      "strategies": {
+        "none": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    5091,
+                    5135
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    5091,
+                    5135
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2653
+        },
+        "all": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    5091,
+                    5135
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    5091,
+                    5135
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 3130
+        },
+        "adaptive": {
+          "top_complete": true,
+          "context_complete": true,
+          "anchors": [
+            {
+              "top_k": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    5091,
+                    5135
+                  ]
+                ],
+                "missing_intervals": []
+              },
+              "context": {
+                "covered_chars": 44,
+                "total_chars": 44,
+                "ratio": 1.0,
+                "complete": true,
+                "intervals": [
+                  [
+                    5091,
+                    5135
+                  ]
+                ],
+                "missing_intervals": []
+              }
+            }
+          ],
+          "context_chars": 2653
+        }
+      }
+    }
+  ],
+  "documents": 102,
+  "chunks": 2212,
+  "measurement_segments": [
+    {
+      "segment": 0,
+      "trials": 167,
+      "startup": {
+        "e5_load_verify_ms": 6916.36379999909,
+        "cold_build_ms": 111356.72049999994,
+        "document_cache": {
+          "cache_hits": 0,
+          "deduplicated_texts": 788,
+          "embedded_texts": 1424
+        },
+        "bge_load_verify_ms": 2752.7444000006653,
+        "warmup": [
+          {
+            "strategy": "none",
+            "elapsed_ms": 106.31940000166651
+          },
+          {
+            "strategy": "all",
+            "elapsed_ms": 13396.388299999671
+          },
+          {
+            "strategy": "adaptive",
+            "elapsed_ms": 93.5576999982004
+          }
+        ]
+      },
+      "environment": {
+        "platform": "Windows-11-10.0.26300-SP0",
+        "python": "3.12.14",
+        "logical_cpus": 16,
+        "physical_cpus": 8,
+        "ram_total_bytes": 16979623936,
+        "available_ram_before": 5027520512,
+        "background_cpu_percent_before": 28.0,
+        "device": "cpu",
+        "cuda_used": false,
+        "cpu_threads": 4
+      }
+    },
+    {
+      "segment": 1,
+      "trials": 202,
+      "startup": {
+        "e5_load_verify_ms": 5553.550900000118,
+        "cold_build_ms": 62688.52499999775,
+        "document_cache": {
+          "cache_hits": 0,
+          "deduplicated_texts": 788,
+          "embedded_texts": 1424
+        },
+        "bge_load_verify_ms": 2166.0895999993954,
+        "warmup": [
+          {
+            "strategy": "none",
+            "elapsed_ms": 61.76259999847389
+          },
+          {
+            "strategy": "all",
+            "elapsed_ms": 7586.3398000001325
+          },
+          {
+            "strategy": "adaptive",
+            "elapsed_ms": 56.280500000866596
+          }
+        ]
+      },
+      "environment": {
+        "platform": "Windows-11-10.0.26300-SP0",
+        "python": "3.12.14",
+        "logical_cpus": 16,
+        "physical_cpus": 8,
+        "ram_total_bytes": 16979623936,
+        "available_ram_before": 5027520512,
+        "background_cpu_percent_before": 28.0,
+        "device": "cpu",
+        "cuda_used": false,
+        "cpu_threads": 4
+      }
+    }
+  ],
+  "execution": {
+    "trials": 369,
+    "paid_api_calls": 0,
+    "generated_answers": 0,
+    "held_out_cases": 0,
+    "warmups_excluded": 6,
+    "measurement_segments": 2,
+    "unstable_rankings": 0,
+    "replay_ranking_mismatches": 0,
+    "replay_coverage_mismatches": 0,
+    "gate_decision_mismatches": 0
+  },
+  "protected_inputs": {
+    "checked": 787,
+    "changed": []
+  },
+  "trials_sha256": "8138d481bbdcaf0c6b96556717390e2de2f312949d282c00ea7cb9270e707571"
+}

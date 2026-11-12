@@ -22,6 +22,7 @@ TEMPLATE = Path(__file__).resolve().parents[1] / "app/static/diagnostics.html"
 
 
 def render_html(report: dict) -> str:
+    """把报告注入静态模板，生成可离线打开的诊断工作台。"""
     # JSON in a non-executable script still needs '<' escaped to prevent </script> injection.
     view = {**report, "outcome_labels": report.get("outcome_labels", OUTCOMES)}
     data = json.dumps(view, ensure_ascii=False).replace("<", "\\u003c")
@@ -29,6 +30,7 @@ def render_html(report: dict) -> str:
 
 
 def write_artifacts(report: dict, output: Path) -> tuple[Path, Path]:
+    """同时写出 JSON 与 HTML；两者都必须不存在，避免覆盖历史诊断。"""
     if output.suffix.lower() != ".json":
         raise ValueError("输出路径必须以 .json 结尾")
     html_path = output.with_suffix(".html")
@@ -45,6 +47,13 @@ def write_artifacts(report: dict, output: Path) -> tuple[Path, Path]:
 
 
 def main() -> None:
+    """跑三路检索的分阶段诊断，输出 JSON + 可离线浏览的 HTML。
+
+    默认强制 Hashing 向量，只有 ``--configured-embeddings`` 才用真实模型：
+    诊断关注“证据在哪一步丢失”，不应因为换模型而改变对比基准。
+    报告会附加五条固定边界说明（只开发集、状态标签不等于语义根因、
+    字符计数口径、无预算扩展仅用于定位、池外不等于两路都没召回）。
+    """
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--documents", type=Path, default=Path("evaluation/support_corpus"))
     parser.add_argument(

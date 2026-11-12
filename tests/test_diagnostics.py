@@ -1,3 +1,11 @@
+"""检索诊断的阶段归因：区间并集、Unicode 计数与“文档命中≠证据命中”。
+
+诊断结论会被用来决定下一步优化方向，因此必须区分：索引没覆盖（index_gap）、
+版本过滤排除（filter_excluded）、预算截断（budget_limited）、池内但排名靠后
+（below_top_k）与根本不在池中（outside_pool）。这些测试还固定了“只读开发集”
+与“报告不覆盖”的行为。
+"""
+
 import json
 import sys
 from dataclasses import replace

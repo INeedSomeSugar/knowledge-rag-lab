@@ -1,3 +1,9 @@
+"""生成上下文格式：编号、来源标签与章节/页码信息必须出现在提示词中。
+
+模型只能依据提示词里可见的信息作答；来源标签缺失会导致引用无法回指，
+页码缺失会让 PDF 类文档的证据核对变得困难。
+"""
+
 from app.domain import Chunk, SearchHit
 from app.generation import build_context
 

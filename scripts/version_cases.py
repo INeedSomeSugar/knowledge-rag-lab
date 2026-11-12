@@ -1,4 +1,14 @@
-"""Fixed local ASGI reproduction cases; accepts no arbitrary code or user snippets."""
+"""Fixed local ASGI reproduction cases; accepts no arbitrary code or user snippets.
+
+四个固定场景用于观察“依赖注入 `yield` 资源在响应返回后何时关闭”：
+
+- ``stream_borrowed`` / ``stream_owned``：流式响应中读取资源，比较资源归属；
+- ``background_borrowed`` / ``background_owned``：后台任务中读取资源。
+
+``events`` 按发生顺序记录 ``open`` / ``read:open|closed`` / ``close``，因此可以
+直接判断“读取发生在关闭之前还是之后”。用例写死在源码里，不接受外部代码，
+保证不同版本环境里跑的是同一段逻辑。
+"""
 
 from __future__ import annotations
 

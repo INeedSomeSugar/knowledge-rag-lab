@@ -9,6 +9,12 @@ from pathlib import Path
 
 
 def main() -> None:
+    """启动本地服务。
+
+    通过写 ``os.environ`` 再导入 ``app.main`` 来切换配置：``app.main`` 在导入时
+    就会构建服务，因此环境变量必须在 import 之前设置。``--demo`` 覆盖为
+    零密钥组合，并指向独立的 demo 索引目录，不污染正式数据。
+    """
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--demo", action="store_true")
     parser.add_argument("--port", type=int, default=8000)

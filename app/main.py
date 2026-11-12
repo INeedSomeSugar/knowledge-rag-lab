@@ -1,3 +1,16 @@
+"""HTTP 入口：FastAPI 路由、请求校验与统一错误边界。
+
+结构上只有三层：
+
+1. **中间件**：生成 ``request_id``，把异常统一转成 500 JSON，并记录不含问题原文的
+   访问日志；
+2. **Pydantic 模型**：长度、范围与必填约束在进入业务前完成，业务层只做语义校验；
+3. **路由**：尽可能薄，参数转换后直接调用 ``RAGService``，不在此处写检索逻辑。
+
+``/health`` 与 ``/ready`` 的区分是部署语义：前者表示进程活着，后者表示索引已加载；
+空索引返回 503，调用方据此不要把流量当成“可服务”。
+"""
+
 from __future__ import annotations
 
 from typing import Annotated
@@ -20,6 +33,8 @@ from app.loaders import load_bytes
 from app.observability import request_id_context
 
 
+# 模块导入即构建服务：索引在进程启动时加载一次，后续请求复用同一快照。
+# 若配置非法，这里会直接失败（fail fast），而不是等到第一个请求。
 settings = Settings()
 service = create_service(settings)
 
@@ -28,6 +43,7 @@ app = FastAPI(
     version="0.12.0",
     description="版本约束检索、证据引用核验与可复现评测",
 )
+# 仅允许本地前端开发端口跨域；生产部署应改为明确的站点白名单。
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
@@ -39,6 +55,7 @@ app.add_middleware(
 
 @app.middleware("http")
 async def log_request(request: Request, call_next):
+    """为每个请求建立可追踪的 request_id，并保证异常不会泄漏内部细节。"""
     request_id = uuid.uuid4().hex
     token = request_id_context.set(request_id)
     started = perf_counter()
@@ -51,6 +68,7 @@ async def log_request(request: Request, call_next):
         return response
     except Exception as exc:
         error_type = type(exc).__name__
+        # 对外只给请求编号，排查时用编号去日志里找堆栈，避免把路径/配置暴露给调用方。
         return JSONResponse(
             status_code=500,
             content={
@@ -78,6 +96,8 @@ async def log_request(request: Request, call_next):
 
 
 class TextDocumentRequest(BaseModel):
+    """导入纯文本文档；产品与版本要么都给，要么都不给（由服务层校验）。"""
+
     source: str = Field(min_length=1, max_length=200)
     text: str = Field(min_length=1)
     product: str | None = Field(default=None, min_length=1, max_length=80)
@@ -85,6 +105,8 @@ class TextDocumentRequest(BaseModel):
 
 
 class SearchRequest(BaseModel):
+    """只检索请求；``top_k`` 上限 20 是接口约束，服务层另有 100 的硬上限。"""
+
     query: str = Field(min_length=1)
     top_k: int = Field(default=5, ge=1, le=20)
     product: str | None = Field(default=None, min_length=1, max_length=80)
@@ -92,12 +114,16 @@ class SearchRequest(BaseModel):
 
 
 class PreviousTurn(BaseModel):
+    """上一轮问题与作用域，仅用于规则改写；不包含上一轮回答文本。"""
+
     question: str = Field(min_length=1, max_length=4000)
     product: str | None = Field(default=None, min_length=1, max_length=80)
     version: str | None = Field(default=None, min_length=1, max_length=80)
 
 
 class ChatRequest(BaseModel):
+    """问答请求；``pattern=r"\\S"`` 确保纯空白字符串在进入服务前被拒绝。"""
+
     question: str = Field(min_length=1, max_length=4000, pattern=r"\S")
     top_k: int = Field(default=5, ge=1, le=20)
     product: str | None = Field(default=None, min_length=1, max_length=80)
@@ -106,6 +132,8 @@ class ChatRequest(BaseModel):
 
 
 class VersionComparisonRequest(BaseModel):
+    """版本对比请求：主题是语料内的相对路径，版本必须来自已冻结语料。"""
+
     topic: str = Field(default="advanced/advanced-dependencies.md", max_length=150)
     before: str = Field(default="0.117.1", min_length=1, max_length=30)
     after: str = Field(default="0.118.0", min_length=1, max_length=30)
@@ -113,6 +141,7 @@ class VersionComparisonRequest(BaseModel):
 
 
 def request_filters(request: SearchRequest | ChatRequest | TextDocumentRequest) -> dict[str, str]:
+    """只保留有值的 product/version，避免空字符串被当成过滤条件。"""
     return {key: value for key in ("product", "version") if (value := getattr(request, key))}
 
 
@@ -132,6 +161,11 @@ def version_lab() -> str:
 
 
 def load_version_catalog():
+    """按需加载版本对比语料；未安装或校验失败统一返回 503。
+
+    延迟加载的原因：版本语料是独立资产（约百份文档），主问答不依赖它；
+    如果它在启动时就失败，会把整个服务拖垮。
+    """
     from app.version_comparison import VersionEvidenceCatalog
 
     try:
@@ -170,6 +204,7 @@ def catalog() -> dict[str, object]:
 
 @app.get("/health")
 def health() -> dict[str, object]:
+    """进程存活与当前配置；不检查模型连通性，避免健康检查变成付费/慢请求。"""
     return {
         "status": "ok",
         "embedding_provider": settings.embedding_provider,
@@ -187,6 +222,7 @@ def health() -> dict[str, object]:
 
 @app.get("/ready")
 def ready() -> JSONResponse:
+    """索引就绪检查：空索引返回 503，并显式声明模型连通性“未检查”。"""
     snapshot = service.retriever
     chunks = snapshot.dense.chunks
     return JSONResponse(
@@ -220,6 +256,7 @@ async def upload_document(
     product: Annotated[str, Form()] = "",
     version: Annotated[str, Form()] = "",
 ) -> dict[str, object]:
+    """上传并导入文档；解析与建索引都是阻塞操作，放线程池执行。"""
     try:
         text = load_bytes(file.filename or "document.txt", await file.read())
         metadata = {
@@ -265,6 +302,7 @@ def chat(request: ChatRequest) -> dict[str, object]:
 
 @app.post("/api/v1/chat/stream")
 async def chat_stream(request: ChatRequest) -> StreamingResponse:
+    """SSE 流式问答；``X-Accel-Buffering: no`` 用于关闭 Nginx 缓冲。"""
     from app.streaming import stream_answer
 
     return StreamingResponse(

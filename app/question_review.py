@@ -1,4 +1,15 @@
-"""Local, model-free question review; originals and dataset splits stay immutable."""
+"""Local, model-free question review; originals and dataset splits stay immutable.
+
+人工复核工作台的三条硬约束：
+
+1. **原文件只读**：问题 JSONL 与语料都不写入，复核结果单独存到状态目录；
+2. **绑定可验证**：状态文件记录问题文件与语料的 SHA256、划分与题目 ID 列表，
+   任一输入变化都会让旧会话失效，避免“改完语料继续用旧标注”；
+3. **并发安全**：每题带 revision，写入时比对；两个页面同时编辑，后提交者收到 409。
+
+所有校验都在本地完成，不调用模型（``model_calls`` 恒为 0），因此复核结果可以
+作为“人工核验”的独立证据，而不是模型自评。
+"""
 
 from __future__ import annotations
 
@@ -27,6 +38,7 @@ def digest(value: bytes) -> str:
 
 
 def json_digest(value: object) -> str:
+    """对结构化数据做稳定摘要：键排序 + 不转义中文，保证不同机器结果一致。"""
     return digest(json.dumps(value, ensure_ascii=False, sort_keys=True).encode("utf-8"))
 
 
@@ -35,6 +47,11 @@ class ReviewConflict(ValueError):
 
 
 class EvidenceEdit(BaseModel):
+    """证据编辑项；``start_char`` 可省略，由服务端在原文中唯一定位。
+
+    ``extra="forbid"`` 让拼错字段名直接失败，而不是被静默忽略后保存一条缺字段的记录。
+    """
+
     model_config = ConfigDict(extra="forbid")
     source: StrictStr = Field(min_length=1, max_length=500)
     quote: StrictStr = Field(min_length=1, max_length=50000)
@@ -42,6 +59,8 @@ class EvidenceEdit(BaseModel):
 
 
 class ReviewEdit(BaseModel):
+    """一次保存请求的完整内容；必须带 ``revision`` 以支持乐观并发。"""
+
     model_config = ConfigDict(extra="forbid")
     revision: int = Field(ge=0, strict=True)
     question: StrictStr = Field(min_length=1, max_length=10000)
@@ -54,10 +73,17 @@ class ReviewEdit(BaseModel):
     checks: dict[str, StrictBool] = Field(default_factory=dict)
 
 
+# 人工确认必须逐项勾选的三项；缺一项就不能标记 human_verified。
 CHECKS = {"question_and_scope", "answer_and_behavior", "evidence_or_absence"}
 
 
 class QuestionReviewStore:
+    """复核状态存储：内存字典 + 单文件快照，写入原子替换。
+
+    状态文件路径由 ``问题文件摘要 + 划分`` 决定，因此换一批问题不会覆盖旧复核记录；
+    同时禁止把状态文件放进语料目录，防止被当成文档导入。
+    """
+
     def __init__(self, questions: Path, documents: Path, state_dir: Path, split: str):
         if split not in {"development", "test"}:
             raise ValueError("必须选择 development 或 test")
@@ -70,6 +96,7 @@ class QuestionReviewStore:
             for line in self.questions.read_text(encoding="utf-8").splitlines()
             if line.strip()
         ]
+        # 复核状态以 ID 为主键，没有稳定 ID 就无法安全地增量保存。
         if any(not row.get("id") for row in raw):
             raise ValueError("复核工作台要求每题有稳定的 id")
         self.originals = {row["id"]: row for row in raw if row.get("split", "development") == split}
@@ -92,6 +119,7 @@ class QuestionReviewStore:
         self.reviews: dict[str, dict] = {}
         if self.path.exists():
             saved = json.loads(self.path.read_text(encoding="utf-8"))
+            # schema_version 参与校验：结构升级后旧状态必须显式迁移，不能猜字段。
             if saved.get("binding") != self.binding or saved.get("schema_version") != "1.0":
                 raise ReviewConflict("复核记录与当前问题或语料不一致，请恢复原始输入或另开状态目录")
             for case_id, item in saved["reviews"].items():
@@ -107,6 +135,11 @@ class QuestionReviewStore:
                 self.reviews[case_id] = item
 
     def _read_corpus(self) -> tuple[dict, str]:
+        """读取语料并保存**规范化后**的文本。
+
+        用的是分块器同一个 ``_normalize``，因此字符偏移与索引阶段完全一致；
+        若这里改用原始文件字节，证据区间会整体错位。
+        """
         texts = {
             source: {"text": TextChunker._normalize(text), "metadata": metadata}
             for source, text, metadata in read_documents(self.documents)
@@ -114,6 +147,11 @@ class QuestionReviewStore:
         return texts, json_digest(texts)
 
     def _fresh(self) -> None:
+        """每次读写前确认输入未变、磁盘状态未被他处修改。
+
+        三类冲突都返回 ``ReviewConflict``（HTTP 409）：问题变了、语料变了、
+        另一个工作台写过了。让用户刷新或重启，而不是用旧数据覆盖新数据。
+        """
         if digest(self.questions.read_bytes()) != self.binding["questions_sha256"]:
             raise ReviewConflict("原始问题文件已改变，当前复核会话已过期")
         _, corpus_hash = self._read_corpus()
@@ -127,6 +165,12 @@ class QuestionReviewStore:
             raise ReviewConflict("复核状态文件已被移除，请恢复后重试")
 
     def _validate_row(self, row: dict) -> None:
+        """校验一行复核结果的内部一致性。
+
+        重点检查三类问题：证据来源是否在语料清单内、来源元数据是否与问题的版本
+        范围一致、引用区间是否与原文逐字相同。这些错误一旦进入状态文件，
+        后续评测就会用错误的金标计算指标。
+        """
         case = EvaluationCase.from_dict(row, line_number=1)
         for source in case.relevant_sources:
             if source not in self.texts:
@@ -145,6 +189,7 @@ class QuestionReviewStore:
                 raise ValueError("人工确认必须逐项完成三项核对")
             try:
                 timestamp = datetime.fromisoformat(row["reviewed_at"])
+                # 无时区的时间无法比较先后，直接拒绝，避免“本地时间当 UTC”的歧义。
                 if timestamp.utcoffset() is None:
                     raise ValueError
             except (KeyError, TypeError, ValueError) as exc:
@@ -153,6 +198,7 @@ class QuestionReviewStore:
                 raise ValueError("不可回答或需澄清问题必须说明判定依据")
 
     def snapshot(self) -> dict:
+        """返回前端所需的完整状态：原始行（或已保存版本）+ revision。"""
         with self.lock:
             self._fresh()
             rows = []
@@ -172,6 +218,7 @@ class QuestionReviewStore:
             }
 
     def document(self, case_id: str, source: str) -> dict:
+        """按题查看原文；只允许访问该题产品/版本范围内的来源。"""
         with self.lock:
             self._fresh()
             if case_id not in self.originals or source not in self.texts:
@@ -183,6 +230,7 @@ class QuestionReviewStore:
             return {"source": source, **deepcopy(document)}
 
     def sources(self, case_id: str) -> list[str]:
+        """列出该题可选来源；已按版本范围过滤，避免选到别的版本文档。"""
         if case_id not in self.originals:
             raise ValueError("未知问题")
         filters = self.originals[case_id].get("filters", {})
@@ -193,6 +241,11 @@ class QuestionReviewStore:
         ]
 
     def save(self, case_id: str, edit: ReviewEdit) -> dict:
+        """保存一道题的复核结果，成功返回新 revision。
+
+        流程：校验 revision → 校验检查项 → 定位证据区间 → 覆盖可编辑字段 →
+        整体校验 → 原子写盘 → 更新内存。任何一步失败都不写盘。
+        """
         with self.lock:
             self._fresh()
             if case_id not in self.originals:
@@ -209,6 +262,8 @@ class QuestionReviewStore:
                     raise ValueError("证据来源不属于当前产品和版本")
                 text = self.texts[anchor.source]["text"]
                 start = anchor.start_char
+                # 前端给的位置优先；不一致或缺失时要求摘录在原文中唯一出现，
+                # 否则无法确定用户指的是哪一处，宁可报错也不猜。
                 if start is None or text[start : start + len(anchor.quote)] != anchor.quote:
                     if text.count(anchor.quote) != 1:
                         raise ValueError("摘录须在来源中逐字且唯一存在；可扩大摘录范围后重试")
@@ -226,6 +281,7 @@ class QuestionReviewStore:
                 question=edit.question.strip(),
                 reference_answer=edit.reference_answer.strip(),
                 expected_status=edit.expected_status,
+                # should_answer 由 expected_status 派生，避免两个字段各写各的。
                 should_answer=edit.expected_status == "answered",
                 relevant_sources=list(dict.fromkeys(anchor["source"] for anchor in anchors)),
                 evidence=anchors,
@@ -240,6 +296,7 @@ class QuestionReviewStore:
             reviews = {**self.reviews, case_id: updated}
             payload = {"schema_version": "1.0", "binding": self.binding, "reviews": reviews}
             self.path.parent.mkdir(parents=True, exist_ok=True)
+            # 临时文件带随机名：两个进程同时写也不会互相覆盖同一份 .tmp。
             temporary = self.path.with_name(f".{uuid.uuid4().hex}.tmp")
             try:
                 temporary.write_text(
@@ -252,6 +309,7 @@ class QuestionReviewStore:
             return deepcopy(updated)
 
     def export(self) -> str:
+        """导出为 JSONL，保持原文件字段顺序无关（读取方按字段名解析）。"""
         snapshot = self.snapshot()
         return "".join(
             json.dumps(item["row"], ensure_ascii=False) + "\n" for item in snapshot["cases"]
@@ -259,11 +317,18 @@ class QuestionReviewStore:
 
 
 def create_review_app(store: QuestionReviewStore) -> FastAPI:
+    """构建本地复核 Web 应用。
+
+    安全边界按“只服务本机”设计：``TrustedHostMiddleware`` 限制主机名，
+    写请求校验 Origin 与 JSON Content-Type，响应统一 ``no-store``。
+    这不是面向公网的鉴权方案，也不打算是。
+    """
     app = FastAPI(title="Knowledge RAG Lab · 问题人工复核", version="0.10.0")
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost", "[::1]"])
 
     @app.middleware("http")
     async def local_writes(request: Request, call_next):
+        # 跨站表单可以伪造简单请求，因此写操作同时要求同源 Origin 与 JSON 类型。
         if request.method in {"POST", "PUT", "PATCH", "DELETE"}:
             origin = request.headers.get("origin")
             if origin and origin != f"{request.url.scheme}://{request.url.netloc}":
@@ -305,6 +370,7 @@ def create_review_app(store: QuestionReviewStore) -> FastAPI:
 
     @app.get("/api/export")
     def export():
+        # 文件名带 UTC 时间戳，多次导出不会互相覆盖，也便于对照审核时间。
         timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
         return Response(
             store.export(),

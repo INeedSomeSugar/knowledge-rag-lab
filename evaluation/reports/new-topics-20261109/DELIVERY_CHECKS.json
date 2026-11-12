@@ -1,0 +1,82 @@
+{
+  "at": "2026-11-09T10:21:55.588604+00:00",
+  "status": "completed",
+  "engineering_stages": [
+    {
+      "junit": "engineering-first.xml",
+      "tests": 33,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "junit": "engineering-local.xml",
+      "tests": 64,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "junit": "engineering-final-offline.xml",
+      "tests": 39,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "junit": "engineering-report-final.xml",
+      "tests": 39,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "junit": "engineering-final.xml",
+      "tests": 70,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "junit": "engineering-protection.xml",
+      "tests": 41,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "unique_tests_passed": 72,
+  "test_scope": "related subset, not full repository; local E5/BGE integration explicitly enabled in 64/70 stages",
+  "coverage_checks": 72,
+  "human_verified": 12,
+  "reviewer": "JQH",
+  "effects_run_attempts": 1,
+  "effects_failed_attempts": 0,
+  "trials": 36,
+  "protocol_sha256": "83f67ae88f88c5d9b4fce14e8383c798f59aa4220162c30685fd035e309ddf60",
+  "trials_sha256": "82f9c739dd0a055b751121662194cd5fc8efd5d733cafd4005ba3d69dd9a372a",
+  "frozen_locks_checked": 164,
+  "historical_files_unchanged": {
+    "checked": 889,
+    "changed": []
+  },
+  "existing_sources_unchanged": {
+    "checked": 110,
+    "changed": []
+  },
+  "documentation_changes": [
+    "evaluation/README.md"
+  ],
+  "documentation_hash_chain": [
+    "documentation-update.json",
+    "documentation-update.after-results.json"
+  ],
+  "local_links_checked": 128,
+  "broken_links": [],
+  "git_head_unchanged": true,
+  "api_calls": 0,
+  "model_downloads": 0,
+  "gpu_used": false,
+  "original_held_out_8_executions": 0,
+  "answer_accuracy": null
+}

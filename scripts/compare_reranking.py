@@ -1,4 +1,11 @@
-"""Compare fixed BM25 retrieval with optional DeepSeek ranking on development only."""
+"""Compare fixed BM25 retrieval with optional DeepSeek ranking on development only.
+
+为什么固定 BM25：重排实验要单独衡量“模型排序”的贡献，若底池来自 Hybrid，
+就无法判断提升来自重排还是来自语义召回。候选池固定后，前后差异只可能来自排序。
+
+所有调用都记账（``summarize_model_calls``），失败回退原顺序也会写入 trials，
+不会只保留成功样本。测试集不参与。
+"""
 
 import argparse
 import hashlib
@@ -23,10 +30,16 @@ from scripts.evaluate import (
 
 
 def query_key(question: str, filters: dict) -> str:
+    """缓存键：同一问题在不同版本范围下必须视为不同查询。"""
     return json.dumps([question, filters], sort_keys=True, ensure_ascii=False)
 
 
 def main():
+    """固定底池检索 → 模型重排 → 前后配对诊断。
+
+    输出路径必须全新且不在语料/问题目录内：每次实验都要保留原始结果，
+    便于核对“这次是不是又调过参数”。
+    """
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--questions", type=Path, default=Path("evaluation/questions.support.candidate.jsonl")

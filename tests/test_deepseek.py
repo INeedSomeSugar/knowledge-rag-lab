@@ -1,3 +1,10 @@
+"""DeepSeek 适配器契约：端点固定、模型目录真实、截断即错误。
+
+安全与可复现性都在这里守：API Key 只能发往官方 HTTPS 端点；配置了不存在的模型时
+必须失败而不能“自动换一个”；``finish_reason`` 非 stop 要当成错误并保留已产生的用量；
+开发集子集保护在任何模型访问之前生效。
+"""
+
 from types import SimpleNamespace
 import json
 

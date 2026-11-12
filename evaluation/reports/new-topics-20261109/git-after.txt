@@ -1,0 +1,27 @@
+ M PROJECT_CONTEXT.md
+ M README.md
+ M evaluation/README.md
+ M pyproject.toml
+?? .github/
+?? app/budget_evaluation.py
+?? app/budget_reranking.py
+?? docs/BUDGET_RERANKING_20261106.md
+?? evaluation/budget_reranking/
+?? evaluation/reports/budget-reranking-20261106-complete/
+?? evaluation/reports/budget-reranking-20261106-real2/
+?? evaluation/reports/budget-reranking-20261106-real3/
+?? evaluation/reports/budget-reranking-20261106/
+?? evaluation/reports/new-topics-20261109/
+?? scripts/experiment_budget_reranking.py
+?? scripts/finetune_retriever/
+?? scripts/plot_budget_reranking.py
+?? scripts/prepare_budget_review.py
+?? scripts/rasterize_budget_plots.cjs
+?? scripts/report_budget_reranking.py
+?? scripts/report_new_topics.py
+?? scripts/restart_budget_measurement.py
+?? scripts/resume_budget_measurement.py
+?? scripts/validate_new_topics.py
+?? scripts/verify_budget_delivery.py
+?? tests/test_budget_reranking.py
+?? tests/test_new_topic_validation.py

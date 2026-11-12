@@ -1,0 +1,132 @@
+{
+  "created_at": "2026-11-06T11:56:07.020865+00:00",
+  "scope": "completed development retrieval experiment and local delivery",
+  "protected_files_checked": 787,
+  "changed_protected_files": [],
+  "selected_gate_sha256": "d7bbaf536e42502ed2c81f682db4d149b0b0889f101c54d653be048b6c1edcb1",
+  "raw_trials": 369,
+  "human_review_states": {
+    "candidates": 12,
+    "assistant_checked": 12,
+    "human_verified": 0
+  },
+  "junit": {
+    "path": "work\\experiments\\budget-reranking-20261106-complete\\engineering.xml",
+    "sha256": "bc25cf985ae5bcce5f16cc14e7799cd9296786ac812a02ed967298fa716b9e5c",
+    "tests": 236,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "local_model_tests": [
+    "test_real_local_bge_scoring_and_identity",
+    "test_real_local_e5_vectors_prefixes_truncation_and_cached_reload"
+  ],
+  "static_checks": [
+    {
+      "command": [
+        "D:\\User\\AI\\knowledge-rag-lab\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "--no-cache",
+        "app",
+        "scripts",
+        "tests"
+      ],
+      "exit_code": 0,
+      "stdout": "All checks passed!\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "D:\\User\\AI\\knowledge-rag-lab\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "exit_code": 0,
+      "stdout": "No broken requirements found.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "warning: in the working copy of 'PROJECT_CONTEXT.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'pyproject.toml', LF will be replaced by CRLF the next time Git touches it\n"
+    }
+  ],
+  "local_links_checked": 93,
+  "plot_dimensions": {
+    "summary": {
+      "width": 2417,
+      "height": 1438
+    },
+    "frontier": {
+      "width": 2292,
+      "height": 1229
+    },
+    "latency-cdf": {
+      "width": 2292,
+      "height": 1229
+    }
+  },
+  "git_head": "ab79439130fa22a662058bf82d072171b5f4f89e",
+  "git_status": " M PROJECT_CONTEXT.md\n M README.md\n M pyproject.toml\n?? .github/\n?? app/budget_evaluation.py\n?? app/budget_reranking.py\n?? docs/BUDGET_RERANKING_20261106.md\n?? evaluation/budget_reranking/\n?? evaluation/reports/budget-reranking-20261106-complete/\n?? evaluation/reports/budget-reranking-20261106-real2/\n?? evaluation/reports/budget-reranking-20261106-real3/\n?? evaluation/reports/budget-reranking-20261106/\n?? scripts/experiment_budget_reranking.py\n?? scripts/finetune_retriever/\n?? scripts/plot_budget_reranking.py\n?? scripts/prepare_budget_review.py\n?? scripts/rasterize_budget_plots.cjs\n?? scripts/report_budget_reranking.py\n?? scripts/restart_budget_measurement.py\n?? scripts/resume_budget_measurement.py\n?? scripts/verify_budget_delivery.py\n?? tests/test_budget_reranking.py\n",
+  "artifacts_sha256": {
+    "evaluation\\reports\\budget-reranking-20261106-complete\\analysis\\analysis.json": "008307de4373dcf812cba52700a855ab85f358e24786581c80f815bd241b71b8",
+    "evaluation\\reports\\budget-reranking-20261106-complete\\analysis\\CASES.md": "16abf210e50309d470c276bb8f7cd82c93c10a80c28379233aeb6155f58d816f",
+    "evaluation\\reports\\budget-reranking-20261106-complete\\analysis\\chart-data.json": "2c4c20999f710117edf11d3e78bb8ad3de7c2bc09fa97dd76a57301b9ce7a867",
+    "evaluation\\reports\\budget-reranking-20261106-complete\\analysis\\errors.json": "c78829bcf4c017fe41d8e4ce4fb2885f7707ddb791e704942e38561e3cf2663c",
+    "evaluation\\reports\\budget-reranking-20261106-complete\\analysis\\frontier.png": "a227941baf25d5f53ddd74a13c556ea18de36ce0fd4690e3676afc900af9a20e",
+    "evaluation\\reports\\budget-reranking-20261106-complete\\analysis\\frontier.svg": "f41c70b5df6661b6dd31b23d58dfddda29e1b1cd330e0422db9c4a6575fa1933",
+    "evaluation\\reports\\budget-reranking-20261106-complete\\analysis\\latency-cdf.png": "cd4729a336f9144fe981e90af45c1d37e864137954805d82c1a6a4df673ed28b",
+    "evaluation\\reports\\budget-reranking-20261106-complete\\analysis\\latency-cdf.svg": "a2f60f651be33ae950b4621add77378cba94962cae193487da5ea6aed86d80a9",
+    "evaluation\\reports\\budget-reranking-20261106-complete\\analysis\\per-query.json": "8b0fc2590f4ba97cb47bf20006cb1b517ef73a8f017292746c0cfecb94db95c9",
+    "evaluation\\reports\\budget-reranking-20261106-complete\\analysis\\REPORT.md": "c957c05795d4cdd906cb03cd2632ec3543df35db370d62544506f486c064856b",
+    "evaluation\\reports\\budget-reranking-20261106-complete\\analysis\\REPRODUCE.md": "cf0d2f9884c4c1a0c3cbc4a9b68fb463c2ced40db3636cc7974933cce213372e",
+    "evaluation\\reports\\budget-reranking-20261106-complete\\analysis\\RESUME.md": "c7bb65bc084b61a5ef9891fb88f12c5070011368b5192ea153812df47af2738d",
+    "evaluation\\reports\\budget-reranking-20261106-complete\\analysis\\summary.png": "66c1bcda8ea8d0c22516d8fd5bcdf967b9fc1722074c748c42420397d4bd4d68",
+    "evaluation\\reports\\budget-reranking-20261106-complete\\analysis\\summary.svg": "c488b9004102bc0399980ba9b9ec629d050574b3305ae21dc3b9fc85078945de",
+    "evaluation\\reports\\budget-reranking-20261106-complete\\group-validation.json": "8d3a92d7a2a7a8d74912c6e9442f9aa7f978e601f2e59ccb8cee1e8108b037e4",
+    "evaluation\\reports\\budget-reranking-20261106-complete\\real.json": "7e5f8d6ce779b8f9c51559fb6494afa8cd329aae1c07e72cde7ed26aff9b2240",
+    "evaluation\\reports\\budget-reranking-20261106-complete\\real.trials.jsonl": "8138d481bbdcaf0c6b96556717390e2de2f312949d282c00ea7cb9270e707571",
+    "evaluation\\reports\\budget-reranking-20261106-complete\\replay-cases.jsonl": "098880090de933475103f32b08ad347ec61580eb0bd81c18edecca0d3aae7b93",
+    "evaluation\\reports\\budget-reranking-20261106-complete\\replay.json": "4eb382d424b296546e7521eac62eee8ae50fb78ecd8a8cb3bc7cb79a275cc352",
+    "evaluation\\reports\\budget-reranking-20261106-complete\\selection.json": "d7bbaf536e42502ed2c81f682db4d149b0b0889f101c54d653be048b6c1edcb1",
+    "evaluation\\reports\\budget-reranking-20261106-complete\\selection.sha256": "aed77a7b22536f9fae29f7f887ab6560dc28d950a8617f4d1b8364b7f38db121",
+    "evaluation\\budget_reranking\\independent-review-20261106-final\\assistant-checks.jsonl": "0b3950e0f52a7f93f9fdb4dfedf4b4ad81e5bd0c85d4465ba27c01cd839cc152",
+    "evaluation\\budget_reranking\\independent-review-20261106-final\\generator.source.py": "fdc3739f9d7b02e9ebb478a44d8ac8629361887c51b6b1ee67ec3ac998b951fe",
+    "evaluation\\budget_reranking\\independent-review-20261106-final\\human-review.pending.jsonl": "d666f0c870a507e5d9936ef541d7f1214255b1c394bce25d9c8d864f5e80603f",
+    "evaluation\\budget_reranking\\independent-review-20261106-final\\LICENSE.fastapi.txt": "4ec89ffc81485b97fec584b2d4a961032eeffe834453894fd9c1274906cc744e",
+    "evaluation\\budget_reranking\\independent-review-20261106-final\\manifest.json": "38f3930cff63164757199ff6089a6534bc29839a5d4630ae3cd8a94febf410fb",
+    "evaluation\\budget_reranking\\independent-review-20261106-final\\questions.candidate.jsonl": "3c751714b6c25f2f45a11e7bb5632c381ea7ca2645ee67d2042a597e6d3eac81",
+    "evaluation\\budget_reranking\\independent-review-20261106-final\\REVIEW.md": "5d17ba513dc2582530a4d88431b9d84e7038cbdde0b8b7bcbe73ea8cdacca46f",
+    "evaluation\\budget_reranking\\independent-review-20261106-final\\sources\\fastapi\\0.117.1\\advanced\\response-directly.md": "b20cc71555b8d6a1b9b992f7a3db34c081bbafc723c91d94034dec83a41bad42",
+    "evaluation\\budget_reranking\\independent-review-20261106-final\\sources\\fastapi\\0.117.1\\tutorial\\bigger-applications.md": "fff51c73f97f6d52b8d6043fed49658c5996ba05e1c967dcd9291c2c45aaa748",
+    "evaluation\\budget_reranking\\independent-review-20261106-final\\sources\\fastapi\\0.117.1\\tutorial\\body-fields.md": "4a7b0f86e924f5f8627953982850a2f24d17b13ba404945f18c7144e08644d7e",
+    "evaluation\\budget_reranking\\independent-review-20261106-final\\sources\\fastapi\\0.117.1\\tutorial\\body-nested-models.md": "9cec6c855a110d30256b64eed4edf8feaafccdbf0e728c23ca2adb103dc2d239",
+    "evaluation\\budget_reranking\\independent-review-20261106-final\\sources\\fastapi\\0.117.1\\tutorial\\security\\first-steps.md": "1a7c22e2aac5c5f760a16240a66410ab079e42bd181fbd9526cf4338aa20de9b",
+    "evaluation\\budget_reranking\\independent-review-20261106-final\\sources\\fastapi\\0.118.0\\tutorial\\body-multiple-params.md": "33d749732d0c73fbe1c65945f1717968604398d7559917f28af6431866ba7ed0"
+  },
+  "new_code_sha256": {
+    "scripts\\experiment_budget_reranking.py": "2a310c3b3b50efeba4643b9dc14be8c88779e81e516fe3f6f2b180ba1c173fc3",
+    "scripts\\plot_budget_reranking.py": "c43638326d3ab1b588892d3d7c184eb9f3edd2ccb141ad02bfcbf85f3f6c4bab",
+    "scripts\\prepare_budget_review.py": "fdc3739f9d7b02e9ebb478a44d8ac8629361887c51b6b1ee67ec3ac998b951fe",
+    "scripts\\report_budget_reranking.py": "eed23c21d8900b2fcc6dfba322e626362d052e146075d4d417daa681b6441d44",
+    "scripts\\restart_budget_measurement.py": "bd6cfebdbc12a89ce6b2f1a277f88bdc5ff1e55d186be623940678c19b1c2b91",
+    "scripts\\resume_budget_measurement.py": "6c8c3ae46b7f56bb7adb43eeed0d71a9100ab934e07b844f204adb1debabe2ad",
+    "scripts\\verify_budget_delivery.py": "aaa1671b1e036f821ae82d59ef0fe4a4704b6b1e478ff7f2c6f9ff5bb14c1325",
+    "scripts\\rasterize_budget_plots.cjs": "a996807e8ddfeab5c367e300b90be28b1bdfbd5e4b75b6a2d15443d1d470b3f7",
+    "app\\budget_evaluation.py": "66c9d75ccb684f26bad5e1d62e53d3d2bccc119ed8996ac316102956e1985de4",
+    "app\\budget_reranking.py": "9429ca431c35921b19e93f4e77b6bc2349d358aef16356cef947f9d6dfe26a03",
+    "tests\\test_budget_reranking.py": "382784befd879b7af206b0d5af8183fd7c04f7ea4985c21b7c199ac348c68714",
+    "PROJECT_CONTEXT.md": "d0412b9954363881699daac6329ad04c8533d2375d6b8977fd2e465fdf9af79a",
+    "README.md": "1284eeb6157422ad4badb0bbe265eff728a11b3f99d61bfc386fdbac13acba21",
+    "pyproject.toml": "d140267eb1e7d59e7bd0d44acc90f2191af75ced2000a6a46c0127e5ef5f452b"
+  }
+}

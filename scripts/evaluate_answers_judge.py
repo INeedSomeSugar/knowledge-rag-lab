@@ -1,4 +1,16 @@
-"""Freeze, execute, calibrate, and report end-to-end RAG answer evaluation with an LLM-as-Judge."""
+"""Freeze, execute, calibrate, and report end-to-end RAG answer evaluation with an LLM-as-Judge.
+
+四阶段流水线，每一阶段只能在前一阶段产物只读的前提下运行：
+
+1. ``prepare``：冻结协议——问题快照、语料哈希、索引、校准集（11 份人工评分 +
+   12 份助手意见 + 3 份合成长度负样本）、prompt 与代码指纹全部固定；
+2. ``execute``：按冻结协议真实调用生成与 Judge，预算硬上限，逐题落盘；
+3. ``calibrate``：把 Judge 判定与人工/助手标签比对，输出 strict/lenient/joint 一致性；
+4. ``report``：汇总为可读报告，保留失败与分歧明细。
+
+事实边界：Judge 是模型评审，校准只能说明“在这批样本上与人工一致”，不能替代人工；
+生成与评审同源（deepseek-flash）时还存在自评偏差。脚本不会把状态匹配写成正确率。
+"""
 
 from __future__ import annotations
 
@@ -15,6 +27,7 @@ from time import perf_counter
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
+    # 允许以 `python scripts/evaluate_answers_judge.py` 直接运行时也能导入 app 包。
     sys.path.insert(0, str(ROOT))
 
 from app.answers import parse_grounded_answer  # noqa: E402
@@ -341,6 +354,17 @@ def create_rag_settings(index_dir: Path, model_dir: Path = ROOT / E5_DIRECTORY) 
 
 
 def prepare(args: argparse.Namespace) -> dict[str, object]:
+    """冻结一次端到端答案评测所需的全部输入。
+
+    产物（全部独占创建，已存在即失败）：
+
+    - ``inputs/questions.reviewed.jsonl``：问题快照；
+    - ``calibration_cases.jsonl``：Judge 校准样本；
+    - ``index/``：本次分块与向量缓存（可复用旧缓存，但会记录来源）；
+    - ``protocol.json``：语料/问题/代码/prompt/rubric 的哈希与预算。
+
+    冻结之后再改问题或语料，``execute`` 会因哈希不一致而拒绝运行。
+    """
     out = args.output.resolve()
     questions_path = args.questions.resolve()
     documents_dir = args.documents.resolve()
@@ -547,6 +571,11 @@ def prepare(args: argparse.Namespace) -> dict[str, object]:
 
 
 def verify_frozen_protocol(out: Path) -> dict[str, object]:
+    """执行前的完整性闸门：划分、代码、问题、校准集、语料逐项比对。
+
+    任何一项变化都要求重新 ``prepare``，而不是“继续跑完再说”。这样报告里的
+    ``protocol_sha256`` 才真正代表被执行的那套输入。
+    """
     protocol_path = out / "protocol.json"
     if not protocol_path.is_file():
         raise ValueError(f"未找到冻结协议文件：{protocol_path}")
@@ -581,6 +610,11 @@ def _create_live_generator_and_judge(
     *,
     generator_factory=None,
 ) -> tuple[BoundedDeepSeekGenerator, DeepSeekJudge]:
+    """构建共享同一个预算追踪器的生成器与 Judge。
+
+    共享预算的意义：生成和评审都会消耗 token，若各自计数，总量上限就形同虚设。
+    ``generator_factory`` 仅用于离线测试注入替身。
+    """
     if generator_factory is not None:
         generator = generator_factory(budget)
     else:
@@ -601,6 +635,12 @@ def execute(
     service_factory=None,
     generator_factory=None,
 ) -> dict[str, object]:
+    """按冻结协议逐题生成、核验、评审，并把每条记录追加到 ``execution.jsonl``。
+
+    预算追踪器同时覆盖生成与评审；任何一次调用用量未知都会停机并保留已有记录。
+    ``execution.jsonl`` 只允许创建一次，失败重跑必须换输出目录，避免把两次结果混在
+    一起统计。``service_factory`` / ``generator_factory`` 供离线测试替换外部依赖。
+    """
     out = args.output.resolve()
     protocol = verify_frozen_protocol(out)
     execution_jsonl = out / "execution.jsonl"
@@ -810,6 +850,12 @@ def _run_calibration_loop(
     judge: DeepSeekJudge,
     budget: TokenBudgetTracker,
 ) -> int:
+    """在冻结的校准集上跑 Judge，逐条写入 ``calibration.jsonl``。
+
+    校准集与正式评测分开执行：它不参与答案生成，只复用生成结果或既有报告中的
+    答案文本，因此不会额外改变被评对象。预算耗尽时提前停止并返回已完成数量，
+    不补齐、不重试。
+    """
     calibration_cases = read_jsonl(out / protocol["calibration_sets"]["calibration_cases_file"])
     calibration_out = out / "calibration.jsonl"
     count = 0
@@ -877,6 +923,11 @@ def calibrate(
     *,
     generator_factory=None,
 ) -> dict[str, object]:
+    """单独补跑校准阶段，并把已发生的调用计入同一预算。
+
+    从 ``provider-responses.jsonl`` 恢复已用 token/调用数，避免“先 execute 再
+    calibrate”时预算被重置，从而绕过总上限。
+    """
     out = args.output.resolve()
     protocol = verify_frozen_protocol(out)
     calibration_out = out / "calibration.jsonl"
@@ -929,6 +980,7 @@ def calibrate(
 
 
 def _rate(numerator: int, denominator: int) -> dict[str, int | float | None]:
+    """同时返回分子、分母与比率；分母为 0 时 ``rate`` 为 ``None``（无样本）。"""
     return {
         "numerator": numerator,
         "denominator": denominator,
@@ -937,6 +989,11 @@ def _rate(numerator: int, denominator: int) -> dict[str, int | float | None]:
 
 
 def build_summary_report(out: Path) -> dict[str, object]:
+    """把 protocol / execution / calibration / 预算日志合并成一份可读汇总。
+
+    只做聚合与交叉校验，不重新调用模型；因此可以在任意时间重复运行，
+    结果只取决于目录中的已落盘记录。
+    """
     protocol = json.loads((out / "protocol.json").read_text(encoding="utf-8"))
     protocol_sha = sha256_path(out / "protocol.json")
     runtime = (
@@ -1477,6 +1534,11 @@ def render_summary_markdown(summary: dict[str, object]) -> str:
 
 
 def report(args: argparse.Namespace) -> dict[str, object]:
+    """生成汇总并同时写入输出目录与可选的外部报告前缀。
+
+    外部前缀用于把最终报告复制到 ``evaluation/reports/``；复制不会改动原始执行目录，
+    因此原始记录始终可回溯。
+    """
     out = args.output.resolve()
     summary = build_summary_report(out)
     markdown = render_summary_markdown(summary)
@@ -1534,6 +1596,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> None:
+    """按子命令分发四个阶段；阶段之间通过输出目录中的冻结件传递状态。"""
     parser = build_parser()
     args = parser.parse_args()
     if args.action == "prepare":

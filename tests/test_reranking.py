@@ -1,3 +1,9 @@
+"""模型重排：候选对象不被改写、非法排列显式回退、错误不泄露异常文本。
+
+重排是增强项，失败应保留原顺序并记录原因，而不是让整次问答失败；
+同时不得把金标或答案信息传给模型，也不允许丢掉任何候选。
+"""
+
 import json
 from pathlib import Path
 from types import SimpleNamespace

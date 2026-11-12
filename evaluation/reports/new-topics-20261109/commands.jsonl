@@ -1,0 +1,2 @@
+{"at": "2026-11-09T09:52:49.394425+00:00", "phase": "freeze", "status": "failed", "error_type": "ValueError", "message": "awaiting actual human confirmation: 12/12"}
+{"at": "2026-11-09T09:52:49.957490+00:00", "phase": "execute", "status": "failed", "error_type": "ValueError", "message": "actual human confirmation required before scoring or model loading"}

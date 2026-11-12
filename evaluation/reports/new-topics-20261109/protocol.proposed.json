@@ -1,0 +1,48 @@
+{
+  "strategies": [
+    "none",
+    "all",
+    "adaptive"
+  ],
+  "policy": {
+    "family": "overlap",
+    "threshold": 2
+  },
+  "candidate_k": 50,
+  "top_k": 5,
+  "rrf_k": 60,
+  "dense_weight": 1.0,
+  "sparse_weight": 1.0,
+  "bm25_k1": 1.5,
+  "bm25_b": 0.75,
+  "chunk_size": 500,
+  "chunk_overlap": 80,
+  "chunking_strategy": "sections",
+  "context_policy": "neighbors",
+  "context_char_budget": 8000,
+  "device": "cpu",
+  "dtype": "float32",
+  "cpu_threads": 4,
+  "batch_size": 8,
+  "max_length": 512,
+  "repeats": 1,
+  "expected_trials": 36,
+  "order": "case index modulo 3 rotates none/all/adaptive",
+  "warmup_question": "FastAPI 文档如何定义请求和响应？",
+  "warmup_version": "0.117.1",
+  "timing": "perf_counter; query encoding, retrieval, real gate/rerank, eligible filtering and assembly; excludes gold scoring/logging; startup and 3 warmups separate",
+  "quantiles": "linear interpolation of 12 observations per strategy; single pass; no SLA claim",
+  "metric": "all human-approved source-character evidence ranges covered by union; separately Top5 and final context; not answer accuracy",
+  "failure_taxonomy": [
+    "recall_missing",
+    "ranking_failure",
+    "context_assembly",
+    "gate_false_skip",
+    "gate_unhelpful_call",
+    "gate_harmful_call"
+  ],
+  "original_held_out_8": "excluded",
+  "threshold_search": false,
+  "answer_generation": false,
+  "retry_policy": "no automatic retry/resume; retain attempt and failure; new run requires recorded amendment"
+}

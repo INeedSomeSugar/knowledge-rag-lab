@@ -1,3 +1,18 @@
+"""向量化适配器：统一稠密检索的调用接口。
+
+三个实现对应三种使用场景，能力差异必须显式说明，不能互相冒充：
+
+- :class:`HashingEmbedding`：零下载、零费用的开发基线，本质是“带符号哈希词袋”，
+  只反映词面重合，不具备语义泛化能力。
+- :class:`OpenAICompatibleEmbedding`：任意 OpenAI 兼容端点（含 Ollama），需要真实
+  网络与服务可用性，失败不会静默降级。
+- ``LocalE5Embedding``（见 ``app.local_embeddings``）：固定提交、离线校验的本地模型，
+  是报告中“真实语义检索”的依据。
+
+接口只有三个成员：``dimension``、``embed_documents``、``embed_query``。查询与文档
+走不同方法，是因为 E5 一类模型要求 ``query:`` / ``passage:`` 前缀，混用会显著掉点。
+"""
+
 from __future__ import annotations
 
 import hashlib
@@ -8,6 +23,8 @@ from app.tokenization import tokenize
 
 
 class EmbeddingModel(Protocol):
+    """向量模型的最小协议；实现方负责保证维度一致与数值有限。"""
+
     dimension: int
 
     def embed_documents(self, texts: list[str]) -> list[list[float]]: ...
@@ -16,7 +33,15 @@ class EmbeddingModel(Protocol):
 
 
 class HashingEmbedding:
-    """无需下载模型的开发基线；语义检索应显式选择本地模型或真实 API。"""
+    """无需下载模型的开发基线；语义检索应显式选择本地模型或真实 API。
+
+    实现是 feature hashing：每个 token 用 blake2b 映射到固定维度的一个下标，
+    再用哈希奇偶决定正负号，最后做 L2 归一化。正负号的作用是让哈希冲突的
+    期望内积接近 0，而不是系统性累加。
+
+    这只保证“共享词项越多、相似度越高”，不具备同义改写能力。默认配置用它，
+    是为了让新机器 clone 后无需下载模型即可跑通链路，不代表检索质量达标。
+    """
 
     def __init__(self, dimension: int = 384) -> None:
         self.dimension = dimension
@@ -25,6 +50,7 @@ class HashingEmbedding:
         return [self._embed(text) for text in texts]
 
     def embed_query(self, text: str) -> list[float]:
+        # 哈希词袋对查询与文档使用同一映射，无需区分前缀。
         return self._embed(text)
 
     def _embed(self, text: str) -> list[float]:
@@ -40,6 +66,12 @@ class HashingEmbedding:
 
 
 class OpenAICompatibleEmbedding:
+    """通过 OpenAI 兼容接口批量取向量，支持自定义 base_url（含本地 Ollama）。
+
+    超时与重试被显式收紧（45s、1 次）：评测脚本需要“失败即记录失败”，
+    而不是在 SDK 内部长时间重试后把延迟算进检索耗时。
+    """
+
     def __init__(
         self, *, model: str, api_key: str, base_url: str = "", batch_size: int = 10
     ) -> None:
@@ -58,6 +90,11 @@ class OpenAICompatibleEmbedding:
         self.dimension = 0
 
     def embed_documents(self, texts: list[str]) -> list[list[float]]:
+        """分批请求并按 ``index`` 还原顺序。
+
+        服务端不保证返回顺序与输入一致，因此这里先排序再校验索引连续性；
+        索引缺失或重复会直接报错，避免把错位的向量写进缓存。
+        """
         if not texts:
             return []
         vectors: list[list[float]] = []

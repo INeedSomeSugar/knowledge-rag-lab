@@ -1,0 +1,26 @@
+{
+  "created_at": "2026-11-06T10:35:46.649849+00:00",
+  "candidate_count": 12,
+  "assistant_checked": 12,
+  "human_verified": 0,
+  "retrieval_executions": 0,
+  "answer_evaluations": 0,
+  "existing_held_out_cases_accessed": 0,
+  "selection_sha256": "d7bbaf536e42502ed2c81f682db4d149b0b0889f101c54d653be048b6c1edcb1",
+  "source_semantics": "six new document topics/new versions; semantic independence awaits human review",
+  "generator_sha256": "fdc3739f9d7b02e9ebb478a44d8ac8629361887c51b6b1ee67ec3ac998b951fe",
+  "files": {
+    "assistant-checks.jsonl": "0b3950e0f52a7f93f9fdb4dfedf4b4ad81e5bd0c85d4465ba27c01cd839cc152",
+    "generator.source.py": "fdc3739f9d7b02e9ebb478a44d8ac8629361887c51b6b1ee67ec3ac998b951fe",
+    "human-review.pending.jsonl": "d666f0c870a507e5d9936ef541d7f1214255b1c394bce25d9c8d864f5e80603f",
+    "LICENSE.fastapi.txt": "4ec89ffc81485b97fec584b2d4a961032eeffe834453894fd9c1274906cc744e",
+    "questions.candidate.jsonl": "3c751714b6c25f2f45a11e7bb5632c381ea7ca2645ee67d2042a597e6d3eac81",
+    "REVIEW.md": "5d17ba513dc2582530a4d88431b9d84e7038cbdde0b8b7bcbe73ea8cdacca46f",
+    "sources/fastapi/0.117.1/advanced/response-directly.md": "b20cc71555b8d6a1b9b992f7a3db34c081bbafc723c91d94034dec83a41bad42",
+    "sources/fastapi/0.117.1/tutorial/bigger-applications.md": "fff51c73f97f6d52b8d6043fed49658c5996ba05e1c967dcd9291c2c45aaa748",
+    "sources/fastapi/0.117.1/tutorial/body-fields.md": "4a7b0f86e924f5f8627953982850a2f24d17b13ba404945f18c7144e08644d7e",
+    "sources/fastapi/0.117.1/tutorial/body-nested-models.md": "9cec6c855a110d30256b64eed4edf8feaafccdbf0e728c23ca2adb103dc2d239",
+    "sources/fastapi/0.117.1/tutorial/security/first-steps.md": "1a7c22e2aac5c5f760a16240a66410ab079e42bd181fbd9526cf4338aa20de9b",
+    "sources/fastapi/0.118.0/tutorial/body-multiple-params.md": "33d749732d0c73fbe1c65945f1717968604398d7559917f28af6431866ba7ed0"
+  }
+}

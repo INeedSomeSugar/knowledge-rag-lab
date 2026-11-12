@@ -1,4 +1,14 @@
-"""Frozen development retrieval comparison: BM25, Hashing, real E5 Dense and Hybrid."""
+"""Frozen development retrieval comparison: BM25, Hashing, real E5 Dense and Hybrid.
+
+四路对照的意义在于分离两个变量：
+
+- ``bm25`` vs ``hashing_dense``：同为词面方法，检验哈希向量的实现是否引入额外损失；
+- ``hashing_dense`` vs ``e5_dense``：同一检索结构下，词面 vs 真实语义模型的差异；
+- ``e5_dense`` vs ``e5_hybrid``：固定语义模型后，加入 BM25 与 RRF 是否仍有收益。
+
+所有对照共用同一份分块、同一批人工核验开发题与同一个上下文策略，因此差异可以
+归因到检索本身。脚本不生成答案，指标是“证据覆盖”，不是答案正确率。
+"""
 
 from __future__ import annotations
 
@@ -30,6 +40,11 @@ METRICS = ("document_recall", "top_k_evidence_recall", "context_evidence_recall"
 
 
 def transitions(diagnostics: dict) -> dict:
+    """逐题比较四组策略对，标出 improved / regressed 的具体题号。
+
+    比聚合均值更重要的是这些题号：均值可能被少数题的互相抵消掩盖，
+    而“哪些题退化”才是下一轮要解释的对象。
+    """
     result = {}
     rows = [c for c in diagnostics["cases"] if c["status"] == "diagnosed"]
     for baseline, candidate in (
@@ -54,6 +69,12 @@ def transitions(diagnostics: dict) -> dict:
 
 
 def priority_review(diagnostics: dict) -> list[dict]:
+    """挑出需要人工复核的题，并给出理由。
+
+    四类触发条件覆盖“退化”与“可疑提升”：Dense/Hybrid 相对 BM25 退化要查原因；
+    Dense 出现 BM25 没有的覆盖，可能是标注漏标或分块巧合，也需要核对。
+    排序把“有退化”放最前，其次按是否已完整覆盖、最后按题号，保证顺序确定。
+    """
     result = []
     for row in diagnostics["cases"]:
         if row["status"] != "diagnosed":
@@ -94,6 +115,7 @@ def priority_review(diagnostics: dict) -> list[dict]:
 
 
 def distribution(values: list[float]) -> dict:
+    """nearest-rank 分位数；用于报告单次串行运行的实际延迟分布。"""
     import math
 
     ordered = sorted(values)

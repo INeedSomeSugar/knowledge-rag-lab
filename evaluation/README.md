@@ -1,5 +1,7 @@
 # 评测集说明
 
+2026-11-09已完成[新主题固定验证](reports/new-topics-20261109/README.md)：r1版本助手复核12/12，JQH实际确认四项审核12/12后冻结输入/配置并执行36条真实CPU对照。最终完整证据覆盖none/all/adaptive为11/12、12/12、12/12，BGE调用0、12、4；P95约0.048、7.892、7.778秒。证据均在原102份语料，无扩容；规则仍为overlap<2，未使用原8道保留测试或继续调参。[正式报告](reports/new-topics-20261109/analysis-complete/REPORT.md)、[逐题解释](reports/new-topics-20261109/INTERPRETATION.md)和[人工判断来源](reports/new-topics-20261109/human-decision-source.json)分开保存。覆盖不是答案正确率，12题不支持广泛泛化。`audit.json`、`analysis-pending/`和初始空表保留准备时0/12的历史状态，当前看`STATUS.json`。
+
 2026-10-28本机当前进度：47道开发问题已人工确认，旧6份及新5份答案有实际用户评分，另12份由助手复核。23份答案汇总和R003／R015的实际修订版见`work/human-review/20261028/CURRENT_REVIEW.md`；6道澄清／拒答理由已追加署名的助手说明。原始候选、准备时pending表和冻结实验保持历史状态，不能把这些文件的旧状态当作尚待用户填写的任务。两份修订稿未继承原人工评分，独立整体正确率仍未知，8道保留题未运行。
 
 ## v0.11 检索实验入口（历史状态）

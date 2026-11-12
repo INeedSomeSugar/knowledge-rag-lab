@@ -1,3 +1,8 @@
+"""文档加载：PDF 页边界必须以换页符保留，供分块器生成唯一页码。
+
+若把页间分隔降级成普通换行，跨页段落会被合成一块，页码引用就不再唯一。
+"""
+
 import sys
 from types import SimpleNamespace
 

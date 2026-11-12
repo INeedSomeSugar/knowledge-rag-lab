@@ -1,4 +1,11 @@
-"""Paired E5 Hybrid RRF vs pinned BGE: same fixed pool, Top-5 and context budget."""
+"""Paired E5 Hybrid RRF vs pinned BGE: same fixed pool, Top-5 and context budget.
+
+配对设计：两组的候选池完全相同（同一 E5 Hybrid 结果、同一 50 个候选），
+唯一差别是“是否再用 BGE 逐对打分”。因此 Top-5 与上下文覆盖的变化可以直接归因于重排。
+
+报告同时保留 ``before`` / ``after`` 的候选 id 与 BGE 原始 logit，便于解释
+“哪一条被提上来、哪一条被压下去”；CPU 计时只描述本机这一次运行。
+"""
 
 import argparse
 from collections import Counter
@@ -20,6 +27,7 @@ from scripts.evaluate import load_corpus, validate_evidence, validate_relevant_s
 
 
 def main():
+    """固定候选池 → BGE 重排 → 配对诊断；历史报告与运行目录一律不可覆盖。"""
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--documents", type=Path, default=Path("evaluation/support_corpus"))
     p.add_argument("--questions", type=Path, required=True)

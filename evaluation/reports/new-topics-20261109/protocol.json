@@ -1,0 +1,642 @@
+{
+  "frozen_at": "2026-11-09T10:09:01.488801+00:00",
+  "admission": {
+    "checked_at": "2026-11-09T10:08:58.566244+00:00",
+    "candidates": 12,
+    "human_verified": 12,
+    "pending": [],
+    "admitted": true,
+    "retrieval_executions_by_this_check": 0,
+    "all_evidence_in_index": true,
+    "model_loaded": false
+  },
+  "configuration": {
+    "strategies": [
+      "none",
+      "all",
+      "adaptive"
+    ],
+    "policy": {
+      "family": "overlap",
+      "threshold": 2
+    },
+    "candidate_k": 50,
+    "top_k": 5,
+    "rrf_k": 60,
+    "dense_weight": 1.0,
+    "sparse_weight": 1.0,
+    "bm25_k1": 1.5,
+    "bm25_b": 0.75,
+    "chunk_size": 500,
+    "chunk_overlap": 80,
+    "chunking_strategy": "sections",
+    "context_policy": "neighbors",
+    "context_char_budget": 8000,
+    "device": "cpu",
+    "dtype": "float32",
+    "cpu_threads": 4,
+    "batch_size": 8,
+    "max_length": 512,
+    "repeats": 1,
+    "expected_trials": 36,
+    "order": "case index modulo 3 rotates none/all/adaptive",
+    "warmup_question": "FastAPI 文档如何定义请求和响应？",
+    "warmup_version": "0.117.1",
+    "timing": "perf_counter; query encoding, retrieval, real gate/rerank, eligible filtering and assembly; excludes gold scoring/logging; startup and 3 warmups separate",
+    "quantiles": "linear interpolation of 12 observations per strategy; single pass; no SLA claim",
+    "metric": "all human-approved source-character evidence ranges covered by union; separately Top5 and final context; not answer accuracy",
+    "failure_taxonomy": [
+      "recall_missing",
+      "ranking_failure",
+      "context_assembly",
+      "gate_false_skip",
+      "gate_unhelpful_call",
+      "gate_harmful_call"
+    ],
+    "original_held_out_8": "excluded",
+    "threshold_search": false,
+    "answer_generation": false,
+    "retry_policy": "no automatic retry/resume; retain attempt and failure; new run requires recorded amendment"
+  },
+  "lock": {
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/cors.md": "a0dce3a56c4046fc295213c79e9e9ab3d1cb35a0c5ea30f60f5ae33154f54334",
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/background-tasks.md": "e71b82e39ef42fbf7bfe7cb00c48284d9d4522936166d13cbffd910a25c71952",
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/handling-errors.md": "0eb25424584f2335f6ac1d1b118d6bcf8edfaf406c34f283d5bb8a13ff40ca7d",
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/middleware.md": "6a1978c14c940395d50cede3778ebbe2e2e979a903ceade89fe72ee4a57b9ad2",
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/body.md": "52aaa676674f73b14b194db52223ffb7f31ea11e1454063f4d80a14bc125cde3",
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/query-params.md": "074c36130378b7ded697fcd79a3c1ad1b909218a9f1939adf856e69570b2dbf1",
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/path-params.md": "728f9d258d1dfa9385c762d8efacff93cdb710194bc194f059d46237e73db868",
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/response-model.md": "016feeeacf8c45635424465b9fee113780a95f288a425ed2caaac1b0437d131c",
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/request-files.md": "a4859b2637039d4ab0d1b919db66a1ce4e95bfb41c7a76ba3aaaea9c67fd721a",
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/request-forms-and-files.md": "124ef5fc7f94d2898e6e3e10557cb0b56cfa109ccb4e5608faaad6997629b5e5",
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/static-files.md": "38a9b4e2e7f6efd1b65114cfdcf50f87a7c781bb4f254a9cf5b798ff575e11b2",
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/dependencies/index.md": "ee633c813d07d395778663aee8ec4ddfab0f5e894c8df575e7132b9e3c380610",
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/dependencies/dependencies-with-yield.md": "56acb4cc536c0406e2810353d791d8dc4bde72f5d76dc729a15793aca1b8d1a5",
+    "evaluation/support_corpus_large/fastapi/0.110.0/advanced/behind-a-proxy.md": "61416c407cb55a028039b44e601036ecd1ab2acaa5db5803370c7403dcb958b8",
+    "evaluation/support_corpus_large/fastapi/0.110.0/advanced/events.md": "9bbfe92e21c972127bbd58107cbf3f4ef246294c69c942ddd5d97ad539699c71",
+    "evaluation/support_corpus_large/fastapi/0.110.0/deployment/docker.md": "2c60a1b4cd888e3ae9500bdad0c0cd30cbe6b6376fbda2ba540ce7a5188c777c",
+    "evaluation/support_corpus_large/fastapi/0.110.0/deployment/server-workers.md": "3684383e09c0f5c4ac6ec087df944b47c0d7b2f587192975b19f7a9458598ebe",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/cors.md": "442c41dcb7ba461a05f89e24b74cae55be5f330e086dc3b569a5420364629378",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/background-tasks.md": "0310d31652eec4d36097e50aace0567766d9510eb96761489495e39550602db7",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/handling-errors.md": "afd9ed00730226bd45f502bb7a2bbad6b1d99ccbebe7f17d2e02c5c47f184b5e",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/middleware.md": "52960b3060e4dadfa9477fa7a270402c6636999f9f0698b1bbe21a6224b00d79",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/body.md": "5f697c8048f3284332c2675811b2c47d384ba06cd3272baaad6101fb4f741917",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/query-params.md": "34267077d1f463a44a281a245256d95499f46faa63c66bf0e4c027e15b50fbdd",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/path-params.md": "727049b8463883a6bf5148c0aaa2c745b629959c41b88d57fc8981c89eebd48e",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/response-model.md": "bae37bbad097afb036ac3aba5cb7a3a98889065ad97d483ea3f58c5816a6be5e",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/request-files.md": "be6ebdc3452fa6e8894aaf30a21fc9eee19eeb4a6dbad57c1ffc3f78602344ec",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/request-forms-and-files.md": "a60335ef1b7e1bd604fb31ded8000ac9c0b38e59468923eef1e546ee998110b8",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/static-files.md": "bf0b52b9e78d29f3acce42d555f2c63e0c84dd2d21d05efcc39f45ec1f34f026",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/dependencies/index.md": "50a2b0dd609d8ed6d38f3fa16f4e1ed2028c482c6176fd7ad679be7002124e2e",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/dependencies/dependencies-with-yield.md": "172c8da7f37616060e677964d40aae8fa4a571e1ec5ac6ef6b1ac28903002ac2",
+    "evaluation/support_corpus_large/fastapi/0.115.0/advanced/behind-a-proxy.md": "6777fb137c60a115ad9a564d7db2f356e3c7acb720ce22fcbac495236d282163",
+    "evaluation/support_corpus_large/fastapi/0.115.0/advanced/events.md": "5ccf16ef11add8e35147d0955c9f94bd6caf01ee3518c3773a0702029ff3c659",
+    "evaluation/support_corpus_large/fastapi/0.115.0/deployment/docker.md": "2fdef3adc1e959f51bd7f6ef039b7b31aa260ddf7abadd826ef33f31bce979e0",
+    "evaluation/support_corpus_large/fastapi/0.115.0/deployment/server-workers.md": "72cdb766729bf45084f2a31c4163bb296565be1e669508c55b9b496a215b5a1d",
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/first-steps.md": "855b7ed56825704617406f3fc185fc31be925434901491d4494f871b16cef219",
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/path-params-numeric-validations.md": "5383e9332004a6fb1aedf06cf4667f4bd40707408757f52319b83244605e246d",
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/query-params-str-validations.md": "4add397616c5cfc7030463f35d040933e5ed34f488d7a0ce580024d0d8f8a574",
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/body-multiple-params.md": "8190c9a82af53b1ab35a41376c30a87bb640746bb6bf966a9b899378ed400a69",
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/body-fields.md": "daa95d35bdde104d79394ab8bb55b749afc290ebbc0ee868881a06af3e493d2e",
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/body-nested-models.md": "287b356c76f90d54474a7ac1a985c939aa0e12381fc03cfabf9e22930ccd2d3d",
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/response-status-code.md": "db6b2d28daa874cf93027e235bc1027968585a7229b92356ce46058ed38dbeeb",
+    "evaluation/support_corpus_large/fastapi/0.110.0/advanced/response-headers.md": "2678f1b910087a82863c2ac7f7f9dd9194da732efae9ad2e63837dbbd767a82b",
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/security/first-steps.md": "37b72a52a0d765680aec67f0800a1f431dcbe0a7a01e5a61dd93768c1648490c",
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/dependencies/classes-as-dependencies.md": "e2f238fee4062dc51817be91ba95dfd800af5edd1b23455b4a9135e61fed62c7",
+    "evaluation/support_corpus_large/fastapi/0.110.0/tutorial/bigger-applications.md": "9901cc151a22084db8dd7fb229db0310af5a585d13d856df0242ae34a631177a",
+    "evaluation/support_corpus_large/fastapi/0.110.0/advanced/response-directly.md": "c17a424c4f8a3641dbf68e348ecc1436cb9a5a1b4f22f12578417db570eba129",
+    "evaluation/support_corpus_large/fastapi/0.110.0/deployment/https.md": "264a3e8e87103e64d04e05a7fd941214c22d5558150203f5e35c914eb918eb97",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/first-steps.md": "973087b7d63d5546ac85dc92c171ee157faf1aa8d41869d6193ac786dc7b2969",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/path-params-numeric-validations.md": "ef2016335caeed9a728ac21ab3c319a9716af581de2b28c17da10998cdfdd670",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/query-params-str-validations.md": "b07110ba7cbe03c3d30a876f42eba2e37609d6084446db9192098002d80eaa91",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/body-multiple-params.md": "5bb637a731b310f5fb33fbded6bb98309d6d004d3fb6185fc63e868e75aed4e8",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/body-fields.md": "a678910ded07c5555185af5d04042698c031adc223297aed08901f7d7a17a14b",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/body-nested-models.md": "5ff2201e6822cb224beeff6f9cb84111aeb09e5841a6332e2bd88430b36e5954",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/response-status-code.md": "85fa5e6991cc17dd0cd0ccb7aefae2337d999f815c9c3cad54c48cfbf6aa3016",
+    "evaluation/support_corpus_large/fastapi/0.115.0/advanced/response-headers.md": "8b5a056bee3785f73b35ff8c8024ef98eb2f168ea0e01f4cb7e953cf5b0ca86b",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/security/first-steps.md": "225e4a6a31d82ae7de8429b1fff61c56fa542815feab82f0d17f0e767f4f50c0",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/dependencies/classes-as-dependencies.md": "b43a1829c1d56f03c1d37275c949a716dd955ec91ace1de0bf97a3b6f35ae43c",
+    "evaluation/support_corpus_large/fastapi/0.115.0/tutorial/bigger-applications.md": "d2e72d5f99bb218c3ab0a4450aa8773c7da13d6060dc29d3eefc4d6093ea71c7",
+    "evaluation/support_corpus_large/fastapi/0.115.0/advanced/response-directly.md": "9750abefa7c2774ad45e420e0a13329880f8b6dbd10e8cf171f3fd3b7597ad9b",
+    "evaluation/support_corpus_large/fastapi/0.115.0/deployment/https.md": "a784100459f5eb281a4d65b2047818b8faeb63c6905ed1aca525f480ab62159e",
+    "evaluation/support_corpus_large/fastapi/0.117.1/tutorial/cors.md": "dbefa452ba085290a1595e965c5df5c7946c4c38927be5f853a237e61c789754",
+    "evaluation/support_corpus_large/fastapi/0.117.1/tutorial/background-tasks.md": "0dde9582a1c4b267671d8546ee28982632216a209d1ea1655c73c80abdba72e5",
+    "evaluation/support_corpus_large/fastapi/0.117.1/tutorial/handling-errors.md": "e3420f2a530156d294a65ffb086f3156e05c327bb5b9438c7fb512141f473f71",
+    "evaluation/support_corpus_large/fastapi/0.117.1/tutorial/middleware.md": "e88e9ba0f424af0b10c235b86f3fb872e84805e0ddcbd07aeeb4b34aca665b04",
+    "evaluation/support_corpus_large/fastapi/0.117.1/tutorial/body.md": "38a2968c6b507207e8744d406d7974952f8b914371e7916cebfda1c225695548",
+    "evaluation/support_corpus_large/fastapi/0.117.1/tutorial/query-params.md": "cf637e6a1959d6e683fd707d179a0fe707f8b8eb0282b230c2da861b5d8e4760",
+    "evaluation/support_corpus_large/fastapi/0.117.1/tutorial/path-params.md": "aca27eb870955f51ea6e0b84cb6708d09332697856e114bfc2c161f938a80728",
+    "evaluation/support_corpus_large/fastapi/0.117.1/tutorial/request-forms-and-files.md": "f6db36ff3c997844d44497a2550b1fa10dd9d3e39770e8372e9a870700dd2ff6",
+    "evaluation/support_corpus_large/fastapi/0.117.1/deployment/server-workers.md": "302433f4dcf3e6dc037c3c1264bf49e7c1e4ad494e69b72f34afd044ae1cf071",
+    "evaluation/support_corpus_large/fastapi/0.117.1/tutorial/first-steps.md": "1e28c5e96d49b182de272e7914e094d3af25a42c33abcc8b61c8298dbc572f16",
+    "evaluation/support_corpus_large/fastapi/0.117.1/tutorial/path-params-numeric-validations.md": "c356541c49f6278d8da5034587165ff4c2730e3d3c93a1584661a48436f6768a",
+    "evaluation/support_corpus_large/fastapi/0.117.1/tutorial/query-params-str-validations.md": "9f7f1d65b6a2e7af0be8b096e4628ffcf651995bd66b93d18349f7e67ccac0c9",
+    "evaluation/support_corpus_large/fastapi/0.117.1/tutorial/body-multiple-params.md": "a06060eb3b33898c08fa2a926260bf3c83e93578dc0e3dbc07498bbb4c8e43be",
+    "evaluation/support_corpus_large/fastapi/0.117.1/tutorial/body-fields.md": "60563aef7d7c603fd492972e8711e2fdcb02737c8a04eda1965e5e19f06ee282",
+    "evaluation/support_corpus_large/fastapi/0.117.1/tutorial/body-nested-models.md": "2d749f231e3637fa35bc00afbcb0320a58b253eaae469f9dc13742b9207d100a",
+    "evaluation/support_corpus_large/fastapi/0.117.1/tutorial/response-status-code.md": "b295802614f32acc552f78b4968596e08de36190130743ec398563c17e146ae5",
+    "evaluation/support_corpus_large/fastapi/0.117.1/advanced/response-headers.md": "fd6dbf96f9e0376097bed52634fed8646e7bd4cfb0316dcf33bc6f065e9e2d59",
+    "evaluation/support_corpus_large/fastapi/0.117.1/tutorial/security/first-steps.md": "8f2c92bfb654136cdb2079f6eb9b7c6cb3acf7728bf86f25a0a3b3d3e7da8a1d",
+    "evaluation/support_corpus_large/fastapi/0.117.1/tutorial/dependencies/classes-as-dependencies.md": "e399ef933c75e5039a4099fd1708f9657d3408295e3a1ecec58f9a22d9de1eb2",
+    "evaluation/support_corpus_large/fastapi/0.117.1/tutorial/bigger-applications.md": "9fe4bb63745784799128c948082bcb58ff4d65c99467bbc1a69cfe4cfa709eca",
+    "evaluation/support_corpus_large/fastapi/0.117.1/advanced/response-directly.md": "3daa7927ee085cb893918595be557b4339dc887b2235a05651fce7438871ff91",
+    "evaluation/support_corpus_large/fastapi/0.117.1/deployment/https.md": "c7b186e564867dd1a22e20e6bc8e22a01a2269591ad52dc4f11021029d557c50",
+    "evaluation/support_corpus_large/fastapi/0.118.0/tutorial/cors.md": "dbefa452ba085290a1595e965c5df5c7946c4c38927be5f853a237e61c789754",
+    "evaluation/support_corpus_large/fastapi/0.118.0/tutorial/background-tasks.md": "0dde9582a1c4b267671d8546ee28982632216a209d1ea1655c73c80abdba72e5",
+    "evaluation/support_corpus_large/fastapi/0.118.0/tutorial/handling-errors.md": "e3420f2a530156d294a65ffb086f3156e05c327bb5b9438c7fb512141f473f71",
+    "evaluation/support_corpus_large/fastapi/0.118.0/tutorial/middleware.md": "e88e9ba0f424af0b10c235b86f3fb872e84805e0ddcbd07aeeb4b34aca665b04",
+    "evaluation/support_corpus_large/fastapi/0.118.0/tutorial/body.md": "38a2968c6b507207e8744d406d7974952f8b914371e7916cebfda1c225695548",
+    "evaluation/support_corpus_large/fastapi/0.118.0/tutorial/query-params.md": "cf637e6a1959d6e683fd707d179a0fe707f8b8eb0282b230c2da861b5d8e4760",
+    "evaluation/support_corpus_large/fastapi/0.118.0/tutorial/path-params.md": "aca27eb870955f51ea6e0b84cb6708d09332697856e114bfc2c161f938a80728",
+    "evaluation/support_corpus_large/fastapi/0.118.0/tutorial/response-model.md": "dcdf1100b2f6a640acb91df6bce5927964303955b2a0e42f20c16d035153a9d1",
+    "evaluation/support_corpus_large/fastapi/0.118.0/tutorial/request-files.md": "580272c69d4f004b6f68e4809fee843a90db4d7d829d3b6dd884d8e0c01d821c",
+    "evaluation/support_corpus_large/fastapi/0.118.0/tutorial/request-forms-and-files.md": "f6db36ff3c997844d44497a2550b1fa10dd9d3e39770e8372e9a870700dd2ff6",
+    "evaluation/support_corpus_large/fastapi/0.118.0/tutorial/static-files.md": "cecc992407753505c0497adf0e9269f9407d6a42ce108280ae6fab8f297ad6d9",
+    "evaluation/support_corpus_large/fastapi/0.118.0/tutorial/dependencies/index.md": "8b75221eaa34dc918a5f353245d040d8dac53cf62237b86feeef97aaf85bb661",
+    "evaluation/support_corpus_large/fastapi/0.118.0/tutorial/dependencies/dependencies-with-yield.md": "c34a504aa64bcbc19674ed5a7c47d158d03648ecf32a8aa876cecee7014b7e7f",
+    "evaluation/support_corpus_large/fastapi/0.118.0/advanced/behind-a-proxy.md": "ff9b50d10474e691dd05fa43bca34099a8746b408f167e124b14b24d409cc30c",
+    "evaluation/support_corpus_large/fastapi/0.118.0/advanced/events.md": "8cfe4d5b495a37ad6d2a0f92465b09cc9b0d3533f3cc0f3d76a94e8867805e23",
+    "evaluation/support_corpus_large/fastapi/0.118.0/deployment/docker.md": "2fdef3adc1e959f51bd7f6ef039b7b31aa260ddf7abadd826ef33f31bce979e0",
+    "evaluation/support_corpus_large/fastapi/0.118.0/deployment/server-workers.md": "302433f4dcf3e6dc037c3c1264bf49e7c1e4ad494e69b72f34afd044ae1cf071",
+    "evaluation/support_corpus_large/fastapi/0.118.0/tutorial/first-steps.md": "1e28c5e96d49b182de272e7914e094d3af25a42c33abcc8b61c8298dbc572f16",
+    "evaluation/support_corpus_large/fastapi/0.118.0/tutorial/body-multiple-params.md": "a06060eb3b33898c08fa2a926260bf3c83e93578dc0e3dbc07498bbb4c8e43be",
+    "evaluation/support_corpus_large/fastapi/0.118.0/tutorial/body-fields.md": "60563aef7d7c603fd492972e8711e2fdcb02737c8a04eda1965e5e19f06ee282",
+    "evaluation/support_corpus_large/manifest.json": "5e3dfbed084085c847ec01f0241571f4b85829eea347aaa533f8dc9ecb88a416",
+    "work/models/multilingual-e5-small/614241f622f53c4eeff9890bdc4f31cfecc418b3/manifest.json": "1a36334b0f31e7ab7da3337d6646db33e354fd66cc94723c54199f6c0248f989",
+    "work/models/multilingual-e5-small/614241f622f53c4eeff9890bdc4f31cfecc418b3/config.json": "69137736cab8b8903a07fe8afaafdda25aac55415a12a55d1bffa9f581abf959",
+    "work/models/multilingual-e5-small/614241f622f53c4eeff9890bdc4f31cfecc418b3/model.safetensors": "1a55775f53449dac10a2bcbc312469fac40b96d53198c407081a831f81c98477",
+    "work/models/multilingual-e5-small/614241f622f53c4eeff9890bdc4f31cfecc418b3/tokenizer.json": "0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39",
+    "work/models/multilingual-e5-small/614241f622f53c4eeff9890bdc4f31cfecc418b3/tokenizer_config.json": "a1d6bc8734a6f635dc158508bef000f8e2e5a759c7d92f984b2c86e5ff53425b",
+    "work/models/multilingual-e5-small/614241f622f53c4eeff9890bdc4f31cfecc418b3/special_tokens_map.json": "d05497f1da52c5e09554c0cd874037a083e1dc1b9cfd48034d1c717f1afc07a7",
+    "work/models/multilingual-e5-small/614241f622f53c4eeff9890bdc4f31cfecc418b3/sentencepiece.bpe.model": "cfc8146abe2a0488e9e2a0c56de7952f7c11ab059eca145a0a727afce0db2865",
+    "work/models/multilingual-e5-small/614241f622f53c4eeff9890bdc4f31cfecc418b3/README.md": "0038de97aee16258cecbad7ffda4b4febd6953e747a00e0ddbc8e6ed241e9c1c",
+    "work/models/bge-reranker-base/2cfc18c9415c912f9d8155881c133215df768a70/manifest.json": "9b79c40607b6057768e30a150dfe43abe48c6ba3d87ccdd0cdbdce99b09a448b",
+    "work/models/bge-reranker-base/2cfc18c9415c912f9d8155881c133215df768a70/config.json": "289adf7ada1eb6b4afa7589a48a032d45a076cf2e46dcdb3b4cabc33be14f708",
+    "work/models/bge-reranker-base/2cfc18c9415c912f9d8155881c133215df768a70/model.safetensors": "ced967c45fd1902eb92716c9ceeca7c95a936770ea9db611f5a841b926e33fbd",
+    "work/models/bge-reranker-base/2cfc18c9415c912f9d8155881c133215df768a70/tokenizer.json": "9eb652ac4e40cc093272bbbe0f55d521cf67570060227109b5cdc20945a4489e",
+    "work/models/bge-reranker-base/2cfc18c9415c912f9d8155881c133215df768a70/tokenizer_config.json": "a1d6bc8734a6f635dc158508bef000f8e2e5a759c7d92f984b2c86e5ff53425b",
+    "work/models/bge-reranker-base/2cfc18c9415c912f9d8155881c133215df768a70/special_tokens_map.json": "d5469a60db23249c7f8945013d78df30b44b6bf686c6bb4740f4223f77b1b535",
+    "work/models/bge-reranker-base/2cfc18c9415c912f9d8155881c133215df768a70/sentencepiece.bpe.model": "cfc8146abe2a0488e9e2a0c56de7952f7c11ab059eca145a0a727afce0db2865",
+    "work/models/bge-reranker-base/2cfc18c9415c912f9d8155881c133215df768a70/README.md": "b4223c8c1e95538f8c79168afc501f8b2da06c63221f013b79b28af78b59366d",
+    "app/__init__.py": "2adeaa5f44f5752d01b892c36bce0492e154b5d4c5134ef83296d3912ce8b947",
+    "app/answers.py": "ac4de374aad2b7972c4517d718790e047f6fd27b17e094def031db3c79d05eeb",
+    "app/budget_evaluation.py": "66c9d75ccb684f26bad5e1d62e53d3d2bccc119ed8996ac316102956e1985de4",
+    "app/budget_reranking.py": "9429ca431c35921b19e93f4e77b6bc2349d358aef16356cef947f9d6dfe26a03",
+    "app/chunking.py": "d535f23b50187a7b0fa5dfed7ce150feac16ebd4e3eaa489852ba4293cdc5737",
+    "app/config.py": "863b57bd139e654e175642b8a566ccbe672c4aaa14b547796c6f1745f8109e15",
+    "app/context.py": "c825fcff5f21ab9138f3087a059229dd2c41caeca128966fb12d70c05c467cbc",
+    "app/context_evaluation.py": "800ade9dee4fd56094fac7c8d23b8c3e928208b8586616acc3985d73fca62c94",
+    "app/conversation.py": "63f8ffeb7cfb59247c3d7852487288f12bc83e20c172dc7c69fd1b9e60c46e12",
+    "app/corpus.py": "decde8e90ed403b02703c3e6fb7a346616fb7df05582bade896204ef58c2e31f",
+    "app/cross_encoder.py": "aa21767d7a817507853e764c319747ebae0f30fa1440cb11cf635eae9890e55e",
+    "app/deepseek.py": "e89c0303e70109eac76f0e1535baf1ce2c81375cd19f53df6a515109cdfecda9",
+    "app/diagnostics.py": "cf70190126eb92dae668db9a9b2d02f30e40862745bf328a5f2710bfbf60d352",
+    "app/domain.py": "f0e6e8fd89cf4504bb958286d1707547d12758c0a8eaac73c4a7b264c42b278f",
+    "app/embeddings.py": "5988f8a6c6fbc7b124a960b736d1d3cbd2fc6557bceac1a4078fb5e20df07ed7",
+    "app/evaluation.py": "4db2c1eac7e08f57c3af3b0de2a25e7cb68bc008597a248055318fb2f6a31cb5",
+    "app/factory.py": "6551b58b299e7da69055cdf3abbfca0882afeb75a4e6011861e86ea09238972a",
+    "app/generation.py": "9d4da4623556f5d4e500f96a8a1247b328614e59f6f9094ec1d241d076266c6b",
+    "app/judge.py": "ed07ddca9070a82d6c8ebca1125c634b5b216130b369f9934640d013cf638ddb",
+    "app/loaders.py": "8f519524fbc3a98459958c7c08e495947d2f5b21b194c7855c0e9776fef927d9",
+    "app/local_embeddings.py": "523e39a9efb7523a32fcccf7317d1d09453a1c724b991ae013b2c914e42178e1",
+    "app/main.py": "96e56222f95aadc8f4533562933abbbb697e71315f0f679bb45ea9540373e420",
+    "app/mcp_server.py": "cb5fc66ba271ff79a96695cd8dc2cd0b917ab0ecd5f44ecc6d564ad3e063fa40",
+    "app/observability.py": "9d280ccc0a8f2470c6a1f5988937a4de4f3fb9d731bdfc3d618a65ac0b64c707",
+    "app/question_review.py": "467ea189181118d8ac9efda70c6222cabcd2d64e3ab4bb9326d0557afe8a9be8",
+    "app/reranking.py": "2ae041d851d42dfeb9f257b0a3f46b149e3ada3acdbc346979a8ad06886d0925",
+    "app/retrieval.py": "f97923e541394f8e23b497ec70eca12f0ca9fefea94f13bd6b0c19304c4c32a9",
+    "app/service.py": "7dae208cfcc3242c25ee9d9746d06eb0219885fadbbe2532d0fa0ff35d1476e8",
+    "app/storage.py": "a2b7fe28dcbde7e5a2389e0e16027b9bde280242f3f92abaa45a41f370395b1c",
+    "app/streaming.py": "d38ad74de6b07b85f4d50e68d1c4ce2e20fa6324878e136a3fe649562aa9c0cd",
+    "app/tokenization.py": "a20815e9262c6cc1d6eafae79bb3f9d993fc871950da2bdc7ccc15c158117528",
+    "app/vector_cache.py": "44381fdc7f1bb29b674d086aa39b9179d34830acaba6d6be7ff81a42ffe21b7e",
+    "app/verification_evaluation.py": "891ee72cad2241c0ae4ed4120df88093946fc52f4033a14d077b44db8f595776",
+    "app/version_comparison.py": "80f5873b30a348ac6d6432926936deef15180b6382c0c91fcb534335543702dc",
+    "scripts/validate_new_topics.py": "737939d8d25c8f86395084b8f5214ec83fd560c3d54caeee549fd564abe20dc8",
+    "scripts/evaluate.py": "c09b389506c4785320dff8318504353b35f10b895ee323bc802ee584bd0b9ca8",
+    "scripts/experiment_budget_reranking.py": "2a310c3b3b50efeba4643b9dc14be8c88779e81e516fe3f6f2b180ba1c173fc3",
+    "scripts/report_new_topics.py": "ac1e5c12d774c0dd703ba44af03022b0948d6ba5c5cd787f432b8fffc94539ff",
+    "evaluation/reports/new-topics-20261109/inputs/questions.candidate.jsonl": "5bad393aef9da6f9c86611504d60c969db6794f88acf9b6d44b6fcd9e7d19f5d",
+    "evaluation/reports/new-topics-20261109/inputs/questions.reviewed.jsonl": "d155ae53f6ffea2263cad6df568aaf360073b0a706504d289523264a63eaaea1",
+    "evaluation/reports/new-topics-20261109/inputs/human-review.frozen.jsonl": "1cecdb803f2edd55fd5367276c40fe5670115089ae4d3e78122d7b1177c7978d",
+    "evaluation/reports/new-topics-20261109/audit.json": "cf817948a4ca64cdbadd68716b57e52a3ee649c4e4dcf85d571ff7f58872a47d",
+    "evaluation/reports/new-topics-20261109/protocol.proposed.json": "89001e30318fc4f80779422edc35259c336093358df848dcf8703058490943fb",
+    "evaluation/reports/new-topics-20261109/protected-before.json": "0615aa14b3c4e5d552c2a2acca29ecbbf4e07db1579a4c7462ef14d58b07d39e",
+    "evaluation/reports/new-topics-20261109/documentation-update.json": "98df9488a3a07ec3186abac95731c153058efd79d95ff586854487b647ee6b2e"
+  },
+  "packages": [
+    [
+      "Jinja2",
+      "3.1.6"
+    ],
+    [
+      "MarkupSafe",
+      "3.0.3"
+    ],
+    [
+      "PyJWT",
+      "2.15.1"
+    ],
+    [
+      "PyYAML",
+      "6.0.3"
+    ],
+    [
+      "Pygments",
+      "2.21.0"
+    ],
+    [
+      "annotated-doc",
+      "0.0.5"
+    ],
+    [
+      "annotated-types",
+      "0.8.0"
+    ],
+    [
+      "anyio",
+      "4.15.1"
+    ],
+    [
+      "attrs",
+      "26.1.0"
+    ],
+    [
+      "certifi",
+      "2026.7.22"
+    ],
+    [
+      "cffi",
+      "2.1.1"
+    ],
+    [
+      "charset-normalizer",
+      "3.5.2"
+    ],
+    [
+      "click",
+      "8.5.0"
+    ],
+    [
+      "colorama",
+      "0.4.6"
+    ],
+    [
+      "cryptography",
+      "50.0.2"
+    ],
+    [
+      "distro",
+      "1.9.0"
+    ],
+    [
+      "fastapi",
+      "0.141.1"
+    ],
+    [
+      "filelock",
+      "3.32.3"
+    ],
+    [
+      "filelock",
+      "4.2.4"
+    ],
+    [
+      "fsspec",
+      "2026.7.0"
+    ],
+    [
+      "fsspec",
+      "2026.9.0"
+    ],
+    [
+      "h11",
+      "0.16.0"
+    ],
+    [
+      "httpcore",
+      "1.0.9"
+    ],
+    [
+      "httptools",
+      "0.8.0"
+    ],
+    [
+      "httpx",
+      "0.28.1"
+    ],
+    [
+      "httpx-sse",
+      "0.4.3"
+    ],
+    [
+      "huggingface_hub",
+      "0.36.2"
+    ],
+    [
+      "idna",
+      "3.19"
+    ],
+    [
+      "iniconfig",
+      "2.3.0"
+    ],
+    [
+      "jiter",
+      "0.16.0"
+    ],
+    [
+      "jsonschema",
+      "4.26.0"
+    ],
+    [
+      "jsonschema-specifications",
+      "2025.9.1"
+    ],
+    [
+      "knowledge-rag-lab",
+      "0.11.0"
+    ],
+    [
+      "knowledge-rag-lab",
+      "0.4.0"
+    ],
+    [
+      "mcp",
+      "1.30.0"
+    ],
+    [
+      "mpmath",
+      "1.3.0"
+    ],
+    [
+      "networkx",
+      "3.6.1"
+    ],
+    [
+      "numpy",
+      "2.5.4"
+    ],
+    [
+      "openai",
+      "2.54.0"
+    ],
+    [
+      "packaging",
+      "26.3"
+    ],
+    [
+      "pip",
+      "25.0.1"
+    ],
+    [
+      "pluggy",
+      "1.6.0"
+    ],
+    [
+      "psutil",
+      "7.2.2"
+    ],
+    [
+      "pycparser",
+      "3.12"
+    ],
+    [
+      "pydantic",
+      "2.13.5"
+    ],
+    [
+      "pydantic-settings",
+      "2.16.2"
+    ],
+    [
+      "pydantic_core",
+      "2.46.5"
+    ],
+    [
+      "pypdf",
+      "6.18.1"
+    ],
+    [
+      "pytest",
+      "9.1.1"
+    ],
+    [
+      "python-dotenv",
+      "1.2.3"
+    ],
+    [
+      "python-multipart",
+      "0.0.32"
+    ],
+    [
+      "pywin32",
+      "312"
+    ],
+    [
+      "referencing",
+      "0.37.0"
+    ],
+    [
+      "regex",
+      "2026.9.29"
+    ],
+    [
+      "requests",
+      "2.34.2"
+    ],
+    [
+      "rpds-py",
+      "2026.9.1"
+    ],
+    [
+      "ruff",
+      "0.16.7"
+    ],
+    [
+      "safetensors",
+      "0.8.0"
+    ],
+    [
+      "setuptools",
+      "78.1.0"
+    ],
+    [
+      "sniffio",
+      "1.3.1"
+    ],
+    [
+      "sse-starlette",
+      "3.6.0"
+    ],
+    [
+      "starlette",
+      "1.6.0"
+    ],
+    [
+      "sympy",
+      "1.14.0"
+    ],
+    [
+      "tokenizers",
+      "0.22.2"
+    ],
+    [
+      "torch",
+      "2.9.1+cpu"
+    ],
+    [
+      "tqdm",
+      "4.70.1"
+    ],
+    [
+      "transformers",
+      "4.57.6"
+    ],
+    [
+      "typing-inspection",
+      "0.4.4"
+    ],
+    [
+      "typing_extensions",
+      "4.16.0"
+    ],
+    [
+      "urllib3",
+      "2.8.0"
+    ],
+    [
+      "uvicorn",
+      "0.52.4"
+    ],
+    [
+      "watchfiles",
+      "1.2.0"
+    ],
+    [
+      "websockets",
+      "17.1"
+    ]
+  ],
+  "packages_sha256": "c700bf8e2b553faba53e1f4fd132541df44c80cecb28e1f14921b8f8fd900dc9",
+  "chunks_sha256": "0668b71354959f243eaff561ffac96ef34dbfd8430c6d3665b2ea67435e14700",
+  "question_ids": [
+    "budget-independent-001",
+    "budget-independent-002",
+    "budget-independent-003",
+    "budget-independent-004",
+    "budget-independent-005",
+    "budget-independent-006",
+    "budget-independent-007",
+    "budget-independent-008",
+    "budget-independent-009",
+    "budget-independent-010",
+    "budget-independent-011",
+    "budget-independent-012"
+  ],
+  "corpus_sha256": "2f73e7810812e12eaef55c94277ae8913c99e6b14092ac123b1a3c45175c8475",
+  "human_review_sha256": "1cecdb803f2edd55fd5367276c40fe5670115089ae4d3e78122d7b1177c7978d",
+  "model_manifests": {
+    "embedding": {
+      "model": "intfloat/multilingual-e5-small",
+      "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+      "license": "mit",
+      "model_card": "https://huggingface.co/intfloat/multilingual-e5-small/blob/614241f622f53c4eeff9890bdc4f31cfecc418b3/README.md",
+      "downloaded_at": "2026-10-27T07:50:58.192216+00:00",
+      "files": {
+        "config.json": {
+          "sha256": "69137736cab8b8903a07fe8afaafdda25aac55415a12a55d1bffa9f581abf959",
+          "bytes": 655
+        },
+        "model.safetensors": {
+          "sha256": "1a55775f53449dac10a2bcbc312469fac40b96d53198c407081a831f81c98477",
+          "bytes": 470641600
+        },
+        "tokenizer.json": {
+          "sha256": "0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39",
+          "bytes": 17082730
+        },
+        "tokenizer_config.json": {
+          "sha256": "a1d6bc8734a6f635dc158508bef000f8e2e5a759c7d92f984b2c86e5ff53425b",
+          "bytes": 443
+        },
+        "special_tokens_map.json": {
+          "sha256": "d05497f1da52c5e09554c0cd874037a083e1dc1b9cfd48034d1c717f1afc07a7",
+          "bytes": 167
+        },
+        "sentencepiece.bpe.model": {
+          "sha256": "cfc8146abe2a0488e9e2a0c56de7952f7c11ab059eca145a0a727afce0db2865",
+          "bytes": 5069051
+        },
+        "README.md": {
+          "sha256": "0038de97aee16258cecbad7ffda4b4febd6953e747a00e0ddbc8e6ed241e9c1c",
+          "bytes": 497538
+        }
+      }
+    },
+    "reranker": {
+      "model": "BAAI/bge-reranker-base",
+      "revision": "2cfc18c9415c912f9d8155881c133215df768a70",
+      "license": "mit",
+      "downloaded_at": "2026-10-28T08:58:14.539709+00:00",
+      "files": {
+        "config.json": {
+          "sha256": "289adf7ada1eb6b4afa7589a48a032d45a076cf2e46dcdb3b4cabc33be14f708",
+          "bytes": 799
+        },
+        "model.safetensors": {
+          "sha256": "ced967c45fd1902eb92716c9ceeca7c95a936770ea9db611f5a841b926e33fbd",
+          "bytes": 1112206140
+        },
+        "tokenizer.json": {
+          "sha256": "9eb652ac4e40cc093272bbbe0f55d521cf67570060227109b5cdc20945a4489e",
+          "bytes": 17098107
+        },
+        "tokenizer_config.json": {
+          "sha256": "a1d6bc8734a6f635dc158508bef000f8e2e5a759c7d92f984b2c86e5ff53425b",
+          "bytes": 443
+        },
+        "special_tokens_map.json": {
+          "sha256": "d5469a60db23249c7f8945013d78df30b44b6bf686c6bb4740f4223f77b1b535",
+          "bytes": 279
+        },
+        "sentencepiece.bpe.model": {
+          "sha256": "cfc8146abe2a0488e9e2a0c56de7952f7c11ab059eca145a0a727afce0db2865",
+          "bytes": 5069051
+        },
+        "README.md": {
+          "sha256": "b4223c8c1e95538f8c79168afc501f8b2da06c63221f013b79b28af78b59366d",
+          "bytes": 34111
+        }
+      }
+    }
+  },
+  "embedding_inference": {
+    "dimension": 384,
+    "query_prefix": "query: ",
+    "document_prefix": "passage: ",
+    "pooling": "attention-mask mean including special tokens",
+    "normalization": "L2",
+    "truncation": "right, prefix and special tokens included",
+    "max_length": 512,
+    "dtype": "float32",
+    "device": "cpu",
+    "batch_size": 8,
+    "cpu_threads": 4,
+    "query_cache": false,
+    "document_cache": "isolated per attempt; index reused in memory"
+  },
+  "reranker_inference": {
+    "input": "query-document text pair",
+    "score": "raw logit, descending stable sort",
+    "truncation": "longest_first/right",
+    "max_length": 512,
+    "batch_size": 8,
+    "dtype": "float32",
+    "device": "cpu",
+    "cpu_threads": 4,
+    "score_cache": false
+  },
+  "python_version": "3.12.14",
+  "platform": "Windows-11-10.0.26300-SP0"
+}

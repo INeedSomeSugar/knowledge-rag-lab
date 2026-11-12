@@ -1,0 +1,10 @@
+{
+  "at": "2026-11-09T10:13:16.164362+00:00",
+  "trials": 36,
+  "process_wall_seconds": 202.43664209998678,
+  "paid_api_calls": 0,
+  "generated_answers": 0,
+  "original_held_out_8_executions": 0,
+  "automatic_retries": 0,
+  "warmup_trials_excluded": 3
+}

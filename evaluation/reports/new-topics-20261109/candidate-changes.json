@@ -1,0 +1,18 @@
+[
+  {
+    "id": "budget-independent-004",
+    "reason": "补齐dict[int,float]声明及可转换字符串键的必要证据。"
+  },
+  {
+    "id": "budget-independent-005",
+    "reason": "为参考答案中的Annotated语法补充实际代码证据。"
+  },
+  {
+    "id": "budget-independent-009",
+    "reason": "去掉未单独标注的内容校验扩展，聚焦原文的数据转换。"
+  },
+  {
+    "id": "budget-independent-012",
+    "reason": "限定为固定文档的安装说明，不外推任意部署的运行依赖。"
+  }
+]

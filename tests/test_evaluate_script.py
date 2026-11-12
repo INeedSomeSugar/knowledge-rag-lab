@@ -1,3 +1,9 @@
+"""评测脚本的报告组装与输入校验。
+
+保护两类容易“看起来正常但结论错误”的问题：标注引用不存在的来源时必须报错，
+而不是让该题静默变成未命中；报告必须固化配置与数据规模，便于判断数字适用边界。
+"""
+
 from pathlib import Path
 
 from app.chunking import TextChunker

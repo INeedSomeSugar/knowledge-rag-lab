@@ -1,4 +1,16 @@
-"""Prepare isolated pinned environments and record actual fixed-case behavior."""
+"""Prepare isolated pinned environments and record actual fixed-case behavior.
+
+流程：为每个目标 FastAPI 版本准备独立虚拟环境 → 运行 ``scripts/version_cases.py``
+的固定用例 → 校验事件顺序 → 写入带版本、依赖与代码指纹的行为记录。
+
+``validate_observation`` 的判定不是“看程序有没有崩”，而是核对：
+
+- 0.117.1 的借用场景应在读取时因资源已关闭而失败（``RuntimeError: resource_closed``）；
+- 0.118.0 与 ``*_owned`` 场景应正常完成；
+- ``events`` 中 ``close`` 与 ``read`` 的先后顺序必须与预期一致。
+
+因此这份记录描述的是“在该版本该依赖组合下实际观察到什么”，不能外推为语义结论。
+"""
 
 from __future__ import annotations
 

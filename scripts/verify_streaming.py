@@ -1,4 +1,15 @@
-"""Real loopback HTTP/SSE with a synthetic streamed upstream; zero paid API calls."""
+"""Real loopback HTTP/SSE with a synthetic streamed upstream; zero paid API calls.
+
+验证目标不是“模型快不快”，而是协议层行为：
+
+- 响应头是 ``text/event-stream``，帧按 ``event``/``data`` 正确编码；
+- ``draft`` 帧早于 ``final`` 至少 100ms 到达，且每帧都带 ``provisional=True``；
+- 最后一帧是 ``done``，``final.status`` 为 ``answered``；
+- 只回一个版本号（``"2.0.0"``）时，规则改写继承上一轮问题，并真的按该版本过滤；
+- 静态 ``/chat.js`` 可访问。
+
+上游用合成流式生成器替代真实模型，因此零费用、可重复；耗时不能当作真实模型延迟。
+"""
 
 import argparse
 from contextlib import contextmanager
@@ -17,6 +28,11 @@ import uvicorn
 
 @contextmanager
 def serve(application):
+    """在随机空闲端口启动 uvicorn，返回基地址；退出时确保线程与套接字释放。
+
+    端口由 ``bind(("127.0.0.1", 0))`` 动态分配，避免与开发中的服务冲突；
+    启动与清理都有超时，失败时抛出明确错误而不是静默挂起。
+    """
     sock = socket.socket()
     sock.bind(("127.0.0.1", 0))
     port = sock.getsockname()[1]
@@ -39,6 +55,7 @@ def serve(application):
 
 
 def main():
+    """写一份 JSON 探针报告；输出与运行目录都必须新建，保留每次原始记录。"""
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--run-dir", type=Path, required=True)

@@ -12,6 +12,12 @@ from app.factory import create_service
 
 
 def main() -> None:
+    """把语料目录一次性导入索引。
+
+    ``ingest_many`` 在内部完成“构建新快照 → 落盘 → 原子替换引用”，因此中途失败不会
+    留下半份索引；``--demo`` 使用 Hashing + 抽取式 + 独立 demo 目录，不触碰正式数据。
+    输出里打印缓存命中统计，可直接区分冷建库与复用缓存。
+    """
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--documents", type=Path, default=Path("evaluation/support_corpus"))
     parser.add_argument(

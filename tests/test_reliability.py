@@ -1,3 +1,10 @@
+"""可靠性主链路：发布原子性、快照隔离、引用失败即拒答与证据覆盖口径。
+
+覆盖四类事故：版本作用域晚于 Top-K 导致越界候选；更新失败却已落盘；
+读者在重建期间看到半成品；模型给出“引文真实但结论不成立”的答案。
+引用校验通过不等于语义正确，这一点也被显式断言。
+"""
+
 import json
 from pathlib import Path
 from threading import Event, Thread

@@ -1,3 +1,17 @@
+"""检索与回答行为评测入口：BM25 / Dense / RRF 三路对比。
+
+一次运行会完成：
+
+1. 读取语料（manifest 校验）并按指定参数分块；
+2. 加载评测题，校验证据锚点与来源是否真实存在；
+3. 在同一份分块上构建三路检索器，计算 Hit / Recall / MRR / nDCG 与证据级覆盖；
+4. 写出 JSON + Markdown 报告，并在报告里固化配置、语料哈希与代码指纹。
+
+``--answers`` 会额外调用生成链路；不加时完全离线，不产生模型费用。
+本脚本的默认数据是 ``sample_data`` 冒烟集，报告里的 ``warnings`` 会明确标注
+“样本过小，数字不能写进简历”，避免小样本指标被误用。
+"""
+
 from __future__ import annotations
 
 import argparse
@@ -22,6 +36,12 @@ SearchFunction = Callable[[str, int], list[SearchHit]]
 
 
 def load_corpus(directory: Path, chunker: TextChunker) -> tuple[list[Chunk], list[str]]:
+    """读取并切分语料，返回 ``(全部分块, 来源列表)``。
+
+    ``document_id`` 只由“来源 + 文本”决定，不含分块参数：因此同一份文档换
+    chunk_size 后仍是同一文档，但分块 ID 会变化。这样报告可以区分“语料变了”
+    与“切分参数变了”。
+    """
     if not directory.is_dir():
         raise ValueError(f"文档目录不存在：{directory}")
 
@@ -42,6 +62,11 @@ def load_corpus(directory: Path, chunker: TextChunker) -> tuple[list[Chunk], lis
 def build_searchers(
     chunks: list[Chunk], settings: Settings, strategies: list[str]
 ) -> dict[str, SearchFunction]:
+    """按需构建检索器，三种策略共享同一份分块与同一个向量模型。
+
+    只有请求 dense/hybrid 时才创建向量模型：BM25 单独评测不需要加载 embedding，
+    这在无网络、无本地权重的环境里很关键。
+    """
     selected = list(dict.fromkeys(strategies))
     supported = {"bm25", "dense", "hybrid"}
     unknown = set(selected) - supported
@@ -68,6 +93,7 @@ def build_searchers(
 
 
 def validate_relevant_sources(cases: list[EvaluationCase], document_sources: list[str]) -> None:
+    """标注里的来源必须真实存在于语料目录，否则指标分母会悄悄变小。"""
     available = set(document_sources)
     missing = sorted(
         {source for case in cases for source in case.relevant_sources if source not in available}
@@ -83,6 +109,11 @@ def _build_warnings(
     case_count: int,
     results: dict[str, dict[str, dict[str, object]]],
 ) -> list[str]:
+    """生成“这份报告能说明什么”的显式限制说明。
+
+    这些阈值对应项目约定：小样本只做冒烟测试，指标相同说明评测集没有区分度。
+    警告会写进 Markdown 报告，防止数字被单独截图后脱离上下文传播。
+    """
     warnings: list[str] = []
     if document_count < 10:
         warnings.append("文档少于 10 份，当前结果只适合作为冒烟测试。")
@@ -124,6 +155,11 @@ def build_report(
     chunk_size: int,
     chunk_overlap: int,
 ) -> dict[str, object]:
+    """组装报告：配置 + 数据规模 + 警告 + 指标 + 溯源指纹。
+
+    ``provenance`` 是报告可信度的基础：代码指纹、问题文件哈希、语料哈希与分块哈希
+    同时记录，任何一项变化都能说明“这份数字不是当前代码跑出来的”。
+    """
     answerable_count = sum(1 for case in cases if case.should_answer and case.relevant_sources)
     categories = Counter(case.category for case in cases)
     warnings = _build_warnings(
@@ -141,6 +177,7 @@ def build_report(
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "configuration": {
             "embedding_provider": settings.embedding_provider,
+            # Hashing 没有模型名，统一写成 hashing-384，避免报告里出现易误解的默认模型名。
             "embedding_model": "hashing-384"
             if settings.embedding_provider == "hashing"
             else settings.embedding_model,
@@ -192,6 +229,7 @@ def build_report(
 
 
 def render_markdown(report: dict[str, object]) -> str:
+    """把报告渲染为可读 Markdown；限制说明固定放在指标之后，避免被忽略。"""
     configuration = report["configuration"]
     dataset = report["dataset"]
     results = report["results"]
@@ -251,6 +289,7 @@ def render_markdown(report: dict[str, object]) -> str:
         )
         for label, metrics in (("关闭", comparison["without_verification"]), ("开启", answers)):
             answered = sum(item["response"]["status"] == "answered" for item in metrics["details"])
+            # “人工正确率”固定写“未评分”：脚本没有能力判断答案对错，不能留空让人猜。
             lines.append(
                 f"| {label} | {answered} | {metrics['false_refusal_rate']} | "
                 f"{metrics['model_calls']['stages']['verification']['error_count']} | 未评分 |"
@@ -265,6 +304,11 @@ def render_markdown(report: dict[str, object]) -> str:
 def write_report(
     report: dict[str, object], output_dir: Path, report_name: str
 ) -> tuple[Path, Path]:
+    """写出 JSON 与 Markdown。
+
+    普通报告允许覆盖（``w``），但带 ``verification_comparison`` 的配对实验用
+    ``x`` 独占创建：这类实验成本高、样本有限，覆盖会丢失原始证据。
+    """
     output_dir.mkdir(parents=True, exist_ok=True)
     json_path = output_dir / f"{report_name}.json"
     markdown_path = output_dir / f"{report_name}.md"
@@ -312,11 +356,21 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    """命令行入口：参数校验 → 数据校验 → 检索评测 → 可选回答评测 → 写报告。
+
+    保护性约束集中在这里，且都倾向于“报错而不是猜”：
+
+    - 多划分文件必须显式 ``--split``；
+    - ``--case-ids`` 只允许开发集，防止挑选测试题；
+    - ``--require-reviewed`` 要求全部题已人工核验；
+    - 配对核验实验禁止 demo 模式，且不允许覆盖既有报告。
+    """
     from dataclasses import replace
 
     args = parse_args()
     settings = Settings()
     if args.demo:
+        # 演示配置：零密钥、零下载；报告里的 provider 会如实写成 hashing/extractive。
         from dataclasses import replace
 
         settings = replace(
@@ -349,6 +403,7 @@ def main() -> None:
             (args.output_dir / f"{args.report_name}.{suffix}").exists() for suffix in ("json", "md")
         ):
             raise ValueError("配对报告已存在，请使用新 --report-name 保留原始实验")
+        # 先关闭服务内自动核验，才能在拿到草稿后手动追加，形成严格配对。
         settings = replace(settings, llm_verify_support=False)
     settings.validate()
     chunk_size = args.chunk_size if args.chunk_size is not None else settings.chunk_size
@@ -370,9 +425,11 @@ def main() -> None:
         selected = {case.case_id: case for case in cases}
         if set(args.case_ids) - selected.keys():
             raise ValueError("--case-ids 包含不属于当前开发集的问题")
+        # 按用户给出的顺序执行，便于复现“先看哪几题”的调试路径。
         cases = [selected[case_id] for case_id in args.case_ids]
     if args.require_reviewed and any(case.review_status != "human_verified" for case in cases):
         raise ValueError("正式评测要求全部问题已经人工核验")
+    # 两级校验：证据必须逐字落在原文，来源必须真实存在于语料目录。
     validate_evidence(cases, args.documents)
     validate_relevant_sources(cases, sources)
     searchers = build_searchers(chunks, settings, args.strategies)
@@ -395,6 +452,7 @@ def main() -> None:
         from app.storage import JsonChunkRepository
         from tempfile import TemporaryDirectory
 
+        # 用临时目录建一个独立索引：回答评测只读本次分块，不污染 data/ 下的正式索引。
         with TemporaryDirectory() as directory:
             repository = JsonChunkRepository(Path(directory))
             repository.save(chunks)
@@ -430,6 +488,7 @@ def main() -> None:
                 generator, "enable_thinking", settings.llm_enable_thinking
             )
             report["configuration"]["answer_retrieval_strategy"] = settings.retrieval_strategy
+            # 三种核验状态必须在报告中可区分：不适用 / 配对 / 开 / 关。
             report["configuration"]["verification_mode"] = (
                 "not_applicable"
                 if settings.llm_provider == "extractive"
@@ -446,6 +505,10 @@ def main() -> None:
 
 
 def validate_evidence(cases: list[EvaluationCase], directory: Path) -> None:
+    """逐字校验证据锚点：``text[start:end]`` 必须等于 ``quote``。
+
+    用与分块器相同的规范化文本比较，否则 PDF 或 CRLF 文档会产生假阴性。
+    """
     texts = {source: TextChunker._normalize(text) for source, text, _ in read_documents(directory)}
     for case in cases:
         for anchor in case.evidence:
@@ -455,6 +518,11 @@ def validate_evidence(cases: list[EvaluationCase], directory: Path) -> None:
 
 
 def code_fingerprint() -> str:
+    """对 app/、scripts/ 与 pyproject.toml 取整体哈希，写入报告溯源。
+
+    这是“代码级”指纹：任何源码或依赖声明改动都会改变它，因此报告可以证明自己
+    对应哪一版实现；注释改动同样会改变指纹，这属于预期行为。
+    """
     root = Path(__file__).resolve().parent.parent
     paths = sorted(
         [

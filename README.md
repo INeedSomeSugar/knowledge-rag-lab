@@ -1,156 +1,158 @@
-# Knowledge RAG Lab：AI 技术文档问答助手
+# Knowledge RAG Lab
 
-**选择文档版本后提问，回答附上原文出处，方便核对。**
+**能区分文档版本、引用可以逐字核对的技术文档问答系统（RAG）。**
 
-当前收录 FastAPI 的多个历史版本文档，可以查询接口用法、配置和常见问题。版本不明确时先询问，证据不足时会说明无法回答。
+Knowledge RAG Lab 以 FastAPI 多个历史版本的中文官方文档为知识库。回答会附上文档、版本和逐字原文引用；用户没有说明版本时系统先追问，证据不足时直接拒答。检索、重排、上下文装配和引用核验都用显式 Python 实现，每一步都能单独诊断和评测。
 
-![AI 技术文档问答助手演示：选择版本、提问、查看回答和原文出处](docs/assets/demo.gif)
+![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12-3776AB)
+![FastAPI](https://img.shields.io/badge/FastAPI-service-009688)
+![Retrieval](https://img.shields.io/badge/retrieval-BM25%20%2B%20E5%20%2B%20RRF-informational)
+![MCP](https://img.shields.io/badge/MCP-server-6E56CF)
 
-*上图为本地抽取式演示，无模型调用。此前录制的 [真实 DeepSeek 流式演示](docs/assets/deepseek-streaming-20261102.gif) 保留供查看。*
+![演示：选择版本、提问、查看回答与原文出处](docs/assets/demo.gif)
 
-## 核心亮点
+<sub>上图为本地抽取式模式录屏，没有调用模型。另有一段真实 DeepSeek 流式生成的录屏：[deepseek-streaming-20261102.gif](docs/assets/deepseek-streaming-20261102.gif)。</sub>
 
-- **多阶段版本感知检索链路：** 显式实现“版本识别与召回前预过滤 → BM25 + 本地 `multilingual-e5-small`（384 维）双路召回 → RRF 融合 → `bge-reranker-base` Cross-Encoder 重排 → 同章节邻块扩展与字符预算装配”，支持一轮版本补充与规则查询改写。
-- **评测驱动与逐阶段 Bad Case 归因：** 自建 47 道已人工审核开发题（41 道有证据诊断题 + 6 道版本澄清/拒答题），按“版本过滤 → 候选池召回 → Top-K 截断 → 上下文预算”逐阶段归因；在 34 份文档（735 分块）上，Top-5 召回配合邻块扩展的完整证据覆盖率由 BM25 基线 **78.0%（32/41）提升至 E5 Hybrid 87.8%（36/41）、叠加 BGE 重排达 92.7%（38/41，种子 Top-5 为 36/41）**；语料扩容约 3 倍至 **102 份文档（4 个版本、2,212 分块）** 后仍保持 **90.2%（37/41，E5 Hybrid 为 85.4% / 35/41）**，并量化 CPU 重排额外延迟（P50 +8.5s / 扩容后 +11.5s）设计为按需开启（注：上述指标为开发集证据覆盖率，非生成答案正确率）。
-- **可信生成与端到端答案评测（LLM-as-Judge）：** 强制模型按结论输出文档、版本与逐字引文，程序校验引用编号与原文字符区间精确匹配，再由模型执行支持关系检查；版本未指定时主动追问澄清，超出收录版本或证据不足时明确拒答。在 102 份文档（2,212 分块）与 47 道已审核开发题上完成真实 `deepseek-flash` 端到端生成与独立 LLM-as-Judge 评测（[评测报告](evaluation/reports/answer-judge-20261102.md)）：41 道可回答题达到 **87.8%（36/41）完整正确率、90.2%（37/41）核心问题解决率与 100%（37/37）已作答忠实度**（另有 4 题安全拒答，零无依据编造），6 道缺版本澄清与超范围拒答边界题准确率 **6/6（100%）**；Judge 经 11 份人工盲审、12 份助手复核与 3 份合成矛盾负例分层校准（一致率均为 100%，并独立检出 `F001` 源文档翻译滞后负例）。
-- **SSE 流式交互、MCP 协议接入与工程化交付：** `POST /api/v1/chat/stream` 实现“未核验草稿（`draft`）实时流式输出 → 引用与支持核验后原子替换终稿（`final`）”，支持取消、心跳与有界队列背压；基于官方 `mcp` SDK（`FastMCP`）封装标准 **MCP Server**（暴露 `list_catalog`、`search_docs`、`ask_docs` 工具与 `rag://chunk/{chunk_id}`、`rag://document/{document_id}` 资源，通过真实 `stdio` 子进程端到端验证，可直接接入 Claude Desktop / Cursor，见 [MCP 说明](docs/MCP.md)）；SQLite 向量缓存按模型文件 SHA-256 与推理配置隔离（2,212 分块热重建 100% 命中、零重复编码、0.39s 完成），新索引原子切换、失败保留旧索引；通过本地 Docker 交付实测与 **220+ 项自动化测试**。
+## 目录
+
+- [背景与问题](#背景与问题)
+- [主要特性](#主要特性)
+- [系统架构](#系统架构)
+- [实验结果](#实验结果)
+- [快速开始](#快速开始)
+- [配置](#配置)
+- [API](#api)
+- [评测与复现](#评测与复现)
+- [项目结构](#项目结构)
+- [局限性](#局限性)
+- [版本历史](#版本历史)
+- [文档](#文档)
+- [第三方材料](#第三方材料)
+
+## 背景与问题
+
+技术文档通常有多个版本同时在用，同一个接口在不同版本里的行为可能不一样。通用 RAG 用在这类场景时，常见问题有三个：
+
+1. **混用版本**：召回的片段来自另一个版本，答案看起来合理，实际是错的。
+2. **引用不可核对**：模型给出的引用和原文对不上，甚至是编造的。
+3. **重排成本高**：Cross-Encoder 能补回一些漏召回的证据，但在 CPU 上每次要多花几秒。
+
+本项目对应的做法是：召回前先按版本过滤；生成后用程序逐字核对引用；用一条无需训练的门控规则决定是否运行重排器。每项设计都在自建的已审核问题集上做了对照实验。
+
+## 主要特性
+
+| 模块 | 实现 |
+| --- | --- |
+| 版本感知 | 召回前按产品和版本预过滤；版本未指定时先追问，版本未收录时拒答；支持一轮追问补充版本，并按规则改写查询 |
+| 混合检索 | BM25 与本地 `multilingual-e5-small`（384 维）两路召回，用 RRF 融合 |
+| 按需重排 | 可选 `bge-reranker-base` Cross-Encoder；门控规则根据重排前两路 Top-5 的重合度决定是否调用 |
+| 上下文装配 | 扩展同章节的相邻分块，并按字符预算装配；可选合并重叠原文 |
+| 可核验生成 | 模型按结论输出引用编号和逐字引文；程序校验引用编号及原文字符区间，再由模型检查引文是否支持结论 |
+| 流式交互 | `POST /api/v1/chat/stream`（SSE）：先流式输出未核验草稿，核验通过后替换为终稿；支持取消、心跳和有界队列背压 |
+| MCP Server | 基于官方 `mcp` SDK（FastMCP），提供 `list_catalog`、`search_docs`、`ask_docs` 三个工具和分块、文档两类资源 |
+| 可复现评测 | 冻结协议并记录哈希，保留原始 JSON 与逐题结果；证据覆盖、答案正确率和拒答行为分开统计 |
+| 工程化 | SQLite 向量缓存按模型文件哈希和推理配置隔离；新索引原子切换，构建失败时保留旧索引；提供 Docker 镜像和请求日志关联 |
 
 ## 系统架构
 
 ```mermaid
 flowchart LR
-    D["多版本官方文档\n(4版本 / 102文档 / 2212分块)"] --> C["章节分块 + SQLite向量缓存\n(内容与模型配置SHA256隔离)"]
-    Q["用户问题 + 一轮追问改写"] --> S{"版本范围明确?"}
-    S -->|未指定/未收录| A["主动澄清或明确拒答"]
-    S -->|版本明确| R["版本预过滤 → BM25 + E5双路召回\n→ RRF融合 → 可选BGE重排"]
+    D["多版本官方文档<br/>4 版本 / 102 文档 / 2,212 分块"] --> C["章节分块 + SQLite 向量缓存"]
+    Q["用户问题<br/>+ 一轮追问改写"] --> S{"版本范围明确?"}
+    S -->|未指定 / 未收录| A["追问澄清或拒答"]
+    S -->|明确| R["版本预过滤<br/>BM25 + E5 双路召回<br/>RRF 融合"]
     C --> R
-    R --> X["同章节邻块扩展 + 字符预算装配"]
-    X --> G["SSE流式草稿生成 (DeepSeek / 抽取式)"]
-    G --> V["逐字引文匹配 + 支持关系核验"]
-    V --> O["核验终稿 / 证据原文 / 诊断轨迹"]
+    R --> G1{"按需门控"}
+    G1 -->|两路分歧大| B["BGE Cross-Encoder 重排"]
+    G1 -->|两路一致| X
+    B --> X["同章节邻块扩展<br/>字符预算装配"]
+    X --> G["生成：SSE 草稿<br/>DeepSeek / 兼容 API / 抽取式"]
+    G --> V["引用编号与逐字区间校验<br/>+ 支持关系检查"]
+    V --> O["核验后终稿 / 原文证据 / 诊断轨迹"]
 ```
 
-## 快速开始（零密钥 ≤ 4 条命令）
+核心代码位于 [`app/`](app/)：检索 [`retrieval.py`](app/retrieval.py)、门控 [`budget_reranking.py`](app/budget_reranking.py)、重排 [`cross_encoder.py`](app/cross_encoder.py)、上下文 [`context.py`](app/context.py)、生成与核验 [`generation.py`](app/generation.py)、流式接口 [`streaming.py`](app/streaming.py)、服务编排 [`service.py`](app/service.py)。
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
-.\.venv\Scripts\python.exe -m scripts.serve --demo --bootstrap
-# 打开 http://127.0.0.1:8000 体验版本澄清与证据定位（本地 E5 语义检索见 .\start-semantic.ps1）
-```
+## 实验结果
 
-## 文档导航
+> [!IMPORTANT]
+> 以下结果来自自建的单领域（FastAPI 中文文档）开发集，样本量小，**不代表泛化效果**。"证据覆盖"指检索得到的上下文是否包含回答所需的全部标注原文，**不等于答案正确率**。预先划分出的 8 道保留测试题至今没有运行。
 
-- **项目全局与面试展示：** [项目上下文与验证档案](PROJECT_CONTEXT.md) · [三分钟演示与面试](docs/SHOWCASE.md) · [开发约定](AGENTS.md) · [实施计划](docs/IMPLEMENTATION_PLAN.md)
-- **检索、重排与扩容实验：** [v0.13 扩容语料对照](docs/CORPUS_LARGE_V013.md) · [v0.12 SSE 与 BGE 重排](docs/STREAMING_RERANKING_V012.md) · [v0.11 本地 E5 语义检索](docs/EMBEDDING_V011.md) · [v0.8 上下文合并与预算](docs/CONTEXT_PACKING.md) · [v0.7 离线检索诊断工作台](docs/RETRIEVAL_DIAGNOSTICS.md)
-- **生成核验、端到端评测、MCP 与交付：** [端到端答案评测与 Judge 校准](evaluation/reports/answer-judge-20261102.md) · [MCP 服务端接入](docs/MCP.md) · [生成与核验配对对照](docs/GENERATION_COMPARISON.md) · [v0.10 人工复核与 DeepSeek 试跑](docs/EVALUATION_V010.md) · [人工审核交接](docs/HUMAN_REVIEW_HANDOFF.md) · [版本故障实验室](docs/VERSION_LAB.md) · [Docker 容器验证](docs/CONTAINER_VALIDATION.md) · [数据卡](evaluation/SUPPORT_DATA_CARD.md)
+**评测数据**：从 55 道候选题中划分出 47 道开发题，全部经过人工审核，其中 41 道可以回答，6 道用于测试追问澄清和超范围拒答。同一组问题不会被拆到不同划分里。数据边界见[数据卡](evaluation/SUPPORT_DATA_CARD.md)。
 
----
+### 1. 检索策略对照
 
-面向 AI 应用开发实习的可复现工程项目。当前以 FastAPI 官方中文文档为知识域，围绕接口使用、跨域、文件上传、依赖清理、代理和部署问题提供带证据的技术支持。
+设置：102 份文档、2,212 个分块，Top-5，邻块扩展，8,000 字符预算。41 题 × 4 种策略 × 3 次重复，三次重复的排序完全一致。
 
-先阅读 [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) 和 [AGENTS.md](AGENTS.md)。场景选择及验收范围见 [实施计划](docs/IMPLEMENTATION_PLAN.md)，数据边界见 [数据卡](evaluation/SUPPORT_DATA_CARD.md)。
+| 策略 | 最终上下文完整证据覆盖 |
+| --- | ---: |
+| Hashing 向量（工程基线） | 27/41 |
+| E5 Dense | 31/41 |
+| BM25 | 33/41 |
+| **E5 + BM25 Hybrid（RRF）** | **35/41** |
+| Hybrid + BGE 全量重排 | 37/41 |
 
-## v0.12：SSE、追问与Cross-Encoder
+运行方式：本地 CPU 真实执行。报告：[corpus-large-v013.summary.md](evaluation/reports/corpus-large-v013.summary.md)、[CORPUS_LARGE_V013.md](docs/CORPUS_LARGE_V013.md)。
 
-网页已改用SSE：实时生成未核验草稿，最终结果经原有引用／支持检查后替换；支持取消、新对话及一轮版本补充／规则查询改写。可选固定`bge-reranker-base`在RRF之后、Top-K之前对50候选重排，`start-semantic.ps1 -Rerank`启用。
+### 2. 预算感知的按需重排
 
-本机193项工程测试通过，包含真实E5/BGE集成；实际回环SSE探针通过。47道已审核开发题中41道可诊断题的最终上下文完整覆盖36→38，Top-5完整覆盖36→36；CPU重排额外P50约8.5秒，因此默认关闭。没有新答案质量结论或保留测试。接口、复现及完整取舍见[说明](docs/STREAMING_RERANKING_V012.md)。
+门控规则：稀疏和稠密两路的 Top-5 共同分块数少于 2 时才调用 BGE。规则只读取重排前的排名，不接触标注答案。每组独立执行 3 遍，计时包含门控本身，查询和 BGE 结果都不缓存。
 
-2026-10-28发布前完整172项工程测试通过，包含本地E5模型集成。随后本机47道开发问题已由实际人员保存人工确认；已审核快照下重跑四策略三重复492条检索，覆盖和历史排序一致。6份实际模型答案已按用户明确判断完成评分，报告／答案哈希校验通过；该小批开发样本不能代表整体答案正确率或独立测试效果。个人审核记录与此次运行保留本地，当前状态见[项目上下文](PROJECT_CONTEXT.md)；项目展示见[三分钟演示与面试](docs/SHOWCASE.md)，审核操作见[审核交接](docs/HUMAN_REVIEW_HANDOFF.md)。
+| 策略 | Top-5 完整覆盖 | 最终上下文完整覆盖 | 重排调用率 | P50 延迟 | P95 延迟 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 不重排 | 35/41 | 35/41 | 0% | 60.3 ms | 106.1 ms |
+| 全部重排 | 36/41 | 37/41 | 100% | 7.64 s | 13.25 s |
+| **按需重排** | **37/41** | **37/41** | **39.0%** | **98.2 ms** | **12.94 s** |
 
-本机后续已在明确批次授权下完成15道已审核开发题的BM25／E5 Hybrid生成与同答案核验对照：30组成对记录、49次deepseek-flash补全、90,170 tokens，离线重放及调用前上下文一致性通过。17份有效新答案中5份已由用户实际评分，另12份按用户委托完成助手复核；助手判断11份通过、R015有中文语料事实冲突，已保存修正建议。两种评分来源分别记录，整体人工正确率未知；单列的3份原答案／3份明确改错压力测试不能代替自然答案质量。本次复核无新增DeepSeek调用，原始实验及旧评分保持不变。新增工具27项相关离线测试通过，设计与复现见[生成与核验对照](docs/GENERATION_COMPARISON.md)。默认服务、保留测试及公开版本未随该本地实验改变。
+- 重排调用减少 61.0%，最终覆盖与全部重排相同，P50 接近不重排。
+- P95 只下降约 2.3%：被触发的查询仍要承担 CPU 重排的秒级延迟。
+- 预先登记了 14 个候选阈值，用按主题分组的 5 折交叉验证检查阈值选择，合计只有 35/41，说明这条规则在新问题上能否保持覆盖还没有得到验证。
 
-2026-10-28复核修订已落地：旧6份与新17份实际答案合并为本机最新材料，R003补充Pydantic版本条件，R015删除错误的headers差异扩展；6道澄清／拒答题追加明确署名的助手理由。原11份人工评分及冻结报告保留，修订稿不继承原人工评分。入口`work/human-review/20261028/CURRENT_REVIEW.md`，详见[审核交接](docs/HUMAN_REVIEW_HANDOFF.md)。后续版本段落中的“待审核”描述保留当时实验状态，不能替代当前本机进度。
+运行方式：本地 CPU（float32，4 线程）真实执行，不调用付费 API。报告：[REPORT.md](evaluation/reports/budget-reranking-20261106-complete/analysis/REPORT.md) · [逐题结果](evaluation/reports/budget-reranking-20261106-complete/analysis/CASES.md) · [实验设计](docs/BUDGET_RERANKING_20261106.md)。
 
-2026-10-27补充本地Docker交付实测：实际构建、12次零密钥业务请求、重启后索引与资源清理均通过，最终13项检查及20项相关工程测试通过。复现见 [容器验证](docs/CONTAINER_VALIDATION.md)；E5权重、真实生成与远端CI不在本次容器验证范围。
+### 3. 新主题冻结验证
 
-## v0.11：本地真实语义检索与可复现对照
+为检查门控规则在没见过的问题上的表现，新编写了 12 道题，覆盖 6 个主题。12 题全部经过人工确认后，先冻结规则和输入，再只执行一次，共 36 条运行。
 
-已接入固定MIT版本的多语言E5-small，实际生成文档和查询的384维向量；本地CPU推理，模型缺失明确失败，模型/配置/文件哈希隔离缓存与索引身份。Hashing保留为独立工程基线。
+| 策略 | 最终上下文完整覆盖 | 重排调用 | P50 延迟 | P95 延迟 |
+| --- | ---: | ---: | ---: | ---: |
+| 不重排 | 11/12 | 0/12 | 43.8 ms | 47.9 ms |
+| 全部重排 | 12/12 | 12/12 | 7.39 s | 7.89 s |
+| 按需重排 | 12/12 | 4/12 | 49.0 ms | 7.78 s |
 
-固定34份官方文档、735分块、Top-5、邻块策略及8000字符上限，完成41道可诊断开发候选×四策略×三重复，共492次检索。最终上下文完整标注覆盖：BM25 32、Hashing 29、E5 Dense 33、E5 Hybrid 36。Hybrid相对BM25改善5题、退化1题、不变35题；完整变化、原文定位和失败排名均保存。候选仍待人工审核，覆盖不是答案正确率，保留测试集未运行。
+这批题规模很小，而且都由助手编写、属于同一领域，结果只说明规则在这 12 题上没有损失覆盖，不能当作广泛的泛化结论。报告：[REPORT.md](evaluation/reports/new-topics-20261109/analysis-complete/REPORT.md) · [逐题解释](evaluation/reports/new-topics-20261109/INTERPRETATION.md)。
 
-```powershell
-# 模型已下载后：单独建库 / 启动本地语义检索
-.\start-semantic.ps1 -BuildOnly
-.\start-semantic.ps1
-```
+### 4. 端到端答案质量（真实模型 + LLM-as-Judge）
 
-打开 <http://127.0.0.1:8016>，默认抽取式展示，不调用生成API。完整安装、固定模型卡、资源成本、实验命令与简历表述见 [v0.11复现说明](docs/EMBEDDING_V011.md)，结果见 [逐题报告](evaluation/reports/semantic-embedding-development-v011.md) / [交互诊断](evaluation/reports/semantic-embedding-development-v011.html)。真实本地HTTP 8项检查通过；模型权重、缓存和私有资料留本地。
+设置：102 份文档，E5 + BM25 Hybrid，不重排，Top-5，生成模型为 `deepseek-flash` 并开启支持关系检查；由独立的 LLM-as-Judge（同为 `deepseek-flash`，输出经严格 JSON Schema 校验）评分。
 
-## v0.10：人工复核与真实 DeepSeek 开发实验
+| 指标 | 结果 |
+| --- | ---: |
+| 可回答题：完整正确 | 36/41（87.8%） |
+| 可回答题：核心问题解决 | 37/41（90.2%） |
+| 已作答题的忠实度（没有无依据的结论） | 37/37 |
+| 证据不足而拒答 | 4/41 |
+| 边界题（追问澄清 / 超范围拒答）行为正确 | 6/6 |
 
-2026-10-26 已完成一次真实 DeepSeek / BM25 开发试跑和一次固定候选重排对照。使用现有 `DEEPSEEK_API_KEY`，未创建或复制密钥。
+Judge 的可靠性单独做了校准：和 11 份人工评分相比，正确性和忠实度判断一致 11/11；另有 12 份助手复核和 3 个人工构造的矛盾负例，分开统计。生成和评审用的是同一个模型，存在自评偏差的风险，人工样本也偏少。报告：[answer-judge-20261102.md](evaluation/reports/answer-judge-20261102.md)。
 
-- 新增本地问题复核工作台：问题、参考答案和来源原文并排核对；支持修改逐字证据、保存待审稿、人工确认、断点续审和 JSONL 导出。
-- 原始候选、产品版本和分组划分保持固定；复核记录绑定问题与语料哈希，拒绝过期页面或其他进程覆盖。默认只展示47道开发候选。
-- DeepSeek 从实际模型目录选择可用模型，按供应商接口发送 JSON 请求；记录请求模型、实际响应模型、用量及截断状态。
-- 9道未审开发候选完成真实生成／核验配对试跑：13次模型调用、22,147 tokens、0接口或格式错误；导出6份待人工评分答案。
-- 根据文档命中但具体证据遗漏的案例，试验对固定 BM25 前20候选做 DeepSeek 重排。41道可回答开发候选中，最终上下文完整覆盖由32题变为37题，5题增加、0题减少；仍有4题未完整覆盖。
-- 重排41次调用使用325,022 tokens，SDK调用累计49.212秒。相同的是候选池、Top-K和上下文字符上限，不是实际 token 或总成本。
+### 结果口径汇总
 
-这些题目全部仍待人工审核；上述覆盖变化不是答案正确率，也不是保留测试集效果。重排目前为独立对照实验，默认服务检索行为未切换。该版本尚未评测真实语义Embedding，v0.11已补本地检索对照。
+| 结果 | 运行方式 | 人工参与 |
+| --- | --- | --- |
+| 检索策略对照、按需重排、新主题验证 | 本地真实模型（E5 / BGE，CPU） | 题目和证据标注经人工审核 |
+| 端到端答案质量 | 真实 DeepSeek API 生成 + LLM 评审 | Judge 用 11 份人工评分校准 |
+| 零密钥演示、冒烟评测 | Hashing 向量 + 抽取式回答，不调用模型 | 无，只用于工程验证 |
+| Docker 交付 | 本地构建并实测 12 次请求，验证重启后索引保留 | 无；没有云端部署 |
 
-```powershell
-# 不调用模型的人工复核工作台：http://127.0.0.1:8013
-.\start-review.ps1
+## 快速开始
 
-# DeepSeek + BM25 本地问答：http://127.0.0.1:8014；问答会消耗API用量
-.\start-deepseek.ps1
-```
+### 环境要求
 
-详细操作与可用简历表述见 [v0.10说明](docs/EVALUATION_V010.md)，查看 [真实试跑](evaluation/reports/deepseek-bm25-development-v010.md)、[重排配对结果](evaluation/reports/deepseek-reranking-development-v010.md) 和 [交互诊断报告](evaluation/reports/deepseek-reranking-development-v010.html)。
+- Python 3.11 或更高版本（开发环境为 Windows / Python 3.12）
+- 零密钥演示不需要 GPU、模型权重或 API Key
 
-![问题人工复核工作台](docs/images/question-review-v010.png)
-
-## 当前能做什么
-
-- 固定官方文档提交号、文件哈希和许可证，展开同版本的代码示例引用。
-- 支持 Markdown/TXT/PDF；保留代码缩进、标题、章节及 PDF 物理页码。
-- 支持字符窗口和章节分块，提供 BM25、Dense、RRF Hybrid；产品与版本过滤在召回前应用。
-- 有多个文档版本但未指定时先澄清；未收录版本明确拒答。
-- 补充同一文档、同一章节的相邻片段，最多 16000 字符上下文。
-- 真实模型按结论输出引用和原文，校验引用编号及原文匹配，再由模型检查支持关系。模型核验仍需人工抽查。
-- 同一来源在同一版本内更新时替换旧内容；SQLite 缓存未变化的文本向量；新索引失败时旧内容保持可用。
-- 页面展示回答状态、实际引用、原文、召回记录、索引指纹与阶段耗时。
-- 评测区分文档命中、具体证据覆盖和回答行为，保存原始 JSON、Markdown 及数据/代码指纹。
-- 开发集诊断工作台逐题比较三种策略，展示证据范围、实际排名、相邻补充与预算损失，输出独立 HTML 和原始 JSON。
-- 可选合并连续重叠上下文，保留原文范围和组成分块，使用相同检索结果与预算上限比较覆盖、重复字符及退化案例。
-
-核心链路保持显式 Python 实现，便于定位分块、召回、证据不足和生成错误。
-
-v0.5 已补充同一答案的核验开关对照、分阶段耗时/token、人工答案复核和报告哈希绑定；当时缺少凭据，v0.10已运行真实 DeepSeek 开发试跑，人工核验效果仍待评分。完整步骤见 [核验实验说明](docs/VERIFICATION_EXPERIMENT.md)。开发问题审核入口为 [47 题复核表](evaluation/review/support-development.md) 或 v0.10 工作台，全部保持待审核。
-
-v0.6 新增一条命令导入并启动、就绪检查、关联请求日志与独立 HTTP 验证。当时采用零密钥开发。该版本73项测试及24次本地HTTP行为检查通过；Docker已于2026-10-27补充本机实测，远端CI仍未触发。详见 [启动与交付说明](docs/DELIVERY.md)。
-
-v0.7 新增离线检索诊断工作台；当轮本机 **89 项测试通过**。已运行 47 道开发候选题，其中 41 道参与证据诊断、6 道拒答或澄清题跳过。查看 [交互报告](evaluation/reports/retrieval-diagnostics-v07.html)、[原始 JSON](evaluation/reports/retrieval-diagnostics-v07.json) 和 [诊断规则与演示步骤](docs/RETRIEVAL_DIAGNOSTICS.md)。原始标注仍待人工审核，未运行测试集或模型 API。
-
-v0.8 新增可追溯的上下文合并与配对预算实验；当轮 **107项测试通过**，合并模式的12次真实HTTP行为检查通过。默认策略仍为 `neighbors`，可用 `--context-policy merged_neighbors` 启动合并模式。详见 [合并规则与复现](docs/CONTEXT_PACKING.md) 和 [配对开发报告](evaluation/reports/context-comparison-v08.md)。该版本验证了工程行为及原文范围覆盖，未验证真实模型回答质量。
-
-```mermaid
-flowchart LR
-    D[官方文档及版本清单] --> C[保留结构并分块]
-    C --> I[向量缓存与索引快照]
-    Q[问题与版本] --> S{范围是否明确}
-    S -->|不明确| A[澄清或提示未收录]
-    S -->|明确| R[按版本召回]
-    I --> R
-    R --> X[补充相邻章节片段]
-    X --> G[生成结论与原文引用]
-    G --> V[引用检查与模型支持关系检查]
-    V --> O[回答或拒答及请求记录]
-```
-
-## 版本故障实验室
-
-v0.9 新增 [复现与面试演示](docs/VERSION_LAB.md)：对照 FastAPI 0.117.1 与 0.118.0 官方固定文档，在两套隔离环境实跑流式/后台任务的四种资源管理案例。打开启动后的 `/versions`，查看原文范围、提交来源、实际失败与事件顺序。
-
-该版本 **119项测试通过**；八个固定版本/案例组合均符合预期。原始报告见 [JSON](evaluation/reports/version-behavior-v09.json) 和 [脚本派生摘要](evaluation/reports/version-behavior-v09.md)。这是实际框架与模拟资源的行为实验，不是数据库验证或 RAG 回答准确率。原有55题仍待人工复核，真实模型的后续开发实验见v0.10。
-
-## 立即运行零密钥演示
-
-Windows / PowerShell，Python 3.11+。新机器必须重建虚拟环境：
+### 零密钥演示
 
 ```powershell
 python -m venv .venv
@@ -158,113 +160,81 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m scripts.serve --demo --bootstrap
 ```
 
-打开 [本地演示](http://127.0.0.1:8000)。`--demo` 明确使用 BM25 + 抽取式展示，Hashing 只用于本地索引与对照实验，不调用模型 API。先不选版本提交一次问题，验证澄清；再选 0.115.0，查看该版本的证据。页面不会把抽取片段标成真实模型答案。
+打开 <http://127.0.0.1:8000>。演示模式使用 BM25 检索和抽取式回答（直接展示证据片段），不调用任何模型。可以先不选版本提一个问题，看系统如何追问；再选择 `0.115.0`，查看带原文出处的证据。
 
-仓库已包含可校验的文档快照。需要重新下载时运行：
+Linux / macOS 下把 `.\.venv\Scripts\python.exe` 换成 `.venv/bin/python`。
+
+### Docker
+
+```bash
+docker compose up --build
+```
+
+容器以非 root 用户、只读根文件系统运行，端口仅绑定 `127.0.0.1:8000`。验证记录见 [CONTAINER_VALIDATION.md](docs/CONTAINER_VALIDATION.md)。
+
+### 本地语义检索与重排
 
 ```powershell
-.\.venv\Scripts\python.exe -m scripts.fetch_support_corpus
+.\.venv\Scripts\python.exe -m pip install -e ".[dev,embedding,reranking]"
+.\.venv\Scripts\python.exe -m scripts.fetch_embedding_model   # 固定版本的 multilingual-e5-small
+.\.venv\Scripts\python.exe -m scripts.fetch_reranker_model    # 固定版本的 bge-reranker-base（可选）
+.\start-semantic.ps1 -Bootstrap            # E5 + BM25 Hybrid，http://127.0.0.1:8016
+.\start-semantic.ps1 -Bootstrap -Rerank    # 额外启用 BGE 重排
 ```
 
-17 个主题各含两个历史版本，共 34 个文件；这不是最新文档，也不是 34 个独立业务来源。原有培养管理 PDF 保留在 `evaluation/corpus/`。
+模型版本、文件哈希和资源开销见 [EMBEDDING_V011.md](docs/EMBEDDING_V011.md) 与 [STREAMING_RERANKING_V012.md](docs/STREAMING_RERANKING_V012.md)。
 
-## 百炼兼容 API 模式
+### 接入大模型生成
 
-在未提交的 `.env` 中填写控制台给出的密钥、地域对应的兼容 Base URL 和有权使用的模型名。当前准备的模型名为 `text-embedding-v4` / `qwen-plus`，实际可用性必须由检查命令确认。
+> [!NOTE]
+> 以下模式会调用外部 API 并产生费用。密钥只放在未提交的 `.env` 文件或系统环境变量中。
 
-本节保留为后续可选供应商配置示例；当前零密钥开发无需填写密钥或开通 API。
+- **DeepSeek**：设置环境变量 `DEEPSEEK_API_KEY` 后运行 `.\start-semantic.ps1 -Bootstrap -DeepSeek`。
+- **OpenAI 兼容接口**（如阿里云百炼）：参考 [`.env.aliyun.example`](.env.aliyun.example) 配置后，依次运行 `scripts.check_models`、`scripts.ingest_support`、`scripts.serve`。
+- **Ollama**：模板见 [`.env.ollama.example`](.env.ollama.example)。这种模式尚未实测。
 
-```text
-DASHSCOPE_API_KEY=在本地填写
-DASHSCOPE_BASE_URL=控制台显示的兼容接口地址
-EMBEDDING_PROVIDER=openai_compatible
-EMBEDDING_MODEL=text-embedding-v4
-LLM_PROVIDER=openai_compatible
-LLM_MODEL=qwen-plus
-LLM_ENABLE_THINKING=false
-CHUNKING_STRATEGY=sections
-RETRIEVAL_STRATEGY=hybrid
-```
-
-依次运行：
+### MCP Server
 
 ```powershell
-.\.venv\Scripts\python.exe -m scripts.check_models
-.\.venv\Scripts\python.exe -m scripts.ingest_support
-.\.venv\Scripts\python.exe -m scripts.serve
+.\.venv\Scripts\python.exe -m pip install -e ".[mcp]"
+.\.venv\Scripts\python.exe -m app.mcp_server --demo --bootstrap
 ```
 
-检查只进行少量模型请求，记录连接及输出格式，不代表效果评测。正式回答包含生成和支持关系检查两次调用。失败只报告异常类型，不打印密钥或原始认证错误。
+默认使用 `stdio` 传输。客户端配置示例和真实 `stdio` 子进程的验证记录见 [MCP.md](docs/MCP.md)。
 
-也支持分别配置 `EMBEDDING_API_KEY/BASE_URL` 和 `LLM_API_KEY/BASE_URL`；Ollama 模式模板见 `.env.ollama.example`，检查脚本为 `scripts.check_ollama`。本轮没有验证 Ollama。
+## 配置
 
-## 评测与复现
+所有配置都通过环境变量或 `.env` 设置，完整列表见 [`.env.example`](.env.example)。
 
-零密钥生成检索诊断页面：
-
-```powershell
-.\.venv\Scripts\python.exe -m scripts.diagnose_retrieval --output work/diagnostics/development.json
-```
-
-直接打开同名 `.html`，按问题、版本、失败类型筛选并切换 BM25/Dense/Hybrid。报告保存分块与证据原文，可离线查看；再次生成需使用新的输出名。默认强制 Hashing，不读取已配置的远程模型进行调用；后续使用真实 Embedding 需显式加 `--configured-embeddings`。详见 [检索诊断说明](docs/RETRIEVAL_DIAGNOSTICS.md)。
-
-比较上下文预算装配，两种策略复用同一检索结果：
-
-```powershell
-.\.venv\Scripts\python.exe -m scripts.compare_context --budgets 1200 2400 4800 16000 --output work/context-comparison/development.json
-```
-
-该实验比较相同字符上限，不保证实际字符数或 token 相等。完整保留受益、退化和不变的配对题目，不以候选数据自动调整默认策略。
-
-原有三份示例文档、六个问题只用于冒烟测试：
-
-```powershell
-.\.venv\Scripts\python.exe -m pytest
-.\.venv\Scripts\python.exe -m ruff check app scripts tests
-.\.venv\Scripts\python.exe -m scripts.evaluate --demo --report-name latest
-```
-
-新场景有 **55 个待人工复核候选问题**，划分为 47 题开发集、8 题测试集。同组问题不跨划分。本轮只使用开发集，不声称已建成正式 benchmark。
-
-```powershell
-.\.venv\Scripts\python.exe -m scripts.evaluate --demo `
-  --documents evaluation/support_corpus `
-  --questions evaluation/questions.support.candidate.jsonl `
-  --split development --chunking-strategy sections `
-  --top-k 1 3 5 --answers --report-name support-development-hashing
-
-.\.venv\Scripts\python.exe -m scripts.run_support_experiments --demo
-```
-
-矩阵比较 300/500/800 字符、window/sections 两种分块策略，以及 K=1/3/5/10。全部结果由脚本生成；记录具体问题、召回范围、配置与指纹。窗口变大、追加相邻片段都会改变证据预算，不能把它们的覆盖率差异直接当作等预算收益。
-
-人工复核入口是 [SUPPORT_REVIEW.md](evaluation/SUPPORT_REVIEW.md)。确认并修订后另存 `evaluation/questions.support.reviewed.jsonl`，填写 `review_status=human_verified`、`reviewed_by`、`reviewed_at`。真实模型开发基线可运行：
-
-```powershell
-.\.venv\Scripts\python.exe -m scripts.evaluate `
-  --documents evaluation/support_corpus `
-  --questions evaluation/questions.support.reviewed.jsonl `
-  --split development --require-reviewed --chunking-strategy sections `
-  --top-k 1 3 5 --answers --report-name support-real-development
-```
-
-冻结配置之后再运行 `--split test`。文档级命中不代表证据命中；回答率不代表正确率；原文匹配和模型判定也不等于人工确认。缺失的答案正确率显示 null，未人工复核的数据和 Hashing 结果不可作为简历效果数字。
-
-本轮 Python 3.12 / Windows 的依赖快照保存在 `requirements-dev.lock`；如需复现依赖，先安装该文件，再执行 `pip install -e . --no-deps`。它是版本快照，不包含包哈希，也不是跨平台部署保证。
+| 变量 | 默认值 | 说明 |
+| --- | --- | --- |
+| `EMBEDDING_PROVIDER` | `hashing` | `hashing` / `local_e5` / `openai_compatible` |
+| `RETRIEVAL_STRATEGY` | `hybrid` | `bm25` / `dense` / `hybrid` |
+| `RERANKER_PROVIDER` | `none` | `none` / `bge_cross_encoder` |
+| `RERANKER_CANDIDATE_K` | `50` | 送入重排器的候选数 |
+| `LLM_PROVIDER` | `extractive` | `extractive` / `deepseek` / `openai_compatible` |
+| `LLM_VERIFY_SUPPORT` | `true` | 是否让模型检查引文是否支持结论 |
+| `CHUNKING_STRATEGY` | `window` | `window` / `sections`（实验均使用 `sections`） |
+| `CHUNK_SIZE` / `CHUNK_OVERLAP` | `500` / `80` | 分块长度与重叠字符数 |
+| `RETRIEVAL_TOP_K` | `5` | 最终保留的分块数 |
+| `CONTEXT_POLICY` | `neighbors` | `neighbors` / `merged_neighbors` |
+| `CONTEXT_CHAR_BUDGET` | `16000` | 上下文正文的字符上限 |
 
 ## API
 
-接口文档位于 `/docs`。主要接口为：
+启动服务后，交互式接口文档在 `/docs`。
 
 | 方法与路径 | 用途 |
-|---|---|
-| GET `/health`、`/ready` | 进程存活与非空索引就绪检查，不请求模型 |
-| GET `/api/v1/catalog` | 产品与已收录版本 |
-| POST `/api/v1/documents/text` | 文本及可选 product/version 导入 |
-| POST `/api/v1/documents/upload` | 文件上传及表单 product/version |
-| GET / DELETE `/api/v1/documents`、`/api/v1/documents/{id}` | 列表与删除 |
-| POST `/api/v1/retrieval/search` | 按产品和版本召回 |
-| POST `/api/v1/chat` | 回答、引用与请求记录 |
+| --- | --- |
+| `GET /health`、`GET /ready` | 存活检查；就绪检查（索引非空），不请求模型 |
+| `GET /api/v1/catalog` | 查询已收录的产品和版本 |
+| `POST /api/v1/documents/text`、`POST /api/v1/documents/upload` | 导入文本或文件（Markdown / TXT / PDF） |
+| `GET`、`DELETE /api/v1/documents[/{id}]` | 列出或删除文档 |
+| `POST /api/v1/retrieval/search` | 按产品和版本检索 |
+| `POST /api/v1/chat` | 问答，返回答案、引用和诊断轨迹 |
+| `POST /api/v1/chat/stream` | SSE 流式问答（先草稿，核验后给终稿） |
+
+请求示例：
 
 ```json
 {
@@ -275,18 +245,91 @@ RETRIEVAL_STRATEGY=hybrid
 }
 ```
 
-问答返回 `status`、`answer`、实际使用的 `citations`、初始 `retrieval`、补充后的 `context` 和 `trace`。状态包括 `answered`、`evidence_only`、`needs_clarification`、`insufficient_evidence`、`error`。引用编号对应上下文顺序，可能不连续。
+响应的 `status` 取值为 `answered`、`evidence_only`、`needs_clarification`、`insufficient_evidence` 或 `error`，同时返回 `citations`、`retrieval`、`context`、`trace` 和 `model_trace`（各阶段耗时与 token 用量）。HTTP 响应头 `X-Request-ID` 和 `trace.request_id` 一致，可以用来关联服务端日志；日志里不记录问题正文和认证信息。
 
-另返回 `model_trace`，按生成和核验记录 SDK 调用耗时及已知 token，缺失用量为 `null`。`LLM_VERIFY_SUPPORT` 默认 true；`CONTEXT_CHAR_BUDGET` 默认 16000，约束分块正文字符数。核验接口错误或返回格式错误为 `error`，不算正确拒答。
+## 评测与复现
 
-HTTP 响应的 `X-Request-ID` 与问答 `trace.request_id` 一致，可关联到服务端 JSON 请求日志。日志不包含问题正文、认证头或查询参数。
+```powershell
+# 工程测试与静态检查
+.\.venv\Scripts\python.exe -m pytest
+.\.venv\Scripts\python.exe -m ruff check app scripts tests
 
-`CONTEXT_POLICY` 默认为 `neighbors`；选择 `merged_neighbors` 时，在预算内合并同一原文范围，合并证据的 `metadata.context_chunk_ids` 指向组成分块。trace 另记录策略、唯一及重复原文字符数，引用保留准确字符范围。普通评测也支持 `--context-policy`，历史报告不会自动改写。
+# 冒烟评测（3 份示例文档 / 6 个问题，只验证流程能跑通）
+.\.venv\Scripts\python.exe -m scripts.evaluate --demo --report-name latest
 
-## 运行边界与下一步
+# 离线检索诊断页：逐题比较各策略，查看证据位置、排名和预算损失
+.\.venv\Scripts\python.exe -m scripts.diagnose_retrieval --output work/diagnostics/development.json
+```
 
-当前是绑定 127.0.0.1 的单进程演示服务，没有鉴权或多租户隔离。服务内部对写操作串行化，读请求使用不可变索引快照；不支持多个服务进程或导入脚本同时写同一索引。使用 CLI 导入后需要重启已启动的服务。JSON 存储适合小规模展示，BM25 仍全量重建，Dense 仍线性扫描。
+默认测试套件不需要模型权重；本地 E5 / BGE 的集成测试需要先下载权重并显式开启。上面各项实验的完整复现命令：
 
-向量缓存按供应商、模型、接口及 `EMBEDDING_CACHE_REVISION` 隔离；本地E5另自动包含固定提交、文件SHA256、输入/截断/推理配置及依赖版本，索引指纹同时绑定namespace。同名远程模型升级时应提高该修订值并重建索引。缓存中可以保留已经删除文档的向量，但删除后其分块不再参与检索。
+| 实验 | 复现说明 |
+| --- | --- |
+| 按需重排 | [REPRODUCE.md](evaluation/reports/budget-reranking-20261106-complete/analysis/REPRODUCE.md) |
+| 新主题冻结验证 | [REPRODUCE.md](evaluation/reports/new-topics-20261109/REPRODUCE.md)（包含不加载模型的结果核查） |
+| 检索策略对照 / 语料扩容 | [CORPUS_LARGE_V013.md](docs/CORPUS_LARGE_V013.md) |
+| 端到端答案评测 | [answer-judge-20261102.md](evaluation/reports/answer-judge-20261102.md) |
 
-下一步按v0.11优先清单完成人工问题复核与答案评分，核对真实Dense/Hybrid的改善与退化；再用审核后的开发数据比较生成质量与重排成本，冻结配置后运行保留测试集。扫描PDF的OCR、完整代码块解析、鉴权、多进程一致性、向量数据库与部署压测尚未完成。
+评测约定：所有指标都由脚本生成，原始 JSON 保留不做手工修改；保留测试集只在配置冻结后运行。
+
+## 项目结构
+
+```text
+knowledge-rag-lab/
+├── app/                    # 服务与 RAG 核心链路（检索、重排、上下文、生成、核验、MCP）
+│   └── static/             # 网页前端
+├── scripts/                # 启动、导入、语料抓取、评测与实验脚本
+├── tests/                  # 单元测试与接口契约测试
+├── evaluation/
+│   ├── support_corpus/         # 34 份文档的语料快照（演示默认使用）
+│   ├── support_corpus_large/   # 102 份文档 / 4 版本的扩容语料快照
+│   ├── questions.*.jsonl       # 评测问题与证据标注
+│   └── reports/                # 实验报告与原始结果
+├── docs/                   # 设计说明、实验协议与操作手册
+├── sample_data/            # 冒烟测试用示例文档
+├── Dockerfile, compose.yaml
+└── pyproject.toml
+```
+
+## 局限性
+
+- **数据规模**：只覆盖 FastAPI 中文文档这一个领域，开发集 47 题；保留测试集没有运行，所有数字都只是开发集上的结果。
+- **评审偏差**：答案评测的生成模型和 Judge 是同一个模型，人工校准样本只有 11 份。
+- **重排延迟**：CPU 上的 BGE 重排每次约需数秒，按需门控能降低平均成本，但改善不了 P95。
+- **语料完整性**：扩容抓取时有 18 个页面因网络失败没有收录（清单已保留）；中文翻译可能落后于英文原文。
+- **服务形态**：单进程本地服务，没有鉴权和多租户；存储为 JSON + SQLite，BM25 每次全量重建，Dense 检索是线性扫描，没有做压测。
+- **文档格式**：不支持扫描版 PDF 的 OCR，代码块也没有做结构化解析。
+
+## 版本历史
+
+| 版本 | 日期 | 主要内容 |
+| --- | --- | --- |
+| v0.16 | 2026-11-09 | 新主题冻结验证（12 题 / 6 主题）与源码导读 |
+| v0.15 | 2026-11-06 | 预算感知的按需重排门控与真实计时实验 |
+| v0.14 | 2026-11-02 | 端到端答案评测（LLM-as-Judge）、MCP Server |
+| v0.13 | 2026-10-28 | 语料扩容至 102 份文档 / 4 个版本，重新对照各检索策略 |
+| v0.12 | 2026-10-28 | SSE 流式交互、多轮追问、BGE Cross-Encoder 重排 |
+| v0.11 | 2026-10-27 | 本地 E5 语义检索；Docker 交付实测 |
+| v0.10 | 2026-10-26 | 问题人工复核工作台；DeepSeek 开发实验 |
+| v0.9 | 2026-10-06 | 版本故障实验室：复现跨版本的真实行为差异 |
+| v0.6 – v0.8 | 2026-09-12 | 零密钥交付、离线检索诊断工作台、上下文合并与预算配对 |
+| v0.1 – v0.5 | 2026-07 – 09 | 原型、评测体系、引用元数据、核验对照 |
+
+每个版本的详细记录、验证快照和已知问题见 [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md)。
+
+## 文档
+
+完整索引见 [docs/README.md](docs/README.md)。常用入口：
+
+- [三分钟演示脚本](docs/SHOWCASE.md)
+- [按需重排实验设计](docs/BUDGET_RERANKING_20261106.md)
+- [离线检索诊断](docs/RETRIEVAL_DIAGNOSTICS.md)
+- [上下文合并与预算](docs/CONTEXT_PACKING.md)
+- [版本故障实验室](docs/VERSION_LAB.md)
+- [MCP 接入](docs/MCP.md)
+- [数据卡](evaluation/SUPPORT_DATA_CARD.md)
+
+## 第三方材料
+
+- 知识库语料来自 [FastAPI](https://github.com/fastapi/fastapi) 官方中文文档（MIT 许可），按固定提交抓取，来源、许可证和文件哈希记录在语料 manifest 中。
+- 嵌入模型 [`intfloat/multilingual-e5-small`](https://huggingface.co/intfloat/multilingual-e5-small) 与重排模型 [`BAAI/bge-reranker-base`](https://huggingface.co/BAAI/bge-reranker-base) 均为 MIT 许可，按固定 revision 下载，权重不随仓库分发。

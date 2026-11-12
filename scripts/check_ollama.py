@@ -1,3 +1,9 @@
+"""Check whether a local Ollama service is running and has the expected models.
+
+只读探针：访问 ``/api/tags`` 列出已安装模型，缺失的给出下载建议，不自动拉取。
+退出码约定：服务未启动为 1，模型缺失为 2，便于脚本或 CI 区分处理。
+"""
+
 from __future__ import annotations
 
 import json
@@ -10,6 +16,7 @@ REQUIRED_MODELS = {"qwen3:8b", "qwen3-embedding:0.6b"}
 
 
 def main() -> None:
+    """探测本机 Ollama；连接失败提示启动服务，模型缺失提示拉取命令。"""
     try:
         with urlopen("http://localhost:11434/api/tags", timeout=5) as response:
             payload = json.load(response)

@@ -1,4 +1,13 @@
-"""Export and score human judgments bound to an immutable paired evaluation report."""
+"""Export and score human judgments bound to an immutable paired evaluation report.
+
+人工评分必须绑定到“某一版报告、某一版答案文本”，否则改完实现后旧评分会被误用。
+因此每条导出记录都带 ``report_sha256`` 与 ``draft_sha256``，评分时会逐条核对；
+不一致（报告被替换、答案被改写）直接拒绝，而不是“尽量匹配”。
+
+导出时刻意只展示**初始答案**与上下文，不展示核验后的结论：让人工评分独立于
+核验结果，否则无法判断核验本身是否有效。未填写的记录保持 ``pending``，
+不会被自动补成人工评分。
+"""
 
 import argparse
 from datetime import datetime
@@ -12,12 +21,18 @@ def report_digest(path: Path) -> str:
 
 
 def draft_digest(detail: dict) -> str:
+    """对单题明细取稳定摘要，绑定“这一份答案 + 这一份上下文”。"""
     return hashlib.sha256(
         json.dumps(detail, sort_keys=True, ensure_ascii=False).encode("utf-8")
     ).hexdigest()
 
 
 def load_pairs(report_path: Path) -> tuple[dict, dict, dict]:
+    """读取配对报告并校验两组成员完全一致。
+
+    只有 ``same_draft_same_context`` 设计的报告才能用于评分：其他设计里两组答案
+    本就不同，无法判断“核验前后”的差异。
+    """
     report = json.loads(report_path.read_text(encoding="utf-8"))
     comparison = report.get("verification_comparison", {})
     if comparison.get("design") != "same_draft_same_context":
@@ -32,6 +47,11 @@ def load_pairs(report_path: Path) -> tuple[dict, dict, dict]:
 
 
 def export_review(report_path: Path, output: Path) -> int:
+    """导出待审 Markdown 与 JSONL，返回题数。
+
+    只导出初始状态为 ``answered`` 的题：拒答题没有“答案正确性”可评。
+    输出必须全新，避免覆盖已填写的人工标注。
+    """
     _, before, _ = load_pairs(report_path)
     digest = report_digest(report_path)
     markdown_path = output.with_suffix(".md")
@@ -106,6 +126,12 @@ def export_review(report_path: Path, output: Path) -> int:
 
 
 def score_review(report_path: Path, review_path: Path) -> dict:
+    """校验并汇总人工评分，返回分分子集与配对转移。
+
+    校验是逐条且严格的：ID 必须属于初始答案集合、不能重复、报告/答案摘要必须匹配、
+    两个判断必须是布尔值、审核人不能为空、时间必须带时区。
+    只有 ``human_verified`` 的条目进入分母；``pending`` 既不按 0 分计，也不从报告里消失。
+    """
     report, before, after = load_pairs(report_path)
     digest = report_digest(report_path)
     eligible = {

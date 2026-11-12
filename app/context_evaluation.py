@@ -1,4 +1,11 @@
-"""Paired context assembly at fixed retrieval inputs and fixed character budget caps."""
+"""Paired context assembly at fixed retrieval inputs and fixed character budget caps.
+
+配对实验的设计要点：**同一份检索结果**同时喂给两种上下文策略与多个预算，
+因此策略之间的差异只能来自拼接方式，不会混入“重新检索”的随机性。
+
+为了让这一点可核对，每题都计算 ``retrieval_sha256``：若某一行两种策略的检索
+指纹不同，说明实验本身有问题，应在报告中暴露而不是悄悄比较。
+"""
 
 from collections import Counter
 import hashlib
@@ -12,6 +19,7 @@ from app.retrieval import matches_filters
 
 
 def _refs(hits: list[SearchHit]) -> list[dict]:
+    """只保留定位与排名，正文由顶层 chunks 表统一提供。"""
     return [
         {"chunk_id": hit.chunk.id, "score": hit.score,
          "dense_rank": hit.dense_rank, "sparse_rank": hit.sparse_rank}
@@ -23,6 +31,16 @@ def compare_context_policies(
     cases: list[EvaluationCase], chunks: list[Chunk], searchers: dict,
     *, top_k: int, budgets: list[int],
 ) -> dict:
+    """在固定检索输入上比较 ``neighbors`` 与 ``merged_neighbors``。
+
+    每个预算下输出：
+
+    - 两种策略的完整覆盖题数、平均证据召回与字符用量；
+    - 配对转移（gained / lost / unchanged）及对应题号；
+    - 平均召回差。
+
+    只统计可回答且有证据标注的开发题；不可回答题计入状态分布但不参与配对。
+    """
     if not cases or not searchers or any(case.split != "development" for case in cases):
         raise ValueError("配对上下文实验只接受非空开发集和检索策略")
     if not budgets or any(type(b) is not int or b < 1 for b in budgets) or not 1 <= top_k <= 50:

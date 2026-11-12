@@ -1,4 +1,14 @@
-"""Observable retrieval failure stages, using the same context policy as the service."""
+"""Observable retrieval failure stages, using the same context policy as the service.
+
+检索失败不是一个二元结论。这个模块把一次检索拆成六个阶段，并判断金标证据是在
+哪一步丢掉的：
+
+``indexed → eligible → pool → top_k → expanded → context``
+
+每一级的差值对应一种可行动的结论：分块没覆盖（index_gap）、版本过滤排除
+（filter_excluded）、在池内但排名靠后（below_top_k）、预算不够（budget_limited）、
+或根本不在候选池（outside_pool）。诊断只读开发集，保留测试集不参与任何调试。
+"""
 
 from collections import Counter
 from collections.abc import Callable
@@ -21,7 +31,11 @@ OUTCOMES = {
 
 
 def span_coverage(anchor: dict, chunks: list[Chunk]) -> dict:
-    """Union of half-open Python character ranges; overlap never inflates coverage."""
+    """Union of half-open Python character ranges; overlap never inflates coverage.
+
+    返回覆盖比例、缺失区间与是否完整。区间按起点排序后合并，因此两个分块重叠
+    不会让覆盖率超过 1；缺失区间可直接用于解释“差哪一段没检索到”。
+    """
     start, end = anchor["start_char"], anchor["end_char"]
     intervals: list[list[int]] = []
     for left, right in sorted(
@@ -55,6 +69,11 @@ def span_coverage(anchor: dict, chunks: list[Chunk]) -> dict:
 
 
 def _references(hits: list[SearchHit]) -> list[dict]:
+    """只保留定位与排名，不带正文；正文统一放在结果顶层的 ``chunks`` 里。
+
+    这样逐题明细不会重复存储同一段原文，报告体积可控，也不会因为多次引用
+    产生不一致的文本副本。
+    """
     return [
         {
             "chunk_id": hit.chunk.id,
@@ -75,6 +94,12 @@ def diagnose_case(
     char_budget: int,
     context_policy: str = "neighbors",
 ) -> dict:
+    """逐题诊断单条证据在各阶段的覆盖情况，并给出丢失原因。
+
+    关键实现选择：``expanded`` 阶段用“足够大的预算”重算一次上下文，作为
+    “若不限预算会得到什么”的反事实；它只用于诊断，永远不会送给模型。
+    有了这一步，``budget_limited`` 才能与 ``below_top_k`` 区分开。
+    """
     # The public entry point also validates this; keep individual-case calls safe.
     if case.split != "development":
         raise ValueError("诊断仅接受 development；保留测试集不参与调试")
@@ -85,6 +110,7 @@ def diagnose_case(
     eligible = [chunk for chunk in chunks if matches_filters(chunk, case.filters)]
     pool = search(case.question, POOL_K, filters=case.filters)
     eligible_ids = {chunk.id for chunk in eligible}
+    # 防御性校验：检索器若返回过滤外或索引外的分块，后续归因会全部失真。
     if any(hit.chunk.id not in eligible_ids for hit in pool):
         raise ValueError("检索器返回索引外或不符合版本过滤的分块")
     if len({hit.chunk.id for hit in pool}) != len(pool) or len(pool) > POOL_K:
@@ -108,6 +134,7 @@ def diagnose_case(
     for anchor in case.evidence:
         coverage = {name: span_coverage(anchor, items) for name, items in stages.items()}
         full = {name: value["complete"] for name, value in coverage.items()}
+        # 归因顺序从上游到下游：先看索引能不能覆盖，再看预算，最后才是排序。
         if full["context"]:
             outcome = "context_covered"
         elif not full["indexed"]:
@@ -131,6 +158,7 @@ def diagnose_case(
             ),
             None,
         )
+        # 首次“完整覆盖”的累计排名：解释为什么 Top-5 拿不到，但 Top-50 可以。
         first_full = next(
             (
                 rank for rank in range(1, len(pool) + 1)
@@ -158,6 +186,7 @@ def diagnose_case(
     context_recall = sum(item["coverage"]["context"]["complete"] for item in anchors) / len(anchors)
     matched_sources = case.relevant_sources.intersection(hit.chunk.source for hit in retrieved)
     def part_ids(hits):
+        # 合并块记录的是组成它的原始分块 ID；未合并块回退到自身 ID。
         return list(dict.fromkeys(
             chunk_id for hit in hits
             for chunk_id in hit.chunk.metadata.get("context_chunk_ids", [hit.chunk.id])
@@ -194,6 +223,11 @@ def diagnose_retrieval(
     char_budget: int = 16000,
     context_policy: str = "neighbors",
 ) -> dict:
+    """批量诊断并聚合每种策略的阶段归因计数。
+
+    不可回答题与无证据题标记为跳过而不是失败：它们不参与证据覆盖统计，
+    但保留在 ``cases`` 里，使“为什么没算”可查。
+    """
     if not cases or not searchers:
         raise ValueError("诊断需要问题和检索策略")
     if any(case.split != "development" for case in cases):
@@ -228,6 +262,7 @@ def diagnose_retrieval(
                 } if status == "diagnosed" else {},
             }
         )
+    # 合并块正文统一提升到顶层 chunks 表，逐题明细只留引用。
     chunk_index = {chunk.id: chunk.to_dict() for chunk in chunks}
     for item in details:
         for result in item["strategies"].values():

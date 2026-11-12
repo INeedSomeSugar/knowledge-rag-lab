@@ -1,4 +1,15 @@
-"""Pinned, offline E5 inference; no provider fallback or executable model code."""
+"""Pinned, offline E5 inference; no provider fallback or executable model code.
+
+这个模块把“本地模型”做成可审计的构件，而不是 ``from_pretrained(名字)`` 一把梭：
+
+- 只接受 40 位提交哈希，拒绝 ``main`` 等浮动引用；
+- 逐文件校验 SHA256，清单缺项或版本不符直接失败；
+- ``trust_remote_code=False`` + ``local_files_only=True``，不会执行模型仓库里的代码，
+  也不会在离线环境偷偷联网；
+- 请求 CUDA 但不可用时抛错，不静默退回 CPU 或 Hashing。
+
+``descriptor`` 会进入向量缓存命名空间与实验报告，因此字段变更等同于“换了模型”。
+"""
 
 from __future__ import annotations
 
@@ -13,6 +24,7 @@ from threading import RLock
 E5_MODEL = "intfloat/multilingual-e5-small"
 E5_REVISION = "614241f622f53c4eeff9890bdc4f31cfecc418b3"
 E5_DIRECTORY = Path("work/models/multilingual-e5-small") / E5_REVISION
+# 清单固定这七个文件：``validate_model_files`` 要求集合完全一致，缺任一项都会被拒绝。
 E5_FILES = (
     "config.json",
     "model.safetensors",
@@ -25,6 +37,7 @@ E5_FILES = (
 
 
 def sha256_file(path: Path) -> str:
+    """分块计算文件摘要，避免把几百 MB 的权重整体读进内存。"""
     digest = hashlib.sha256()
     with path.open("rb") as stream:
         for block in iter(lambda: stream.read(1024 * 1024), b""):
@@ -33,6 +46,11 @@ def sha256_file(path: Path) -> str:
 
 
 def validate_model_files(directory: Path, revision: str) -> dict:
+    """按 manifest 校验模型目录，返回清单供 ``descriptor`` 使用。
+
+    失败原因被统一收敛为一条带操作指引的 ``RuntimeError``：本地模型缺失是
+    部署期最常见的问题，错误信息里直接给出下载命令比抛原始 ``FileNotFoundError`` 更有用。
+    """
     if not re.fullmatch(r"[0-9a-f]{40}", revision):
         raise ValueError("本地 Embedding 必须固定40位模型提交，不接受 main 或浮动版本")
     try:
@@ -52,6 +70,16 @@ def validate_model_files(directory: Path, revision: str) -> dict:
 
 
 class LocalE5Embedding:
+    """intfloat/multilingual-e5-small 的固定推理封装。
+
+    池化方式是“带 attention mask 的均值池化（含特殊 token）”，随后 L2 归一化；
+    查询加 ``query: `` 前缀、文档加 ``passage: `` 前缀。这三处细节都会影响分数，
+    必须与训练时约定一致，因此写进 ``descriptor`` 而不是留在注释里。
+
+    推理用同一把锁串行化：避免共享模型实例被并发调用，同时让离线计时可复现；
+    吞吐不是本项目的优化目标。
+    """
+
     dimension = 384
 
     def __init__(
@@ -93,6 +121,7 @@ class LocalE5Embedding:
                 trust_remote_code=False,
                 use_fast=True,
             )
+            # 右侧截断：超长文本丢弃尾部，与 descriptor 的 truncation 字段保持一致。
             self.tokenizer.truncation_side = "right"
             self.model = (
                 AutoModel.from_pretrained(
@@ -110,6 +139,7 @@ class LocalE5Embedding:
             raise RuntimeError("本地E5模型加载失败；不会回退Hashing") from exc
         if self.model.config.hidden_size != self.dimension:
             raise ValueError("E5模型向量维度与接口约定不符")
+        # descriptor 是模型指纹：进入缓存命名空间，也会写入实验报告。
         self.descriptor = {
             "provider": "local_e5",
             "model": model,
@@ -139,6 +169,11 @@ class LocalE5Embedding:
         self.last_stats: dict = {}
 
     def input_stats(self, texts: list[str], prefix: str) -> dict:
+        """统计截断前的 token 长度，用于报告“是否有内容被截掉”。
+
+        单独跑一次不截断的分词会增加开销，但只在建库/评测路径调用，
+        换来的是可以量化“512 上限对语料的影响”，而不是事后猜测。
+        """
         lengths = (
             [
                 len(ids)
@@ -160,6 +195,7 @@ class LocalE5Embedding:
         }
 
     def _encode(self, texts: list[str], prefix: str) -> list[list[float]]:
+        """批量编码：分词 → 前向 → mask 均值池化 → L2 归一化。"""
         if not texts:
             return []
         torch = self.torch
@@ -175,6 +211,8 @@ class LocalE5Embedding:
                     return_tensors="pt",
                 ).to(self.device)
                 hidden = self.model(**batch).last_hidden_state
+                # padding 位置的 hidden state 不是 0，必须先 mask 再求和，
+                # 否则短文本的均值会被 padding 稀释。
                 hidden = hidden.masked_fill(~batch["attention_mask"][..., None].bool(), 0.0)
                 pooled = hidden.sum(dim=1) / batch["attention_mask"].sum(dim=1)[..., None]
                 vectors = torch.nn.functional.normalize(pooled, p=2, dim=1)

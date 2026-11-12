@@ -1,0 +1,12 @@
+{
+  "python": "3.12.14",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "logical_cpus": 16,
+  "physical_cpus": 8,
+  "ram_total_bytes": 16979623936,
+  "available_ram_before": 4001366016,
+  "background_cpu_percent_before": 9.4,
+  "device": "cpu",
+  "dtype": "float32",
+  "cpu_threads": 4
+}

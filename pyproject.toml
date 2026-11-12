@@ -17,6 +17,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+plots = ["reportlab==4.4.9"]
 reranking = ["torch==2.9.1", "transformers==4.57.6"]
 embedding = [
   "torch==2.9.1",

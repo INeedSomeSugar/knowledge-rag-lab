@@ -1,3 +1,10 @@
+"""核验配对评测：同一草稿、同一上下文，只增加一次支持关系核验。
+
+必须守住“配对”这件事本身：两组不能各自重新生成；核验失败应记为 ``error`` 而不是
+“成功拒答”；并发请求的用量不能串号；缺失 token 不能按 0 计；人工评分未齐时不得
+生成准确率。
+"""
+
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
 import json

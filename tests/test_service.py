@@ -1,3 +1,9 @@
+"""服务层最小闭环：导入 → 检索 → 回答 → 持久化 → 删除。
+
+用零密钥配置验证链路连通与磁盘状态一致；这是其他集成测试的共享基座
+（``build_service`` 被 API 测试复用）。
+"""
+
 from pathlib import Path
 
 from app.chunking import TextChunker
